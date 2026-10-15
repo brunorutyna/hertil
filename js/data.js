@@ -27,7 +27,7 @@ const BOONS = {
   traad:   { name: 'Tråden', en: 'Your reason is a purpose', fx: 'A thread pulls you forward. +1 on Snige.' },
   moenster:{ name: 'Mønsteret', en: 'Your reason is a story', fx: 'A story is written across you. +1 on Sprog.' },
   spejl:   { name: 'Spejlets gunst', en: "The mirror's favour", fx: 'Your first mistake when building a sentence in each conversation does not count.' },
-  vaev:    { name: 'Grundvæverskens tråd', en: "The weaver's thread", fx: 'Your dice can no longer melt. Your numbers can still go strange.' },
+  vaev:    { name: 'Grundvæverskens tråd', en: "The weaver's thread", fx: 'Your dice no longer melt by chance. Some moments still melt them on purpose, and numbers can still go strange.' },
   ikket:   { name: 'Ikket', en: 'A loose ikke, living in your mouth', fx: 'Once a day, it turns a failed roll into “ikke fiasko”. It also slips an extra “ikke” into your word tiles.' },
   doer:    { name: 'En dør', en: 'A door that leads nowhere', fx: 'You wake every morning with at least two sparks (inspiration).' },
   laant:   { name: 'Lånt fortid', en: 'A borrowed past', fx: '+2 on Løgn. You have a past now. It is not yours, which makes it easier to lie about.' },
@@ -60,18 +60,18 @@ const VOCAB = {
   ring: { da: 'en ring', en: 'a ring', icon: 'ring', set: 'ting' }, hjerte: { da: 'et hjerte', en: 'a heart', icon: 'hjerte', set: 'ting' },
   haand: { da: 'en hånd', en: 'a hand', icon: 'haand', set: 'ting' }, timeglas: { da: 'et timeglas', en: 'an hourglass', icon: 'timeglas', set: 'ting' },
   // job · what the creatures of Hertil do (Gæt jobbet)
-  kok: { da: 'en kok', en: 'a cook', icon: 'grod', set: 'job', def: 'Laver mad til andre.' },
-  laerer: { da: 'en lærer', en: 'a teacher', icon: 'bog', set: 'job', def: 'Underviser andre.' },
-  laege: { da: 'en læge', en: 'a doctor', icon: 'medicin', set: 'job', def: 'Hjælper, når man er syg.' },
-  arkitekt: { da: 'en arkitekt', en: 'an architect', icon: 'hus', set: 'job', def: 'Tegner huse og rum.' },
-  ingenioer: { da: 'en ingeniør', en: 'an engineer', icon: 'tandhjul', set: 'job', def: 'Bygger broer og maskiner.' },
-  journalist: { da: 'en journalist', en: 'a journalist', icon: 'pen', set: 'job', def: 'Skriver artikler om det, der sker.' },
-  musiker: { da: 'en musiker', en: 'a musician', icon: 'klokke', set: 'job', def: 'Spiller musik for andre.' },
-  forsker: { da: 'en forsker', en: 'a researcher', icon: 'oeje', set: 'job', def: 'Finder ny viden.' },
-  designer: { da: 'en designer', en: 'a designer', icon: 'traad', set: 'job', def: 'Tegner ting, som andre laver.' },
-  gartner: { da: 'en gartner', en: 'a gardener', icon: 'blad', set: 'job', def: 'Passer planter.' },
-  farmaceut: { da: 'en farmaceut', en: 'a pharmacist', icon: 'medicin', set: 'job', def: 'Arbejder på et apotek og kender al medicin.' },
-  oekonom: { da: 'en økonom', en: 'an economist', icon: 'skael', set: 'job', def: 'Arbejder med penge og tal.' },
+  kok: { da: 'en kok', en: 'a cook', icon: 'grod', set: 'job', def: 'Lavede mad til andre.' },
+  laerer: { da: 'en lærer', en: 'a teacher', icon: 'bog', set: 'job', def: 'Underviste andre.' },
+  laege: { da: 'en læge', en: 'a doctor', icon: 'medicin', set: 'job', def: 'Hjalp, når nogen var syg.' },
+  arkitekt: { da: 'en arkitekt', en: 'an architect', icon: 'hus', set: 'job', def: 'Tegnede huse og rum.' },
+  ingenioer: { da: 'en ingeniør', en: 'an engineer', icon: 'tandhjul', set: 'job', def: 'Byggede broer og maskiner.' },
+  journalist: { da: 'en journalist', en: 'a journalist', icon: 'pen', set: 'job', def: 'Skrev artikler om det, der skete.' },
+  musiker: { da: 'en musiker', en: 'a musician', icon: 'klokke', set: 'job', def: 'Spillede musik for andre.' },
+  forsker: { da: 'en forsker', en: 'a researcher', icon: 'oeje', set: 'job', def: 'Fandt ny viden.' },
+  designer: { da: 'en designer', en: 'a designer', icon: 'traad', set: 'job', def: 'Tegnede ting, som andre lavede.' },
+  gartner: { da: 'en gartner', en: 'a gardener', icon: 'blad', set: 'job', def: 'Passede planter.' },
+  farmaceut: { da: 'en farmaceut', en: 'a pharmacist', icon: 'medicin', set: 'job', def: 'Arbejdede på et apotek og kendte al medicin.' },
+  oekonom: { da: 'en økonom', en: 'an economist', icon: 'skael', set: 'job', def: 'Arbejdede med penge og tal.' },
 };
 const VOCAB_SETS = { ting: 'Ting, der falder · Things that fall', job: 'Job · What creatures do' };
 
@@ -115,7 +115,7 @@ const DICT = {
   'bagvendte': 'turned backwards (Den Bagvendte: the one turned away)', 'siden': 'since · for … siden: … ago', 'ede': '(the ending -ede: lavede, boede)', 'te': '(the ending -te: læste, købte)', 'blød': 'soft', 'hård': 'hard', 'uregelmæssig': 'irregular',
   'boet': 'lived (har boet: has lived)', 'spisede': '(wrong form of spise; correct: spiste)', 'spist': 'eaten (har spist)', 'spiserede': '(not a word)', 'regn': 'rain', 'sker': 'happen(s)', 'skævt': 'crooked', 'spørg': 'ask! (imperative)', 'sletten': 'the plain', 'heller': 'either (heller ikke: not … either)',
   'overalt': 'everywhere', 'find': 'find! (imperative)', 'sorteret': 'sorted', 'glemt': 'forgotten', 'selvfølgelig': 'of course', 'side': 'page / side', 'grunde': 'reasons', 'man': 'one, you (in general)', 'endnu': 'yet', 'låne': 'borrow', 'fået': 'got (har fået: have got)', 'tag': 'take! (imperative)',
-  'alligevel': 'anyway', 'desværre': 'unfortunately', 'vildt': 'wild', 'samme': 'same', 'bøger': 'books', 'verbet': 'the verb', 'først': 'first', 'velkommen': 'welcome', 'al': 'all',
+  'alligevel': 'anyway', 'skete': 'happened', 'fysik': 'physics', 'fransk': 'French', 'passer': 'fits / looks after', 'lange': 'long', 'hænder': 'hands', 'stemme': 'voice', 'spor': 'trace(s)', 'helt': 'completely', 'pennen': 'the pen', 'pen': 'pen', 'gled': 'slipped', 'gammel': 'old', 'desværre': 'unfortunately', 'vildt': 'wild', 'samme': 'same', 'bøger': 'books', 'verbet': 'the verb', 'først': 'first', 'velkommen': 'welcome', 'al': 'all',
 };
 
 /* numbers as words (for the glyph dice and prices said aloud) */

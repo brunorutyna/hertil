@@ -304,8 +304,7 @@ function builder(b) {
     const low = a => a.map(norm).join(' ');
     const all = [...b.answers, ...(b.best || [])].map(low);
     let src = b.tiles || [...b.answers[0], ...(b.extra || [])];
-    if (hasBoon('ikket') && !src.some(t => norm(t) === 'ikke')) src = [...src, 'ikke']; // Ikket slips into your sentences
-    else if (hasBoon('ikket')) src = [...src, 'ikke'];
+    if (hasBoon('ikket')) src = [...src, 'ikke']; // Ikket slips an extra ikke into your sentences
     const tiles = shuffle(src.map((t, i) => ({ t: /^[A-ZÆØÅ]/.test(t) && !NAMES.includes(t.replace(/[.,?!]/g, '')) ? t.toLowerCase() : t, i })));
     let line = [], mistakes = 0;
     const ov = document.createElement('div'); ov.className = 'sheet-ov'; document.body.appendChild(ov);
@@ -351,7 +350,7 @@ function roll(stat, dc, mods, mode, opt = {}) {
     const total = Math.min(MOD_CAP, raw);
     dc = dc + (S().dcMod || 0);
     // the die melts: only what you bring decides. A sentence: perfect or not. An action: your skill against the difficulty, no luck.
-    const melt = !hasBoon('vaev') && (opt.die === 'melt' || (opt.die !== 'solid' && G.flags[S().travelAfter || 'x'] && G.log.rolls > 3 && Math.random() < .07));
+    const melt = opt.die === 'melt' || (!hasBoon('vaev') && opt.die !== 'solid' && G.flags[S().travelAfter || 'x'] && G.log.rolls > 3 && Math.random() < .07);
     const strange = !melt && (opt.die === 'glyph' || G.glyph > 0);
     if (strange && G.glyph > 0) G.glyph--;
     const N = n => strange ? glyph(n) : n;
@@ -718,7 +717,7 @@ const SPECIAL = {
           $('#vDone').onclick = () => { ov.remove(); resolve(); }; return;
         }
         const k = keys[i]; const opts = shuffle([k, ...shuffle(J.keys.filter(x => x !== k)).slice(0, 2)]);
-        ov.querySelector('.voc').innerHTML = `<div class="v-h"><small>${esc(J.title)} · ${i + 1}/${keys.length}</small><h2>Gæt jobbet</h2><div class="notice">${daHTML(J.prefix + VOCAB[k].def.charAt(0).toLowerCase() + VOCAB[k].def.slice(1))}</div><p>Hvad er den?</p></div>
+        ov.querySelector('.voc').innerHTML = `<div class="v-h"><small>${esc(J.title)} · ${i + 1}/${keys.length}</small><h2>Gæt jobbet</h2><div class="notice">${daHTML(J.prefix + VOCAB[k].def.charAt(0).toLowerCase() + VOCAB[k].def.slice(1))}</div><p>Hvad var den?</p></div>
           <div class="rv-opts">${opts.map(x => `<button class="rv-o" data-k="${x}">${esc(VOCAB[x].da)}</button>`).join('')}</div>`;
         wireWords(ov);
         ov.querySelectorAll('.rv-o').forEach(b => b.onclick = async () => {

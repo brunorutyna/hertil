@@ -11,6 +11,9 @@ const JOBS5 = ['kok.', 'lærer.', 'læge.', 'arkitekt.', 'musiker.'];
 const jobBuild = { en: 'Before I came here, I worked as a … (cook / teacher / doctor / architect / musician)',
   answers: JOBS5.map(j => ['Jeg', 'arbejdede', 'som', j]), best: JOBS5.map(j => ['Før', 'jeg', 'kom', 'hertil,', 'arbejdede', 'jeg', 'som', j]),
   tiles: ['Før', 'jeg', 'kom', 'hertil,', 'jeg', 'arbejdede', 'som', ...JOBS5, 'på'], origin: 'job' };
+const studyBuild = { en: 'Before I came here, I studied medicine / physics / French at the university.', origin: 'job',
+  answers: ['medicin', 'fysik', 'fransk'].map(f => ['Jeg', 'læste', f, 'på', 'universitetet.']), best: ['medicin', 'fysik', 'fransk'].map(f => ['Før', 'jeg', 'kom', 'hertil,', 'læste', 'jeg', f, 'på', 'universitetet.']),
+  tiles: ['Før', 'jeg', 'kom', 'hertil,', 'jeg', 'læste', 'medicin', 'fysik', 'fransk', 'på', 'universitetet.', 'i'] };
 const placeBuild = { en: 'Before I came here, I lived in a big city / on an island / in the countryside.',
   answers: [['Før', 'jeg', 'kom', 'hertil,', 'boede', 'jeg', 'i', 'en', 'storby.'], ['Før', 'jeg', 'kom', 'hertil,', 'boede', 'jeg', 'på', 'en', 'ø.'], ['Før', 'jeg', 'kom', 'hertil,', 'boede', 'jeg', 'på', 'landet.']],
   tiles: ['Før', 'jeg', 'kom', 'hertil,', 'boede', 'jeg', 'i', 'på', 'en', 'storby.', 'ø.', 'landet.', 'jeg'], origin: 'place' };
@@ -50,7 +53,8 @@ SESSIONS.k1l1 = {
   carryFlags: ['Bbound', 'Bfree', 'Bsold', 'Cgone', 'Cborrow', 'Clook'],
 
   quests: {
-    A: { title: 'Faldet', en: 'The fall', obj: [['Give Tælleren a reason', 'Areason'], ['Find three traces of what you were', 'Aclues'], ['Be registered at Trappen', 'Adone']] },
+    A: { title: 'Faldet', en: 'The fall', obj: [['Give Tælleren a reason', 'Areason'], ['Settle the hall and the plain, then register at Trappen', 'Adone']] },
+    S6: { title: 'Spor', en: 'Traces', side: true, obj: [['Find three traces of what you were (Tælleren will want to know)', 'Aclues']] },
     B: { title: 'Ikket', en: 'The loose ikke', obj: [['Mend Tælleren’s sentence', 'Btaeller'], ['Mend Samleren’s sentence, at Bunden', 'Bsamler'], ['Find what eats the word ikke', 'Bhall'], ['Decide what to do with it', 'Bdone']] },
     C: { title: 'Den Bagvendte', en: 'The one turned away', obj: [['Find out what it was before (two voices that agree)', 'Cknown'], ['Tell it', 'Ctold'], ['Let it decide', 'Cdone']] },
     S1: { title: 'Nedfaldet', en: 'What fell', side: true, obj: [['Help Samleren find what fell', 'huntDone']] },
@@ -65,12 +69,12 @@ SESSIONS.k1l1 = {
     fald: { name: 'Faldt op', en: 'Fell upwards', text: 'Samleren filed you under "Ting, der faldt op". Things that fell upwards. You did not know there was such a category, or that you were in it.' },
     haender: { name: 'Hænder', en: 'Hands', text: 'For a moment your reflection had hands. Long ones, used to holding something warm. Then the water remembered what you look like now.' },
     navn: { name: 'Et ord', en: 'A word', text: 'Ikket said a word. It was short, and it fitted in your mouth the way a key fits a lock it was not made for.' },
-    koekken: { name: 'Køkken', en: 'Kitchen', text: 'The small ones said you smell of a kitchen. They do not know what a kitchen is. They only know the word, and that it is warm.' },
-    ekko: { name: 'Ekkoet', en: 'The echo', text: 'An echo repeated a sentence you have never said, in a voice that was nearly yours. "Før jeg kom hertil …" Then nothing.' },
+    koekken: { name: 'Køkken', en: 'Kitchen', text: 'The small ones said you smell of a kitchen. Not of any kitchen: of theirs. You have never been inside a house in your life. As far as you know.' },
+    ekko: { name: 'Ekkoet', en: 'The echo', text: 'An echo repeated a sentence in a voice that was nearly yours, from a time before you could have said it. "Før jeg kom hertil …" Then nothing.' },
   },
 
   letters: {
-    ledger: { title: 'TÆLLERENS BOG · side 1', lines: ['DEN BAGVENDTE.', 'Kom hertil for meget længe siden.', 'Grund: på grund af en storm.', 'Før: et hus. Mange boede i det.', 'Vender sig ikke om.'],
+    ledger: { title: 'TÆLLERENS BOG · side 1', lines: ['DEN BAGVENDTE.', 'Kom hertil. Meget gammel.', 'Grund: på grund af en storm.', 'Før: et hus. Mange boede i det.', 'Vender sig ikke om.'],
       qs: [{ q: 'What was it, before it came here?', opts: ['A house', 'A storm', 'A tower'], a: 0, flag: 'c_ledger' },
            { q: 'Why did it come here?', opts: ['Because of a storm', 'To find the ones who lived in it', 'Because it could not turn around'], a: 0 }] },
   },
@@ -98,7 +102,7 @@ SESSIONS.k1l1 = {
         { t: 'Den arbejdede ___ et firma.', a: 0, why: 'i et firma, i en bank: inside a company.' }, { t: 'Hun arbejdede ___ en bank.', a: 0, why: 'i en bank.' },
         { t: 'Han arbejdede ___ et hospital.', a: 1, why: 'på et hospital, på en skole: workplaces you go to.' }, { t: 'Den underviste ___ en skole.', a: 1, why: 'på en skole.' },
         { t: 'Hun skrev artikler ___ en avis.', a: 1, why: 'på en avis.' }, { t: 'De arbejdede ___ et apotek.', a: 1, why: 'på et apotek.' },
-        { t: 'Vi studerede ___ universitetet.', a: 1, why: 'på universitetet.' }, { t: 'Den boede ___ en storby.', a: 0, why: 'i a town or a country.' },
+        { t: 'Vi studerede ___ universitetet.', a: 1, why: 'på universitetet.' }, { t: 'Den boede ___ en storby.', a: 0, why: 'i en by, i et land.' },
         { t: 'Han boede ___ en ø.', a: 1, why: 'på an island: på en ø.' }, { t: 'De boede ___ landet.', a: 1, why: 'på landet: in the countryside.' },
       ] },
   },
@@ -114,7 +118,7 @@ SESSIONS.k1l1 = {
       { bad: 'Hun kom hertil på grund af finde sin ven.', good: 'Hun kom hertil for at finde sin ven.', wrong: ['Hun kom hertil fordi finde sin ven.', 'Hun kom hertil for finde sin ven.'], why: 'A verb after the reason → for at + infinitive: for at finde.' },
       { bad: 'Jeg spisede meget støv.', good: 'Jeg spiste meget støv.', wrong: ['Jeg spist meget støv.', 'Jeg spiserede meget støv.'], why: 'spise belongs to the -te pond: spiste.' },
       { bad: 'Han arbejdede i et hospital.', good: 'Han arbejdede på et hospital.', wrong: ['Han arbejdede til et hospital.', 'Han arbejdede om et hospital.'], why: 'Workplaces like a hospital or a school take på.' },
-      { bad: 'Også jeg samlede sten.', good: 'Jeg samlede også sten.', wrong: ['Jeg også samlede sten.', 'Samlede jeg også sten.'], why: 'Main clause: subject, verb, then the adverb: Jeg samlede også.' },
+      { bad: 'Jeg kom hertil på grund af et drøm.', good: 'Jeg kom hertil på grund af en drøm.', wrong: ['Jeg kom hertil på grund af drøm.', 'Jeg kom hertil på grund af en drømme.'], why: 'drøm is an en-word: en drøm. (But et lys.)' },
     ] },
 
   /* ---------- small encounters on the way ---------- */
@@ -138,7 +142,7 @@ SESSIONS.k1l1 = {
   special: {
     async nestLine() {
       const f = G.flags;
-      const lines = f.Clook ? ['Reden feels smaller now. Out on the plain something is facing this way, and the hollow knows it.'] : f.Bfree ? ['Something in your mouth hums “ikke, ikke” to itself, like a lullaby that has forgotten the tune.'] : ['The hollow in the amber has not changed. It is the only thing in Hertil that seems to be waiting for you.', 'Your marks itch a little. The ones you have not used are fainter than this morning.'];
+      const lines = f.Clook ? ['Reden feels smaller now. Out on the plain something is facing this way, and the hollow knows it.'] : hasBoon('ikket') ? ['Something in your mouth hums “ikke, ikke” to itself, like a lullaby that has forgotten the tune.'] : ['The hollow in the amber has not changed. It is the only thing in Hertil that seems to be waiting for you.', 'Your marks itch a little. The ones you have not used are fainter than when you caught them.'];
       logAdd(`<p>${esc(pick(lines))}</p>`, 'narr');
       if (f.Bdone && f.Cdone && !f.Adone) logAdd(`<p>The hall and the plain have both been settled, one way or another. Tælleren will be waiting at the Stair with its pen.</p>`, 'thought');
     },
@@ -149,7 +153,7 @@ SESSIONS.k1l1 = {
     async trappeLine() {
       if (!G.flags.trapSeen) { G.flags.trapSeen = true; logAdd(`<p>Tælleren stands at the foot of the stair, counting. It counts out loud, under its breath, in Danish. You are counted, every time you come, and every time you are a number it did not expect.</p>`, 'narr'); return; }
       const f = G.flags;
-      if (f.Bdone && f.Cdone && !f.Adone) sayEntry({ say: 'taeller', da: 'Nu. Nu kan jeg skrive dig.', en: 'Now. Now I can write you.' });
+      if (f.Bdone && f.Cdone && !f.Adone) sayEntry({ say: 'taeller', da: 'Nu. Nu kan jeg skrive dig ind.', en: 'Now. Now I can write you in.' });
       else sayEntry({ say: 'taeller', da: pick(['Fire hundrede og to. Fire hundrede og tre.', 'En fjer. En tand. Dig.', 'Kom tilbage, når du ved mere.']), en: pick(['Four hundred and two. Four hundred and three.', 'A feather. A tooth. You.', 'Come back when you know more.']) });
       await tapOn();
     },
@@ -165,8 +169,9 @@ SESSIONS.k1l1 = {
     async sletteLine() {
       const f = G.flags;
       if (f.Ctold) return;
-      logAdd(`<p>${esc(G.phase >= 3 ? 'In the dark the plain is darker. Den Bagvendte is a darker shape against it, still facing the towers. Somewhere in its folds, small lights: the small ones are awake.' : pick(['Den Bagvendte has not moved. Dust has collected on its shoulders like snow on a roof.', 'The branches on its head creak. It might be thinking. It might be wind, except that there is no wind.']))}</p>`, 'narr');
+      logAdd(`<p>${esc(G.phase >= 3 ? 'In the dark the plain is darker. Den Bagvendte is a darker shape against it, still facing the towers. Somewhere in its folds, small lights: the small ones are awake.' : pick(['Den Bagvendte has not moved. Dust has collected on its shoulders like snow on a roof.', 'The branches on its head creak. It might be thinking. It has had a long time to practise.']))}</p>`, 'narr');
       if (f.Cknown) logAdd(`<p>You know what it was. You could tell it.</p>`, 'thought');
+      else logAdd(`<p>${esc(pick(['Tælleren writes down everything that arrives. It must have written this down too, once.', 'Somebody wove the floors of every house in Hertil. Somebody would remember this one.']))}</p>`, 'thought');
     },
     async dammeLine() {
       if (!G.flags.damSeen) {
@@ -212,6 +217,17 @@ SESSIONS.k1l1 = {
       });
     },
     async loseIkket() { G.boons = G.boons.filter(b => b !== 'ikket'); toast('Ikket is gone from your mouth. It is very quiet in there now.', 'bad'); hud(); },
+    async regReact() {
+      const j = G.origin.jobWord, has = k => G.glimpses.includes(k);
+      const [da, en] = j === 'kok' && has('koekken') ? ['Kok. Og du lugter af køkken. Det passer.', 'Cook. And you smell of kitchen. That fits.']
+        : (j === 'læge' || j === 'arkitekt') && has('haender') ? ['Hænder. Lange hænder. Det passer.', 'Hands. Long hands. That fits.']
+        : j === 'musiker' && has('ekko') ? ['Et ekko kender din stemme. Det passer.', 'An echo knows your voice. That fits.']
+        : G.glimpses.length >= 3 ? ['Du har fundet mange spor. Ikke alle passer. Det gør de aldrig.', 'You have found many traces. Not all of them fit. They never do.']
+        : ['Det passer ikke helt. Men jeg skriver det.', 'It does not quite fit. But I write it.'];
+      sayEntry({ say: 'taeller', da, en }); await tapOn();
+      if (G.glimpses.length >= 3) fx({ resp: 1 });
+    },
+    async ledgerHint() { if (!G.flags.c_ledger) { sayEntry({ say: 'taeller', da: 'Læs det igen, hvis du vil.', en: 'Read it again, if you like.' }); await tapOn(); } },
     async cCheck() {
       const n = ['c_ledger', 'c_folk', 'c_weaver'].filter(f => G.flags[f]).length;
       if (n >= 2 && !G.flags.Cknown) { G.flags.Cknown = true; toast('Two voices agree. You know what Den Bagvendte was.', 'gold'); AUDIO.sting('glimpse'); }
@@ -262,20 +278,20 @@ SESSIONS.k1l1 = {
       opts: [
         { kind: 'say', stat: 'SPROG', dc: 7, group: 'reason', label: 'A thing pulled you here (på grund af + a noun).', build: reasonPGA,
           ok: [{ n: 'The word lands in the book like a stone in a pond. Something heavy settles in your middle, and your feet stop sinking.' }, { fx: { boon: 'anker', flag: 'Areason', resp: 1 } }],
-          fail: [{ say: 'taeller', da: 'Skævt. Men det holder.', en: 'Crooked. But it holds.' }, { n: 'Something heavy settles in your middle, a little to one side. You stop sinking, at a slight angle.' }, { fx: { boon: 'anker', flag: 'Areason' } }], next: 'p_stair2' },
+          fail: [{ say: 'taeller', da: 'Pennen gled. Men det holder.', en: 'The pen slipped. But it holds.' }, { n: 'Something heavy settles in your middle, a little to one side. You stop sinking, at a slight angle.' }, { fx: { boon: 'anker', flag: 'Areason' } }], next: 'p_stair2' },
         { kind: 'say', stat: 'SPROG', dc: 7, group: 'reason', label: 'A purpose pushed you (for at + a verb).', build: reasonFA,
           ok: [{ n: 'The pen draws a line. A thin thread grows out of your chest and pulls, very gently, toward somewhere you have not been yet. Your feet stop sinking.' }, { fx: { boon: 'traad', flag: 'Areason', resp: 1 } }],
-          fail: [{ say: 'taeller', da: 'Skævt. Men det holder.', en: 'Crooked. But it holds.' }, { n: 'A thread grows out of your chest, tangled. It pulls in two directions, then makes up its mind.' }, { fx: { boon: 'traad', flag: 'Areason' } }], next: 'p_stair2' },
+          fail: [{ say: 'taeller', da: 'Pennen gled. Men det holder.', en: 'The pen slipped. But it holds.' }, { n: 'A thread grows out of your chest, tangled. It pulls in two directions, then makes up its mind.' }, { fx: { boon: 'traad', flag: 'Areason' } }], next: 'p_stair2' },
         { kind: 'say', stat: 'SPROG', dc: 8, group: 'reason', label: 'A story drove you (fordi + a whole clause).', build: reasonFORDI,
           ok: [{ n: 'The pen writes, and the writing does not stay on the page. It crawls up your arm in a fine pattern, a sentence you could read if you stood far enough away from yourself. Your feet stop sinking.' }, { fx: { boon: 'moenster', flag: 'Areason', resp: 1 } }],
-          fail: [{ say: 'taeller', da: 'Skævt. Men det holder.', en: 'Crooked. But it holds.' }, { n: 'The sentence crawls up your arm with one word in the wrong place, like a stitch that has slipped.' }, { fx: { boon: 'moenster', flag: 'Areason' } }], next: 'p_stair2' },
+          fail: [{ say: 'taeller', da: 'Pennen gled. Men det holder.', en: 'The pen slipped. But it holds.' }, { n: 'The sentence crawls up your arm with one word in the wrong place, like a stitch that has slipped.' }, { fx: { boon: 'moenster', flag: 'Areason' } }], next: 'p_stair2' },
         { kind: 'eng', once: true, label: '“I don’t know. I really don’t know.”', ok: [{ say: 'taeller', en: '“I don’t know” is not a reason. It is weather.' }, { n: 'You sink a little further while it waits. One of the others, then.' }] },
       ] },
     p_stair2: { bg: 'stair', npc: 'taeller', title: 'Trappen', quest: 'A',
       steps: [
         { say: 'taeller', da: 'Godt. Nu har du en grund. Nu synker du ikke.', en: 'Good. Now you have a reason. Now you do not sink.' },
         { say: 'taeller', da: 'Men en grund er ikke et navn. Kom tilbage, når du ved, hvad du lavede, før du kom hertil.', en: 'But a reason is not a name. Come back when you know what you did before you came here.' },
-        { say: 'taeller', da: 'Spørg Den Bagvendte på sletten. Den har heller ikke en fortid.', en: 'Ask the one turned away, on the plain. It has no past either.' },
+        { fx: { quest: 'S6' } }, { say: 'taeller', da: 'Spørg Den Bagvendte på sletten. Den ved heller ikke, hvad den var.', en: 'Ask the one turned away, on the plain. It does not know what it was either.' },
         { n: 'It returns to its counting. It counts something twice, then something not at all, and frowns at its own pen.' },
         { say: 'taeller', da: 'Jeg tæller, fordi jeg vil miste nogen.', en: 'I count because I want to lose someone.' },
         { th: 'That sentence is wrong. Not wrong like a lie. Wrong like a stair with a step missing. Something has been taken out of it.' },
@@ -283,7 +299,7 @@ SESSIONS.k1l1 = {
       opts: [
         { kind: 'say', stat: 'SPROG', dc: 9, label: 'Give the sentence back its missing word.', build: { en: 'I count because I don’t want to lose anyone.', answers: [['Jeg', 'tæller,', 'fordi', 'jeg', 'ikke', 'vil', 'miste', 'nogen.']], tiles: ['Jeg', 'tæller,', 'fordi', 'jeg', 'ikke', 'vil', 'miste', 'nogen.', 'gerne'] },
           ok: [{ n: 'The sentence clicks shut like a box. Tælleren blinks, both sets of eyelids.' }, { say: 'taeller', da: '… fordi jeg ikke vil miste nogen. Ja. Sådan.', en: '… because I don’t want to lose anyone. Yes. Like that.' }, { fx: { flag: 'Btaeller', resp: 1 } }],
-          fail: [{ n: 'The word goes in, but in the wrong place, and the sentence wobbles. Tælleren corrects it itself, irritably, as if you had trodden on its foot: in a fordi-clause, ikke comes before the verb.' }, { say: 'taeller', da: '… fordi jeg ikke vil miste nogen.', en: '… because I don’t want to lose anyone.' }, { fx: { flag: 'Btaeller' } }],
+          fail: [{ n: 'You say it right. Tælleren is counting at the same time and only half hears you, so it repeats it, irritably, as if it had thought of it itself.' }, { say: 'taeller', da: '… fordi jeg ikke vil miste nogen.', en: '… because I don’t want to lose anyone.' }, { fx: { flag: 'Btaeller' } }],
           post: [{ say: 'taeller', da: 'Noget spiser ordet ikke. Overalt. Find det.', en: 'Something is eating the word ikke. Everywhere. Find it.' }, { fx: { quest: 'B' } }], next: 'p_nest' },
       ] },
     p_nest: { bg: 'nest', title: 'Reden', card: ['Reden', 'a hollow that fits you'],
@@ -324,7 +340,7 @@ SESSIONS.k1l1 = {
       opts: [
         { kind: 'say', stat: 'SPROG', dc: 10, label: 'Put the ikke back where it belongs.', build: { en: 'I collect things because I cannot forget them.', answers: [['Jeg', 'samler', 'ting,', 'fordi', 'jeg', 'ikke', 'kan', 'glemme', 'dem.']], tiles: ['Jeg', 'samler', 'ting,', 'fordi', 'jeg', 'ikke', 'kan', 'glemme', 'dem.', 'gerne', 'det'] },
           ok: [{ n: 'Samleren goes still. Then all its arms move at once, and the piles rise back into piles.' }, { say: 'samler', da: 'En tand! Selvfølgelig. Tak.', en: 'A tooth! Of course. Thank you.' }, { fx: { flag: 'Bsamler', resp: 1, sk: 2 } }],
-          fail: [{ n: 'The ikke goes in crooked. Samleren remembers about half of everything. It seems content with the half.' }, { fx: { flag: 'Bsamler' } }],
+          fail: [{ n: 'You say it right, but Samleren is only half listening. It remembers about half of everything. It seems content with the half.' }, { fx: { flag: 'Bsamler' } }],
           post: [{ n: 'The tracks lead away from the piles, west, toward the arches of the weaving hall.' }, { th: 'Whatever eats the word, it is heading for the place with the most reasons in it.' }], next: 'map' },
       ] },
 
@@ -339,7 +355,7 @@ SESSIONS.k1l1 = {
         { kind: 'go', label: 'Leave.', next: 'map' },
       ] },
     c_ledger: { bg: 'stair', npc: 'taeller', title: 'Trappen',
-      steps: [{ say: 'taeller', da: 'Den Bagvendte. Side et.', en: 'The one turned away. Page one.' }, { n: 'It opens the book with one foot and turns it toward you, still without looking.' }, { letter: 'ledger' }, { special: 'cCheck' }],
+      steps: [{ say: 'taeller', da: 'Den Bagvendte. Side et.', en: 'The one turned away. Page one.' }, { n: 'It opens the book with one foot and turns it toward you, still without looking.' }, { letter: 'ledger' }, { special: 'cCheck' }, { special: 'ledgerHint' }],
       opts: [{ kind: 'go', label: 'Back.', next: 'trappe_hub' }] },
 
     /* ===== B · IKKET ===== */
@@ -353,8 +369,9 @@ SESSIONS.k1l1 = {
       ] },
     b_hall: { bg: 'hall_torn', npc: 'vaever', title: 'Vævehallen', card: ['Vævehallen', 'the weave is coming apart'],
       steps: [
+        { special: 'halLine' },
         { n: 'The hall is coming apart. The holes in the floor are big now, and threads hang loose from the ceiling, swinging, reasons that nobody is holding.' },
-        { n: 'Grundvæversken weaves faster than before. Her face is still turned up to the lamp. She is weaving the same sentence again and again, and it keeps coming undone.' },
+        { n: 'Grundvæversken weaves fast, too fast. Her face is turned up to the lamp. She is weaving the same sentence again and again, and it keeps coming undone.' },
         { say: 'vaever', da: 'Jeg bliver her, fordi jeg kan gå. Jeg bliver her, fordi jeg kan gå.', en: 'I stay here because I can leave. I stay here because I can leave.' },
         { th: 'And there, in the middle of her loom, small and round and black as a pupil: the thing that eats the word.' },
         { npc: 'ikket' },
@@ -363,7 +380,7 @@ SESSIONS.k1l1 = {
       opts: [
         { kind: 'act', stat: 'SNIGE', dc: 11, group: 'catch', label: 'Creep up and catch it.', ok: [{ n: 'You close your hands. It is cold, and it is nothing, and it wriggles.' }], fail: [{ n: 'Your hands close on a hole the exact shape of your hands. Then it gets bored and lets you catch it anyway. It wanted to be caught. Negations always do.' }], next: 'b_choice' },
         { kind: 'say', stat: 'SPROG', dc: 11, group: 'catch', label: 'Name it for what it is.', build: { en: 'You are the word ikke.', answers: [['Du', 'er', 'ordet', 'ikke.']], tiles: ['Du', 'er', 'ordet', 'ikke.', 'et', 'ord'] },
-          ok: [{ n: 'It stops. Words do, when they are named. It climbs into your hand like an animal that has been waiting for this.' }], fail: [{ n: 'It giggles at your grammar, and while it giggles you catch it.' }], next: 'b_choice' },
+          ok: [{ n: 'It stops. Words do, when they are named. It climbs into your hand like an animal that has been waiting for this.' }], fail: [{ n: 'It giggles at the sound of its own name, and while it giggles you catch it.' }], next: 'b_choice' },
       ] },
     b_choice: { bg: 'hall_torn', npc: 'vaever', title: 'Vævehallen',
       steps: [
@@ -373,8 +390,8 @@ SESSIONS.k1l1 = {
         { th: 'You could weave it back in. Or you could notice that without it, her sentence says she can leave.' },
       ],
       opts: [
-        { kind: 'say', stat: 'SPROG', dc: 11, group: 'end', label: 'Weave the ikke back into her sentence.', build: { en: 'You stay here because you cannot leave.', answers: [['Du', 'bliver', 'her,', 'fordi', 'du', 'ikke', 'kan', 'gå.']], tiles: ['Du', 'bliver', 'her,', 'fordi', 'du', 'ikke', 'kan', 'gå.', 'gerne', 'jeg'] },
-          ok: [{ n: 'The word goes in smoothly, the way a key goes into the lock it was cut for.' }], fail: [{ n: 'The word goes in crooked. It holds anyway. Tight sentences hold even when they are wrong. That is what makes them dangerous.' }, { fx: { resp: -1 } }], next: 'b_bound' },
+        { kind: 'say', stat: 'SPROG', dc: 11, group: 'end', label: 'Weave the ikke back into her sentence.', build: { en: 'Her sentence, mended: I stay here because I cannot leave.', answers: [['Jeg', 'bliver', 'her,', 'fordi', 'jeg', 'ikke', 'kan', 'gå.']], tiles: ['Jeg', 'bliver', 'her,', 'fordi', 'jeg', 'ikke', 'kan', 'gå.', 'gerne', 'du'] },
+          ok: [{ n: 'The word goes in smoothly, the way a key goes into the lock it was cut for.' }], fail: [{ n: 'Her hands shake as she weaves it in. It holds, a little loose, the way a stitch holds when the hand that made it was tired.' }], next: 'b_bound' },
         { kind: 'go', group: 'end', label: 'Keep it. Close your hand.', next: 'b_free' },
       ] },
     b_bound: { bg: 'hall', npc: 'vaever', title: 'Vævehallen',
@@ -388,7 +405,7 @@ SESSIONS.k1l1 = {
       opts: [{ kind: 'go', label: 'Leave the hall.', next: 'map' }] },
     b_free: { bg: 'hall_torn', npc: 'vaever', title: 'Vævehallen',
       steps: [
-        { n: 'You close your hand. The weaver weaves her sentence once more: Jeg bliver her, fordi jeg kan gå. She stops. Reads it.' },
+        { n: 'You close your hand. When you open it, Ikket is gone from it, and something small and cold has settled behind your teeth. The weaver weaves her sentence once more: Jeg bliver her, fordi jeg kan gå. She stops. Reads it.' },
         { say: 'vaever', da: '… fordi jeg kan gå.', en: '… because I can leave.' },
         { n: 'She puts down the shuttle. For the first time in what is clearly a very long time, she stands up from the loom. The hall does not like this. Threads snap like small bones.' },
         { say: 'vaever', da: 'Jeg kan gå.', en: 'I can leave.' },
@@ -409,8 +426,8 @@ SESSIONS.k1l1 = {
         { fx: { flag: 'Cmet', quest: 'C' } },
       ],
       opts: [
-        { kind: 'reply', group: 'm', da: 'Jeg ved det heller ikke. Om mig selv.', ok: [{ say: 'bagvendt', da: 'Så er vi to.', en: 'Then there are two of us.' }, { fx: { resp: 1 } }], next: 'c_hub' },
-        { kind: 'act', stat: 'INDSIGT', dc: 9, group: 'm', label: 'Look at its feet.', ok: [{ n: 'Around its feet, half buried in dust, small things are moving. Lots of them. They have built little rooms in the folds of its hem.' }], fail: [{ n: 'Dust. Some of the dust moves. You decide it was the wind, of which there is none.' }], next: 'c_hub' },
+        { kind: 'reply', group: 'm', da: 'Det ved jeg heller ikke. Om mig selv.', ok: [{ say: 'bagvendt', da: 'Så er vi to.', en: 'Then there are two of us.' }, { fx: { resp: 1 } }], next: 'c_hub' },
+        { kind: 'act', stat: 'INDSIGT', dc: 9, group: 'm', label: 'Look at its feet.', ok: [{ n: 'Around its feet, half buried in dust, small things are moving. Lots of them. They have built little rooms in the folds of its hem.' }], fail: [{ n: 'Dust. Some of the dust moves. You decide it was nothing, which in Hertil is also a creature.' }], next: 'c_hub' },
       ] },
     c_hub: { bg: 'plain', npc: 'bagvendt', title: 'Støvsletten', hub: true,
       steps: [{ special: 'sletteLine' }],
@@ -424,7 +441,7 @@ SESSIONS.k1l1 = {
       opts: [
         { kind: 'say', stat: 'SPROG', dc: 9, label: 'Ask them what they did before they came here.', build: { en: 'What did you (all) do before you came here?', answers: [['Hvad', 'lavede', 'I,', 'før', 'I', 'kom', 'hertil?']], tiles: ['Hvad', 'lavede', 'I,', 'før', 'I', 'kom', 'hertil?', 'laver', 'du'] },
           ok: [{ say: 'husfolk', da: 'Vi boede i den. Den var vores hus. Vi spiste i køkkenet, og vi sov på loftet.', en: 'We lived in it. It was our house. We ate in the kitchen, and we slept in the attic.' }, { n: 'They say it all at once, every one of them, like a house creaking.' }, { say: 'husfolk', da: 'Du lugter af køkken.', en: 'You smell of kitchen.' }, { glimpse: 'koekken' }, { fx: { flag: 'c_folk', resp: 1 } }, { special: 'cCheck' }],
-          fail: [{ say: 'husfolk', da: 'Hvad? Vi boede i den. Det er alt.', en: 'What? We lived in it. That is all.' }, { fx: { flag: 'c_folk' } }, { special: 'cCheck' }], next: 'c_hub' },
+          fail: [{ say: 'husfolk', da: 'Hvad? Vi boede i den. Den var vores hus. Det er alt.', en: 'What? We lived in it. It was our house. That is all.' }, { n: 'One of them sniffs at you, then closes the door in its belly very quickly.' }, { glimpse: 'koekken' }, { fx: { flag: 'c_folk' } }, { special: 'cCheck' }], next: 'c_hub' },
         { kind: 'eng', label: '“Excuse me. Hello?”', ok: [{ n: 'They shut the doors in their bellies, one after another. Click, click, click.' }], next: 'c_hub' },
       ] },
     c_weaver: { bg: 'hall', npc: 'vaever', title: 'Vævehallen',
@@ -435,7 +452,7 @@ SESSIONS.k1l1 = {
       opts: [
         { kind: 'say', stat: 'SPROG', dc: 11, label: 'Tell it what it was.', build: { en: 'Before you came here, you were a house.', answers: [['Du', 'var', 'et', 'hus,', 'før', 'du', 'kom', 'hertil.']], best: [['Før', 'du', 'kom', 'hertil,', 'var', 'du', 'et', 'hus.']], tiles: ['Før', 'du', 'kom', 'hertil,', 'var', 'du', 'et', 'hus.', 'en'] },
           ok: [{ say: 'bagvendt', da: 'Et hus.', en: 'A house.' }, { n: 'Something goes through it, top to bottom, like a draught through rooms that have stood shut for a long time.' }, { fx: { flag: 'Ctold', resp: 1 } }],
-          fail: [{ n: 'The words come out in an odd order. It hears them anyway, the way a house hears footsteps on the wrong floor.' }, { say: 'bagvendt', da: '… et hus?', en: '… a house?' }, { fx: { flag: 'Ctold' } }], next: 'c_choice' },
+          fail: [{ n: 'It hears you slowly, from very far away, the way a house hears footsteps on a floor nobody uses any more.' }, { say: 'bagvendt', da: '… et hus?', en: '… a house?' }, { fx: { flag: 'Ctold' } }], next: 'c_choice' },
       ] },
     c_choice: { bg: 'plain', npc: 'bagvendt', title: 'Støvsletten',
       steps: [
@@ -444,9 +461,9 @@ SESSIONS.k1l1 = {
         { th: G => G.resp >= 5 ? 'You have the feeling that if you asked, it might turn around. For you.' : 'You have the feeling it might turn around for someone it had noticed. You are not that someone. Not yet.' },
       ],
       opts: [
-        { kind: 'say', stat: 'SPROG', dc: 13, once: true, die: 'melt', label: 'Ask it to turn around.', req: G => G.resp >= 5, build: { en: 'Will you turn around?', answers: [['Vil', 'du', 'vende', 'dig', 'om?']], tiles: ['Vil', 'du', 'vende', 'dig', 'om?', 'mig', 'ikke'] },
+        { kind: 'say', stat: 'SPROG', dc: 13, die: 'melt', label: 'Ask it to turn around.', req: G => G.resp >= 5, build: { en: 'Will you turn around?', answers: [['Vil', 'du', 'vende', 'dig', 'om?']], tiles: ['Vil', 'du', 'vende', 'dig', 'om?', 'mig', 'ikke'] },
           ok: [], fail: [{ say: 'bagvendt', da: 'Ikke endnu.', en: 'Not yet.' }, { th: 'Not yet. But the branches on its head moved, all of them, toward you. Then back.' }], next: 'c_look', failNext: 'c_choice' },
-        { kind: 'say', stat: 'HANDEL', dc: 12, once: true, label: 'Ask to borrow its past.', build: { en: 'May I borrow your past?', answers: [['Må', 'jeg', 'låne', 'din', 'fortid?']], tiles: ['Må', 'jeg', 'låne', 'din', 'fortid?', 'dit', 'mig'] },
+        { kind: 'say', stat: 'SPROG', dc: 11, once: true, label: 'Ask to borrow its past.', build: { en: 'May I borrow your past?', answers: [['Må', 'jeg', 'låne', 'din', 'fortid?']], tiles: ['Må', 'jeg', 'låne', 'din', 'fortid?', 'dit', 'mig'] },
           ok: [], fail: [{ say: 'bagvendt', da: 'Nej. Den er min. Jeg har lige fået den.', en: 'No. It is mine. I have only just got it.' }], next: 'c_borrow', failNext: 'c_choice' },
         { kind: 'go', group: 'end', label: '“Go back to being it.”', next: 'c_gone' },
       ] },
@@ -489,7 +506,7 @@ SESSIONS.k1l1 = {
       opts: [
         { kind: 'act', special: 'boxes:dam', label: 'Sort the verbs into the ponds.', req: G => !G.flags.damDone },
         { kind: 'act', special: 'corr', label: 'Let Spejlet correct you.', req: G => !G.flags.corrDone },
-        { kind: 'act', stat: 'INDSIGT', dc: 10, once: true, label: 'Look at your reflection in the soft pond.', ok: [{ glimpse: 'haender' }], fail: [{ n: 'Your reflection is busy. It does not look up.' }] },
+        { kind: 'act', stat: 'INDSIGT', dc: 10, label: 'Look at your reflection in the soft pond.', req: G => !G.glimpses.includes('haender'), ok: [{ glimpse: 'haender' }], fail: [{ n: 'Your reflection is busy. It does not look up.' }] },
         { kind: 'go', label: 'Leave.', next: 'map' },
       ] },
 
@@ -501,7 +518,7 @@ SESSIONS.k1l1 = {
         { kind: 'go', label: 'Sell it Ikket.', req: G => hasBoon('ikket') && !G.flags.Bsold, next: 'm_sell' },
         { kind: 'say', stat: 'SPROG', dc: 10, once: true, label: 'Tell Sluget why you came here.', build: { en: 'I came here because I would like to find my name.', answers: [['Jeg', 'kom', 'hertil,', 'fordi', 'jeg', 'gerne', 'ville', 'finde', 'mit', 'navn.']], tiles: ['Jeg', 'kom', 'hertil,', 'fordi', 'jeg', 'gerne', 'ville', 'finde', 'mit', 'navn.', 'min', 'ikke'] },
           ok: [{ say: 'sluget', da: 'Et navn! Dem sælger jeg ikke. Desværre.', en: 'A name! Those I do not sell. Unfortunately.' }, { n: 'It chews on that for a while, and then, very slightly, its stalk bends in your direction.' }, { fx: { resp: 1, sk: 2 } }],
-          fail: [{ n: 'Sluget swallows the sentence anyway. It does not care about grammar. It cares about weight.' }] },
+          fail: [{ n: 'Sluget swallows the sentence without tasting it. It is busy with the stall next door.' }] },
         { kind: 'go', label: 'Leave. (It will not be here again.)', next: 'm_leave' },
       ] },
     m_sell: { bg: 'market', npc: 'sluget', title: 'Markedet',
@@ -523,21 +540,23 @@ SESSIONS.k1l1 = {
         { say: 'taeller', da: 'Nu. Hvad lavede du, før du kom hertil?', en: 'Now. What did you do before you came here?' },
       ],
       opts: [
-        { kind: 'say', stat: 'SPROG', dc: 9, label: 'Tell it what you did.', build: jobBuild, ok: [{ say: 'taeller', da: 'Godt. Det skriver jeg.', en: 'Good. I write that.' }], fail: [{ say: 'taeller', da: 'Skævt. Men jeg skriver det.', en: 'Crooked. But I write it.' }], next: 'f_register2' },
+        { kind: 'say', stat: 'SPROG', dc: 9, group: 'job', label: 'Tell it what you studied.', build: studyBuild, ok: [{ say: 'taeller', da: 'Godt. Det skriver jeg.', en: 'Good. I write that.' }], fail: [{ say: 'taeller', da: 'Pennen gled. Men jeg skriver det.', en: 'The pen slipped. But I write it.' }], next: 'f_register2' },
+        { kind: 'say', stat: 'SPROG', dc: 9, group: 'job', label: 'Tell it what you did.', build: jobBuild, ok: [{ say: 'taeller', da: 'Godt. Det skriver jeg.', en: 'Good. I write that.' }], fail: [{ say: 'taeller', da: 'Pennen gled. Men jeg skriver det.', en: 'The pen slipped. But I write it.' }], next: 'f_register2' },
       ] },
     f_register2: { bg: 'stair', npc: 'taeller', title: 'Trappen',
       steps: [{ say: 'taeller', da: 'Hvor boede du?', en: 'Where did you live?' }],
       opts: [
-        { kind: 'say', stat: 'SPROG', dc: 9, label: 'Tell it where you lived.', build: placeBuild, ok: [{ say: 'taeller', da: 'Godt.', en: 'Good.' }], fail: [{ say: 'taeller', da: 'I, på. På, i. Det er det samme for mig.', en: 'In, on. On, in. It is all the same to me.' }], next: 'f_register3' },
+        { kind: 'say', stat: 'SPROG', dc: 9, label: 'Tell it where you lived.', build: placeBuild, ok: [{ say: 'taeller', da: 'Godt.', en: 'Good.' }], fail: [{ say: 'taeller', da: 'Min pen er træt. Men jeg skriver det.', en: 'My pen is tired. But I write it.' }], next: 'f_register3' },
       ] },
     f_register3: { bg: 'stair', npc: 'taeller', title: 'Trappen',
       steps: [{ say: 'taeller', da: 'Og i din fritid?', en: 'And in your free time?' }],
       opts: [
-        { kind: 'say', stat: 'SPROG', dc: 9, label: 'Tell it what you did in your free time.', build: fritidBuild, ok: [{ say: 'taeller', da: 'Godt. Færdig.', en: 'Good. Done.' }], fail: [{ say: 'taeller', da: 'Verbet først, efter "i min fritid". Men jeg skriver det.', en: 'The verb first, after "i min fritid". But I write it.' }], next: 'f_end' },
+        { kind: 'say', stat: 'SPROG', dc: 9, label: 'Tell it what you did in your free time.', build: fritidBuild, ok: [{ say: 'taeller', da: 'Godt. Færdig.', en: 'Good. Done.' }], fail: [{ say: 'taeller', da: 'Pennen gled. Men jeg skriver det.', en: 'The pen slipped. But I write it.' }], next: 'f_end' },
       ] },
     f_end: { bg: 'stair', npc: 'taeller', title: 'Trappen',
       steps: [
         { n: 'It writes. Then it stops, and looks at the page for a long time, and then at an older page, further back.' },
+        { special: 'regReact' },
         { say: 'taeller', da: 'Mærkeligt. Her står der noget andet. Fra før.', en: 'Strange. Here it says something else. From before.' },
         { th: 'It does not show you the older page. You see only that the handwriting on it is its own, and very old, and that there is a word there that is the same shape as the one Ikket whispered.' },
         { say: 'taeller', da: 'Det var ikke noget. Velkommen til Hertil.', en: 'It was nothing. Welcome to Hertil.' },
