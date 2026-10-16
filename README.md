@@ -39,4 +39,4 @@ Hertil is what its creatures call "here". It is loud, bright and printed in thre
 
 ## Checks before every push
 
-`npm test` (lint + a full playtest), `node tools/scenes.js scenes.png` after art changes. See `tools/README.md`. Test locally with `python3 -m http.server`, open `/?fast` to skip animations.
+`tools/bump.sh` (new cache stamp, so phones get the new files), `npm test` (lint + a full playtest), `node tools/scenes.js scenes.png` after art changes. See `tools/README.md`. Test locally with `python3 -m http.server`, open `/?fast` to skip animations.

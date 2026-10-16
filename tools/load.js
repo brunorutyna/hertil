@@ -4,7 +4,7 @@ const ROOT = path.join(__dirname, '..');
 const read = p => fs.readFileSync(path.join(ROOT, p), 'utf8');
 function load() {
   const html = read('index.html');
-  const scripts = [...html.matchAll(/<script src="(js\/[^"]+)"/g)].map(m => m[1]).filter(s => !/engine|audio/.test(s));
+  const scripts = [...html.matchAll(/<script src="(js\/[^"?]+)[^"]*"/g)].map(m => m[1]).filter(s => !/engine|audio/.test(s));
   const ctx = { window: {}, document: { querySelector: () => null }, console, G: null, hasBoon: () => false, Math, JSON };
   vm.createContext(ctx);
   // top-level const/let become globals of the context so later files (and we) can see them
