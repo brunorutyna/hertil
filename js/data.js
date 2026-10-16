@@ -9,21 +9,21 @@ const SESSIONS = {}; // each lesson file registers itself here
 const STATS = {
   SPROG:   { name: 'Sprog',   en: 'Saying things so they hold. In Hertil, a sentence is a structure.' },
   LOEGN:   { name: 'Løgn',    en: 'Saying things that are not so, and making them hold anyway.' },
-  SNIGE:   { name: 'Snige',   en: 'Moving without being noticed. Easy, since nobody looks at you.' },
+  SNIGE:   { name: 'Snige',   en: 'Sneaking, catching, climbing, slipping through.' },
   HANDEL:  { name: 'Handel',  en: 'Trading scales, sparks and reasons. Numbers and nerve.' },
   INDSIGT: { name: 'Indsigt', en: 'Noticing. Things here rarely mean what they look like.' },
 };
 const STAT_STEPS = [3, 7, 12, 18, 25]; // xp needed for level 1..5
 
-/* Attention (opmærksomhed) replaces standing: how much the creatures of Hertil bother to notice you.
+/* Vægt (weight) replaces standing: how much you count in Hertil. Never explained to the player;
    It decides where their eyes go: away (0), a sideways glance (1), the head half turned (2).
    A full look (3) is never given by attention alone. */
-const TIERS = [[-99, 'Usynlig'], [0, 'Overset'], [5, 'Bemærket'], [12, 'Set'], [24, 'Genkendt']];
+const TIERS = [[-99, 'Fnug'], [0, 'Støv'], [5, 'Ting'], [12, 'Nogen'], [24, 'Navn']]; // how much you weigh in Hertil
 const gazeFor = att => att >= 12 ? 2 : att >= 5 ? 1 : 0;
 
 /* Gifts (found, earned, given). Every one of them changes how you play. */
 const BOONS = {
-  anker:   { name: 'Ankeret', en: 'Your reason is a thing', fx: 'You no longer sink. +1 on Indsigt: heavy things notice other heavy things.' },
+  anker:   { name: 'Ankeret', en: 'Your reason is a thing', fx: 'You no longer sink. +1 on Indsigt: heavy things understand heavy things.' },
   traad:   { name: 'Tråden', en: 'Your reason is a purpose', fx: 'A thread pulls you forward. +1 on Snige.' },
   moenster:{ name: 'Mønsteret', en: 'Your reason is a story', fx: 'A story is written across you. +1 on Sprog.' },
   spejl:   { name: 'Spejlets gunst', en: "The mirror's favour", fx: 'Your first mistake when building a sentence in each conversation does not count.' },
@@ -31,7 +31,14 @@ const BOONS = {
   ikket:   { name: 'Ikket', en: 'A loose ikke, living in your mouth', fx: 'Once a day, it turns a failed roll into “ikke fiasko”. It also slips an extra “ikke” into your word tiles.' },
   doer:    { name: 'En dør', en: 'A door that leads nowhere', fx: 'You wake every morning with at least two sparks (inspiration).' },
   laant:   { name: 'Lånt fortid', en: 'A borrowed past', fx: '+2 on Løgn. You have a past now. It is not yours, which makes it easier to lie about.' },
-  blik:    { name: 'Blikket', en: 'Something looked at you', fx: 'Creatures turn their eyes to you one step sooner.' },
+  // Lektion 2
+  urnoegle:{ name: 'Urnøglen', en: 'The clock key', fx: 'Numbers never go strange for you again.' },
+  vild:    { name: 'Vild tid', en: 'Feral time', fx: 'Time runs wild: walking somewhere sometimes takes no time at all.' },
+  rytter:  { name: 'Urrytter', en: 'Clock rider', fx: 'You wake every morning with an extra spark.' },
+  ballon:  { name: 'Lille Savn', en: 'A small balloon that follows you', fx: '+1 on Indsigt. It bobs toward things worth noticing.' },
+  knald:   { name: 'Knaldet', en: 'The pop', fx: '+1 on Løgn. After a good cry, everyone believes everything.' },
+  indeni:  { name: 'Indefra', en: 'From the inside', fx: '+1 on Sprog. You know what you miss now.' },
+  blik:    { name: 'Blikket', en: 'You carry a look with you', fx: 'Everyone in Hertil finds you a little heavier.' },
 };
 
 /* ---------- Creatures (each is drawn by ART.creature(art, gaze)) ---------- */
@@ -46,6 +53,14 @@ const NPCS = {
   sluget:  { name: 'Sluget', role: 'buys words, sells reasons', art: 'sluget' },
   moel:    { name: 'Mølen', role: 'sells sparks', art: 'moel', small: true },
   unge:    { name: 'Ungen', role: 'a small one with questions', art: 'unge', small: true },
+  // Lektion 2
+  uret:    { name: 'Uret', role: 'the clock of Hertil, on the run', art: 'uret' },
+  savnet:  { name: 'Savnet', role: 'swells with what everyone misses', art: 'savnet' },
+  timerne: { name: 'Timerne', role: 'the hours, grazing', art: 'timerne' },
+  kokon:   { name: 'Mølen', role: 'not arrived yet', art: 'kokon' },
+  ungerne: { name: 'Ungen ×400', role: 'the same Tuesday, many times', art: 'ungerne' },
+  huset:   { name: 'Huset', role: 'lives in i forgårs', art: 'huset' },
+  hvornaar:{ name: 'HVORNÅR', role: 'a door that asks', art: 'hvornaar' },
 };
 
 /* ---------- Vocabulary (non-dialogue learning) ---------- */
@@ -73,7 +88,20 @@ const VOCAB = {
   farmaceut: { da: 'en farmaceut', en: 'a pharmacist', icon: 'medicin', set: 'job', def: 'Arbejdede på et apotek og kendte al medicin.' },
   oekonom: { da: 'en økonom', en: 'an economist', icon: 'skael', set: 'job', def: 'Arbejdede med penge og tal.' },
 };
-const VOCAB_SETS = { ting: 'Ting, der falder · Things that fall', job: 'Job · What creatures do' };
+Object.assign(VOCAB, {
+  // tid · time (Lektion 2)
+  minut: { da: 'et minut', en: 'a minute', icon: 'ur', set: 'tid', def: 'Tres sekunder.' }, time: { da: 'en time', en: 'an hour', icon: 'timeglas', set: 'tid', def: 'Tres minutter.' },
+  dag: { da: 'en dag', en: 'a day', icon: 'kalender', set: 'tid', def: 'Fra morgen til aften.' }, uge: { da: 'en uge', en: 'a week', icon: 'uge', set: 'tid', def: 'Syv dage.' },
+  maaned: { da: 'en måned', en: 'a month', icon: 'maaned', set: 'tid', def: 'Cirka tredive dage.' }, aar: { da: 'et år', en: 'a year', icon: 'aar', set: 'tid', def: 'Tolv måneder.' },
+  morgen: { da: 'en morgen', en: 'a morning', icon: 'morgen', set: 'tid', def: 'Når lyset bliver gult.' }, aften: { da: 'en aften', en: 'an evening', icon: 'aften', set: 'tid', def: 'Når lyset bliver blåt.' },
+  nat: { da: 'en nat', en: 'a night', icon: 'maane', set: 'tid', def: 'Når alt er lilla, og man sover.' },
+  // vejret i Hertil · weather
+  solskin: { da: 'solskin', en: 'sunshine', icon: 'sol', set: 'vejr' }, regn: { da: 'regn', en: 'rain', icon: 'regn', set: 'vejr' },
+  sne: { da: 'sne', en: 'snow', icon: 'sne', set: 'vejr' }, blaest: { da: 'blæst', en: 'wind', icon: 'blaest', set: 'vejr' },
+  taage: { da: 'tåge', en: 'fog', icon: 'taage', set: 'vejr' }, sky: { da: 'en sky', en: 'a cloud', icon: 'sky', set: 'vejr' },
+  torden: { da: 'torden', en: 'thunder', icon: 'torden', set: 'vejr' }, regnbue: { da: 'en regnbue', en: 'a rainbow', icon: 'regnbue', set: 'vejr' },
+});
+const VOCAB_SETS = { ting: 'Ting, der falder · Things that fall', job: 'Job · What creatures do', tid: 'Tid · Time', vejr: 'Vejret · Weather' };
 
 /* ---------- Glossary: tap any Danish word ---------- */
 const DICT = {
@@ -115,7 +143,17 @@ const DICT = {
   'bagvendte': 'turned backwards (Den Bagvendte: the one turned away)', 'siden': 'since · for … siden: … ago', 'ede': '(the ending -ede: lavede, boede)', 'te': '(the ending -te: læste, købte)', 'blød': 'soft', 'hård': 'hard', 'uregelmæssig': 'irregular',
   'boet': 'lived (har boet: has lived)', 'spisede': '(wrong form of spise; correct: spiste)', 'spist': 'eaten (har spist)', 'spiserede': '(not a word)', 'regn': 'rain', 'sker': 'happen(s)', 'skævt': 'crooked', 'spørg': 'ask! (imperative)', 'sletten': 'the plain', 'heller': 'either (heller ikke: not … either)',
   'overalt': 'everywhere', 'find': 'find! (imperative)', 'sorteret': 'sorted', 'glemt': 'forgotten', 'selvfølgelig': 'of course', 'side': 'page / side', 'grunde': 'reasons', 'man': 'one, you (in general)', 'endnu': 'yet', 'låne': 'borrow', 'fået': 'got (har fået: have got)', 'tag': 'take! (imperative)',
-  'alligevel': 'anyway', 'hm': 'hm (thinking)', 'hatte': 'hats', 'skete': 'happened', 'fysik': 'physics', 'fransk': 'French', 'passer': 'fits / looks after', 'lange': 'long', 'hænder': 'hands', 'stemme': 'voice', 'spor': 'trace(s)', 'helt': 'completely', 'pennen': 'the pen', 'pen': 'pen', 'gled': 'slipped', 'gammel': 'old', 'desværre': 'unfortunately', 'vildt': 'wild', 'samme': 'same', 'bøger': 'books', 'verbet': 'the verb', 'først': 'first', 'velkommen': 'welcome', 'al': 'all',
+  'alligevel': 'anyway', 'stormen': 'the storm', 'storm': 'storm', 'skrevet': 'written (skrevet ind: registered)', 'viser': 'shows', 'omvendt': 'the other way round, reversed', 'lige': 'just (lige nu: right now)', 'nu': 'now', 'træt': 'tired (træt af: tired of)', 'hm': 'hm (thinking)', 'hatte': 'hats', 'skete': 'happened', 'fysik': 'physics', 'fransk': 'French', 'passer': 'fits / looks after', 'lange': 'long', 'hænder': 'hands', 'stemme': 'voice', 'spor': 'trace(s)', 'helt': 'completely', 'pennen': 'the pen', 'pen': 'pen', 'gled': 'slipped', 'gammel': 'old', 'desværre': 'unfortunately', 'vildt': 'wild', 'samme': 'same', 'bøger': 'books', 'verbet': 'the verb', 'først': 'first', 'velkommen': 'welcome', 'al': 'all',
+  // Lektion 2
+  'rejser': 'travel(s), leave(s)', 'rejse': 'travel, leave', 'time': 'hour', 'timer': 'hours', 'dage': 'days', 'været': 'been (har været: has been)', 'uge': 'week', 'landede': 'landed', 'regner': 'rains', 'regnede': 'rained', 'havet': 'the sea',
+  'uret': 'the clock (Uret: the Clock)', 'solen': 'the sun', 'drejer': 'turns, spins', 'år': 'year(s)', 'løb': 'ran', 'løber': 'run(s)', 'løbe': 'run', 'løbet': 'run (er løbet væk: has run away)', 'ses': 'see each other (vi ses: see you)',
+  'sner': 'snows', 'tænder': 'teeth', 'torden': 'thunder', 'synger': 'sings', 'lang': 'long', 'dagen': 'the day', 'ben': 'leg(s)', 'høne': 'hen', 'tiden': 'the time', 'måned': 'month', 'måneder': 'months', 'øjne': 'eyes', 'mund': 'mouth',
+  'natten': 'the night (om natten: at night)', 'larve': 'caterpillar', 'ansigt': 'face', 'lide': 'like (kan godt lide: likes)', 'fejl': 'mistake(s)', 'ører': 'ears', 'tirsdag': 'Tuesday', 'hen': 'to (hvor skal du hen: where are you going)', 'billigere': 'cheaper',
+  'forkerte': 'wrong', 'linjerne': 'the lines', 'ret': 'fix! (imperative) / right', 'nogle': 'some (nogle gange: sometimes)', 'gange': 'times (nogle gange: sometimes)', 'sortér': 'sort! (imperative)', 'åbner': 'open(s)', 'fint': 'fine', 'ah': 'ah', 'okay': 'okay',
+  'savnet': 'missed / the Missing', 'sluger': 'swallows', 'stort': 'big (et-word)', 'springer': 'bursts, jumps', 'længsel': 'longing', 'set': 'seen', 'tik': 'tick', 'klokken': 'the clock (klokken er …: it is … o’clock)', 'lyst': 'desire (har lyst: feel like it)',
+  'grøn': 'green', 'langsom': 'slow', 'hos': 'with, at (bliv hos mig: stay with me)', 'tusind': 'thousand', 'forgårs': 'the day before yesterday (i forgårs)', 'morgen': 'morning (i morgen: tomorrow)', 'fortjent': 'deserved, earned', 'fundet': 'found (har fundet)',
+  'stempler': 'stamp(s)', 'stemplet': 'the stamp', 'forstå': 'understand', 'nok': 'probably / enough', 'minut': 'minute', 'minutter': 'minutes', 'tres': 'sixty', 'sekunder': 'seconds', 'aften': 'evening', 'cirka': 'about, roughly', 'tredive': 'thirty',
+  'lyset': 'the light', 'blåt': 'blue', 'lilla': 'purple', 'solskin': 'sunshine', 'sne': 'snow', 'blæst': 'wind', 'tåge': 'fog', 'sky': 'cloud', 'regnbue': 'rainbow', 'halv': 'half (halv tre: half past two)', 'kvart': 'quarter', 'midnat': 'midnight',
 };
 
 /* numbers as words (for the glyph dice and prices said aloud) */

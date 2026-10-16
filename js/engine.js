@@ -86,7 +86,7 @@ const marksCount = () => Object.values(META.vocab).filter(v => v.box >= 1).lengt
 function fx(f) {
   if (!f) return;
   if (f.sk) { const n = f.sk; G.sk = Math.max(0, G.sk + n); toast(`${n > 0 ? '+' : ''}${n} skæl`, n > 0 ? 'gold' : 'bad'); if (n > 0) AUDIO.sting('coin'); }
-  if (f.resp) { const g0 = G.npc ? gazeOf(G.npc) : 0; G.resp += f.resp; toast(`${f.resp > 0 ? '+' : ''}${f.resp} opmærksomhed`, f.resp > 0 ? 'good' : 'bad'); refreshGaze(g0); }
+  if (f.resp) { const g0 = G.npc ? gazeOf(G.npc) : 0; G.resp += f.resp; toast(`${f.resp > 0 ? '+' : ''}${f.resp} vægt`, f.resp > 0 ? 'good' : 'bad'); refreshGaze(g0); }
   if (f.insp) { G.insp = Math.max(0, G.insp + f.insp); toast(`${f.insp > 0 ? '+' : ''}${f.insp} gnist ✦`, 'gold'); }
   if (f.flag) G.flags[f.flag] = true;
   if (f.origin) Object.assign(G.origin, f.origin);
@@ -100,7 +100,7 @@ function refreshGaze(before) {
   const now = gazeOf(G.npc);
   if (now === before) return;
   setNpc(G.npc, 'shift');
-  if (now > before) { AUDIO.sting('glance'); toast(`${NPCS[G.npc].name} ${now === 1 ? 'glances at you' : 'turns its head a little toward you'}.`, 'mark'); }
+  if (now > before) AUDIO.sting('glance');
 }
 
 /* ---------------- chrome ---------------- */
@@ -245,12 +245,12 @@ function sayEntry(st) {
   const npc = NPCS[st.say];
   if (!st.da) return logAdd(`<div class="who">${esc(npc.name)} <i>in English</i></div><div class="en-line">“${esc(st.en)}”</div>`, 'say eng');
   const el = logAdd(`<div class="who">${esc(npc.name)}</div><div class="da">“${daHTML(st.da)}”</div>
-    <div class="tools"><button class="tb speak">♪ igen</button><button class="tb english">På engelsk? <small>−1 opmærksomhed</small></button></div><div class="en hidden">“${esc(st.en)}”</div>`, 'say');
+    <div class="tools"><button class="tb speak">♪ igen</button><button class="tb english">På engelsk? <small>−1 vægt</small></button></div><div class="en hidden">“${esc(st.en)}”</div>`, 'say');
   el.querySelector('.speak').onclick = e => { e.stopPropagation(); TTS.say(st.da, true); };
   el.querySelector('.english').onclick = e => {
     e.stopPropagation(); e.target.closest('.english').remove();
     el.querySelector('.en').classList.remove('hidden');
-    const g0 = G.npc ? gazeOf(G.npc) : 0; G.resp -= 1; G.log.eng++; toast('−1 opmærksomhed · it looks further away', 'bad'); refreshGaze(g0); hud();
+    const g0 = G.npc ? gazeOf(G.npc) : 0; G.resp -= 1; G.log.eng++; toast('−1 vægt', 'bad'); refreshGaze(g0); hud();
   };
   TTS.say(st.da);
   const np = $('#npc'); if (np) { np.classList.remove('talk'); void np.offsetWidth; np.classList.add('talk'); }
@@ -352,7 +352,7 @@ function roll(stat, dc, mods, mode, opt = {}) {
     dc = dc + (S().dcMod || 0);
     // the die melts: only what you bring decides. A sentence: perfect or not. An action: your skill against the difficulty, no luck.
     const melt = opt.die === 'melt' || (!hasBoon('vaev') && opt.die !== 'solid' && G.flags[S().travelAfter || 'x'] && G.log.rolls > 3 && Math.random() < .07);
-    const strange = !melt && (opt.die === 'glyph' || G.glyph > 0);
+    const strange = !melt && (opt.die === 'glyph' || (G.glyph > 0 && !hasBoon('urnoegle')));
     if (strange && G.glyph > 0) G.glyph--;
     const N = n => strange ? glyph(n) : n;
     const pOne = Math.min(.95, Math.max(.05, (21 - (dc - total)) / 20));
@@ -413,8 +413,11 @@ function modsFor(o) {
   if (o.stat === 'SNIGE' && hasBoon('traad')) mods.push({ t: 'Tråden', v: 1 });
   if (o.stat === 'SPROG' && hasBoon('moenster')) mods.push({ t: 'Mønsteret', v: 1 });
   if (o.stat === 'LOEGN' && hasBoon('laant')) mods.push({ t: 'Lånt fortid', v: 2 });
+  if (o.stat === 'INDSIGT' && hasBoon('ballon')) mods.push({ t: 'Lille Savn', v: 1 });
+  if (o.stat === 'LOEGN' && hasBoon('knald')) mods.push({ t: 'Knaldet', v: 1 });
+  if (o.stat === 'SPROG' && hasBoon('indeni')) mods.push({ t: 'Indefra', v: 1 });
   if (o.bonus) { const b = o.bonus(G); if (b) mods.push({ t: o.bonusWhy || 'Bonus', v: b }); }
-  if ((o.kind === 'say' || o.kind === 'lie') && G.resp >= 5) mods.push({ t: 'Opmærksomhed', v: 1 });
+  if ((o.kind === 'say' || o.kind === 'lie') && G.resp >= 5) mods.push({ t: 'Vægt', v: 1 });
   return mods;
 }
 
@@ -429,7 +432,7 @@ async function runOption(node, o, idx) {
     return o.next;
   }
   if (o.kind === 'eng') {
-    const g0 = G.npc ? gazeOf(G.npc) : 0; G.resp -= 1; G.log.eng++; toast('−1 opmærksomhed', 'bad'); refreshGaze(g0); hud();
+    const g0 = G.npc ? gazeOf(G.npc) : 0; G.resp -= 1; G.log.eng++; toast('−1 vægt', 'bad'); refreshGaze(g0); hud();
     logAdd(`<p class="you">${esc(o.label)}</p>`, 'you');
     await steps(o.ok); return o.next;
   }
@@ -586,7 +589,7 @@ async function travel(k) {
   }
   const from = S().locations[G.loc] || L;
   const ph0 = G.phase;
-  if (k !== S().home) G.phase = Math.min(3, G.phase + 1);
+  if (k !== S().home && !(hasBoon('vild') && Math.random() < .5)) G.phase = Math.min(3, G.phase + 1);
   const pool = S().travel.filter(t => !G.travelDone.includes(t.id) && (!t.req || t.req(G)) && (!t.night || G.phase >= 2));
   const ev = pool.length && Math.random() < (FAST ? 0.6 : 0.45) && G.flags[S().travelAfter] ? pick(pool) : null;
   await walk(from, L, ev ? .55 : 1);
@@ -623,7 +626,7 @@ async function goSleep() {
   await tapOn();
   if (G.today.length >= 3) await review();
   G.day++; G.phase = 0; G.today = []; G.loc = S().home; G.flags.ikketDay = false;
-  G.insp = Math.max(G.insp, hasBoon('doer') ? 2 : 1);
+  G.insp = Math.max(G.insp, hasBoon('doer') ? 2 : 1) + (hasBoon('rytter') ? 1 : 0);
   save();
   await passTime(late ? 'dawn' : 'night', `Dag ${G.day}`, PHASES[0]);
   showMap();
@@ -777,7 +780,127 @@ const SPECIAL = {
       round();
     });
   },
-  async buyInsp() { if (G.sk >= 6) { G.sk -= 6; fx({ insp: 1 }); AUDIO.sting('coin'); } else toast('You cannot afford it. The moth does not seem to mind. It does not seem to notice.', 'bad'); },
+  /* a line in a ledger is wrong; the timeline shows the truth; pick the right sentence */
+  fixEntry(id) {
+    return new Promise(resolve => {
+      const E = S().entries[id];
+      const opts = shuffle([E.good, ...E.wrong]);
+      const ov = vocabSheet('');
+      ov.querySelector('.voc').innerHTML = `<div class="v-h"><small>${esc(E.book || 'Tællerens bog')} · ${esc(E.who)}</small><h2>Ret linjen</h2>
+        <div class="book"><s>${daHTML(E.bad)}</s></div><p>${esc(E.hint)}</p>${ART.timeline(E.kind, E.lab)}</div>
+        <div class="rv-opts">${opts.map((o, i) => `<button class="rv-o" data-i="${i}">${daHTML(o)}</button>`).join('')}</div>`;
+      wireWords(ov, true);
+      ov.querySelectorAll('.rv-o').forEach(b => b.onclick = async () => {
+        const ok = opts[+b.dataset.i] === E.good;
+        ov.querySelectorAll('.rv-o').forEach(x => x.disabled = true);
+        b.classList.add(ok ? 'ok' : 'no'); if (!ok) ov.querySelectorAll('.rv-o')[opts.indexOf(E.good)].classList.add('ok');
+        AUDIO.sting(ok ? 'win' : 'lose'); TTS.say(E.good);
+        if (ok) statGain('SPROG', 1);
+        G.flags['fix_' + id] = ok ? 'ok' : 'late';
+        const why = document.createElement('div'); why.className = 'rv-cap'; why.innerHTML = `${ok ? 'Rigtigt.' : 'Nej.'} <i>${esc(E.why)}</i><button class="btn gold big" id="vDone">${esc(E.done || 'Skriv det i bogen')}</button>`;
+        ov.querySelector('.voc').appendChild(why);
+        $('#vDone').onclick = () => { ov.remove(); AUDIO.sting('page'); resolve(ok); };
+      });
+    });
+  },
+  /* the clock game: a time is said or shown; match it */
+  clock() {
+    return new Promise(resolve => {
+      const C = S().clockGame, R = C.rounds; let i = 0, right = 0;
+      const ov = vocabSheet('');
+      const round = () => {
+        if (i >= R.length) {
+          G.flags[C.flag || 'clockDone'] = true;
+          ov.querySelector('.voc').innerHTML = `<div class="v-h"><small>${esc(C.title)}</small><h2>${right} / ${R.length}</h2><p>${esc(right >= R.length - 1 ? C.good : C.meh)}</p></div><button class="btn gold big" id="vDone">Færdig</button>`;
+          $('#vDone').onclick = () => { ov.remove(); resolve(right); }; return;
+        }
+        const [h, m, say] = R[i];
+        const mode = i % 2 ? 'read' : 'hear';
+        const wrongs = shuffle(R.filter(r => r[2] !== say)).slice(0, 2);
+        const opts = shuffle([R[i], ...wrongs]);
+        ov.querySelector('.voc').innerHTML = `<div class="v-h"><small>${esc(C.title)} · ${i + 1}/${R.length}</small><h2>${mode === 'hear' ? 'Hvilket ur?' : esc(C.ask || 'Hvad er klokken?')}</h2>
+          ${mode === 'hear' ? `<div class="v-say">“${daHTML(say)}” <button class="tb" id="cSay">♪</button></div>` : `<div class="v-clock">${ART.clock(h, m)}</div>`}</div>
+          <div class="rv-opts ${mode === 'hear' ? 'icons clocks' : ''}">${opts.map((o, k) => `<button class="rv-o" data-k="${k}">${mode === 'hear' ? ART.clock(o[0], o[1]) : daHTML(o[2])}</button>`).join('')}</div>`;
+        wireWords(ov, true);
+        if (mode === 'hear') { TTS.say(say); $('#cSay').onclick = () => TTS.say(say, true); }
+        ov.querySelectorAll('.rv-o').forEach(b => b.onclick = async () => {
+          const ok = opts[+b.dataset.k] === R[i];
+          ov.querySelectorAll('.rv-o').forEach(x => x.disabled = true);
+          b.classList.add(ok ? 'ok' : 'no'); if (!ok) ov.querySelectorAll('.rv-o')[opts.indexOf(R[i])].classList.add('ok');
+          if (ok) { right++; AUDIO.sting('win'); statGain('INDSIGT', 1); } else { AUDIO.sting('lose'); toast(say, 'bad'); }
+          TTS.say(say); await sleep(ok ? 900 : 2000); i++; round();
+        });
+      };
+      round();
+    });
+  },
+  /* the weather: when was it (i går / i dag / i morgen, from the verb), and what was it */
+  weather(id) {
+    return new Promise(resolve => {
+      const W = S().weather[id]; let i = 0, right = 0, step = 0;
+      const days = ['I går', 'I dag', 'I morgen'];
+      const board = W.rounds.map(() => null);
+      const ov = vocabSheet('');
+      const boardHTML = () => `<div class="wboard">${days.map((d, k) => { const j = W.rounds.findIndex((r, n) => r.when === k && board[n]); return `<div class="wday"><small>${d}</small>${j >= 0 ? ART.icon(VOCAB[W.rounds[j].w].icon) : '<span>?</span>'}</div>`; }).join('')}</div>`;
+      const round = () => {
+        if (i >= W.rounds.length) {
+          G.flags[id + 'Done'] = true;
+          ov.querySelector('.voc').innerHTML = `<div class="v-h"><small>${esc(W.title)}</small><h2>${right} / ${W.rounds.length * 2}</h2>${boardHTML()}<p>${esc(W.end)}</p></div><button class="btn gold big" id="vDone">Færdig</button>`;
+          $('#vDone').onclick = () => { ov.remove(); resolve(right); }; return;
+        }
+        const r = W.rounds[i];
+        if (step === 0) {
+          ov.querySelector('.voc').innerHTML = `<div class="v-h"><small>${esc(W.title)} · ${i + 1}/${W.rounds.length}</small>${boardHTML()}<h2>Hvornår?</h2><div class="v-def">“${daHTML('___ ' + r.t)}”</div><p>Look at the verb.</p></div>
+            <div class="rv-opts">${days.map((d, k) => `<button class="rv-o" data-k="${k}">${d}</button>`).join('')}</div>`;
+        } else {
+          const opts = shuffle([r.w, ...shuffle(Object.keys(VOCAB).filter(k => VOCAB[k].set === 'vejr' && k !== r.w)).slice(0, 3)]);
+          ov.querySelector('.voc').innerHTML = `<div class="v-h"><small>${esc(W.title)} · ${i + 1}/${W.rounds.length}</small>${boardHTML()}<h2>Hvordan er vejret?</h2><div class="v-def">“${daHTML(days[r.when] + ' ' + r.t)}”</div></div>
+            <div class="rv-opts icons">${opts.map(k => `<button class="rv-o" data-w="${k}">${ART.icon(VOCAB[k].icon)}</button>`).join('')}</div>`;
+        }
+        wireWords(ov, true);
+        ov.querySelectorAll('.rv-o').forEach(b => b.onclick = async () => {
+          const ok = step === 0 ? +b.dataset.k === r.when : b.dataset.w === r.w;
+          ov.querySelectorAll('.rv-o').forEach(x => x.disabled = true);
+          b.classList.add(ok ? 'ok' : 'no');
+          if (ok) { right++; AUDIO.sting('win'); } else AUDIO.sting('lose');
+          if (step === 0) { if (!ok) toast(`${days[r.when]}: ${r.why}`, 'bad'); TTS.say(days[r.when] + ' ' + r.t); await sleep(ok ? 700 : 1800); step = 1; }
+          else { addWord(r.w); if (!ok) { ov.querySelector(`.rv-o[data-w="${r.w}"]`).classList.add('ok'); toast(`${VOCAB[r.w].da} · ${VOCAB[r.w].en}`, 'bad'); } TTS.say(VOCAB[r.w].da); board[i] = true; await sleep(ok ? 800 : 1700); step = 0; i++; }
+          round();
+        });
+      };
+      round();
+    });
+  },
+  /* Hvem er det? A description in the third person; pick the face */
+  guess(id) {
+    return new Promise(resolve => {
+      const Q = S().guess[id]; let i = 0, right = 0;
+      const ov = vocabSheet('');
+      const round = () => {
+        if (i >= Q.rounds.length) {
+          G.flags[id + 'Done'] = true;
+          ov.querySelector('.voc').innerHTML = `<div class="v-h"><small>${esc(Q.title)}</small><h2>${right} / ${Q.rounds.length}</h2><p>${esc(Q.end(right))}</p></div><button class="btn gold big" id="vDone">Færdig</button>`;
+          $('#vDone').onclick = () => { ov.remove(); resolve(right); }; return;
+        }
+        const r = Q.rounds[i];
+        const opts = shuffle([r.npc, ...shuffle(Q.pool.filter(n => n !== r.npc)).slice(0, 2)]);
+        (r.words || []).forEach(addWord);
+        ov.querySelector('.voc').innerHTML = `<div class="v-h"><small>${esc(Q.title)} · ${i + 1}/${Q.rounds.length}</small><h2>Hvem er det?</h2><div class="notice">${r.lines.map(l => daHTML(l)).join(' ')}</div></div>
+          <div class="faces">${opts.map(n => `<button class="rv-o face" data-n="${n}">${ART.creature(NPCS[n].art, 0, true)}</button>`).join('')}</div>`;
+        wireWords(ov);
+        ov.querySelectorAll('.rv-o').forEach(b => b.onclick = async () => {
+          const ok = b.dataset.n === r.npc;
+          ov.querySelectorAll('.rv-o').forEach(x => x.disabled = true);
+          b.classList.add(ok ? 'ok' : 'no'); if (!ok) ov.querySelector(`.rv-o[data-n="${r.npc}"]`).classList.add('ok');
+          if (ok) { right++; AUDIO.sting('coin'); statGain('INDSIGT', 1); } else AUDIO.sting('lose');
+          const cap = document.createElement('div'); cap.className = 'rv-cap'; cap.innerHTML = `<b>${esc(NPCS[r.npc].name)}</b> · ${esc(NPCS[r.npc].role)}`; ov.querySelector('.voc').appendChild(cap);
+          await sleep(ok ? 1100 : 2000); i++; round();
+        });
+      };
+      round();
+    });
+  },
+  async buyInsp() { if (G.sk >= 6) { G.sk -= 6; fx({ insp: 1 }); AUDIO.sting('coin'); } else toast('You cannot afford it. The moth is busy counting its own sparks.', 'bad'); },
   /* look at yourself: a plate in the atlas of Hertil, drawn from what you have said and caught */
   async selfPlate() {
     const ov = document.createElement('div'); ov.className = 'prep-ov'; document.body.appendChild(ov);
@@ -788,7 +911,7 @@ const SPECIAL = {
     await new Promise(r => $('#close').onclick = () => { ov.remove(); r(); });
   },
 };
-const selfLines = () => [G.origin.reason, G.origin.job, G.origin.place, G.origin.fritid].filter(Boolean);
+const selfLines = () => [G.origin.reason, G.origin.job, G.origin.place, G.origin.fritid, G.origin.came, G.origin.stay, G.origin.happy].filter(Boolean);
 
 /* ---------------- end of lesson ---------------- */
 function endScreen() {
@@ -803,7 +926,7 @@ function endScreen() {
     ${ART.self(G, marksCount())}
     <h3>Registreret · as you said it</h3><div class="paper-s">${selfLines().map(l => `<p>${daHTML(l)}</p>`).join('') || '<p>(nothing said properly yet)</p>'}</div>
     <div class="grid">
-      <div><span>Opmærksomhed</span><b>${esc(tierName())}</b><small>${G.resp}</small></div>
+      <div><span>Vægt</span><b>${esc(tierName())}</b><small>${G.resp}</small></div>
       <div><span>Dage</span><b>${G.day}</b><small>in Hertil</small></div>
       <div><span>Sætninger</span><b>${L.built}</b><small>${L.perfect} perfect first try</small></div>
       <div><span>Terninger</span><b>${L.wins}/${L.rolls}</b><small>${L.melted ? `${L.melted} melted` : 'successful rolls'}</small></div>
@@ -825,7 +948,7 @@ function journal() {
   const tabs = {
     k: () => G.quests.map(q => { const Q = S().quests[q]; return `<div class="qj ${questDone(q) ? 'done' : ''}"><b>${esc(Q.title)}</b> <i>${esc(Q.en)}</i>${Q.obj.map(o => `<div class="qo ${G.flags[o[1]] ? 'ok' : ''}">${G.flags[o[1]] ? '✓' : '○'} ${esc(o[0])}</div>`).join('')}</div>`; }).join('') || '<p class="dim">No contracts yet.</p>',
     f: () => `<div class="stats">${Object.entries(STATS).map(([k, s]) => { const l = lvl(k), x = G.statXP[k], nxt = STAT_STEPS[l] || x, prv = STAT_STEPS[l - 1] || 0; return `<div class="st"><div><b>${esc(s.name)}</b> <span class="sv">${l}</span><p>${esc(s.en)}</p><span class="xpb"><i style="width:${l >= 5 ? 100 : Math.round((x - prv) / Math.max(1, nxt - prv) * 100)}%"></i></span></div></div>`; }).join('')}</div>
-      <p class="dim">Skills grow when you choose answers and actions of that kind, a little more when they succeed. Opmærksomhed: ${esc(tierName())} (${G.resp}). The more creatures notice you, the more their eyes come your way.</p>
+      <p class="dim">Skills grow when you choose answers and actions of that kind, a little more when they succeed. Vægt: ${esc(tierName())} (${G.resp}). How much you weigh in Hertil.</p>
       ${G.boons.length ? '<h3>Gaver</h3>' + G.boons.map(b => `<div class="gl small"><b>${esc(BOONS[b].name)}</b><p>${esc(BOONS[b].fx)}</p></div>`).join('') : ''}`,
     o: () => Object.entries(VOCAB_SETS).map(([set, name]) => { const ks = Object.keys(VOCAB).filter(k => VOCAB[k].set === set && META.vocab[k]); return `<h3>${esc(name)} <small>${ks.length}/${Object.keys(VOCAB).filter(k => VOCAB[k].set === set).length}</small></h3><div class="ordbog">${ks.map(k => `<button class="ob ${META.vocab[k].box ? '' : 'faint'}" data-say="${esc(VOCAB[k].da)}">${ART.icon(VOCAB[k].icon)}<b>${esc(VOCAB[k].da)}</b><i>${esc(VOCAB[k].en)}</i><span class="dots">${[0, 1, 2, 3].map(n => `<i class="${n < META.vocab[k].box ? 'on' : ''}"></i>`).join('')}</span></button>`).join('') || '<p class="dim">None yet.</p>'}</div>`; }).join('') + '<p class="dim">Faint marks have not settled yet. Sleep on them.</p>',
     g: () => G.glimpses.length ? G.glimpses.map(g => `<div class="gl small"><b>${esc(S().glimpses[g].name)}</b><p>${esc(S().glimpses[g].text)}</p></div>`).join('') : '<p class="dim">Nothing yet. Hertil gives nothing away on purpose.</p>',
@@ -876,13 +999,15 @@ function title() {
   const svS = sv && SESSIONS[sv.sess || 'k1l1'];
   $('#app').innerHTML = `<div class="stage title-st">${ART.scene('title', 0)}<div class="dustA"></div><div class="dustB"></div></div>
     <div class="title"><p class="k">en feberdrøm på dansk</p><h1>Hertil</h1>
-    <p class="tag">You fell in. Nobody looks at you. Everybody asks why you came.</p>
+    <p class="tag">You fell in. Everybody is busy. Somebody asks why you came.</p>
     ${sv ? `<button class="btn gold big" id="cont">Fortsæt <small>· ${esc(svS.short)}, dag ${sv.day}</small></button>` : ''}
     <button class="btn ${sv ? 'ghost' : 'gold'} big" id="new">${sv ? 'Fald igen' : 'Fald'}</button>
     <button class="btn ghost big" id="sets">⚙ Indstillinger · lyd</button>
-    <p class="sound">♪ Sound and the Danish voice are on. Headphones recommended.</p></div>`;
+    <button class="tapsound" id="tapsound">♪ tryk for lyd</button>
+    <p class="sound">Sound and the Danish voice are on. Headphones recommended.</p></div>`;
+  const ts = $('#tapsound'); if (ts) ts.onclick = e => { e.stopPropagation(); AUDIO.resume(); AUDIO.play('title'); ts.remove(); };
   $('#sets').onclick = () => { AUDIO.resume(); AUDIO.play('title'); settingsSheet(); };
-  document.addEventListener('pointerdown', function first() { document.removeEventListener('pointerdown', first); AUDIO.resume(); if (!G) AUDIO.play('title'); });
+  document.addEventListener('pointerdown', function first() { document.removeEventListener('pointerdown', first); AUDIO.resume(); if (!G) { AUDIO.play('title'); const t = $('#tapsound'); if (t) t.remove(); } });
   if (sv) $('#cont').onclick = () => { AUDIO.resume(); G = sv; G.sess = G.sess || 'k1l1'; G.prev = G.prev || {}; G.met = G.met || []; G.node && G.node !== 'map' && S().nodes[G.node] ? goNode(G.node) : showMap(); };
   $('#new').onclick = () => { AUDIO.resume(); lessonSheet(); };
   const q = (location.search.match(/[?&]lesson=(\w+)/) || [])[1];

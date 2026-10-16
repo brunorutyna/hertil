@@ -91,9 +91,13 @@ const AUDIO = (() => {
     hall_torn(o, b) { SCAPES.hall(o, b); every(.3, 1.2, () => { tone(o, 2400, now(), .25, 'triangle', .03, { to: 300 }); hit(o, now(), 4000, .05, .06, 10); }, b); },
     ponds(o, b) { every(.3, 1.2, () => { const f = 500 + Math.random() * 700; tone(o, f, now(), .1, 'sine', .04, { to: f * 2.4, toT: .08 }); }, b); },
     market(o, b) { every(.12, .4, () => { const t = now(), f = 300 + Math.random() * 500; tone(o, f, t, .14, 'sawtooth', .012, { to: f * (Math.random() < .5 ? 1.4 : .7), lp: 1400, q: 6 }); }, b); every(3, 6, () => tone(o, 1568, now(), .5, 'sine', .02), b); },
+    enge(o, b) { every(.5, 1.6, () => { const t = now(); tone(o, 2000, t, .03, 'square', .015); tone(o, 1500, t + .25, .03, 'square', .012); }, b); every(3, 7, () => { const f = 300 + Math.random() * 120; tone(o, f, now(), .4, 'sawtooth', .02, { lp: 1200, vib: 11 }); }, b); },
+    himmel(o, b) { const w = ctx.createBufferSource(); w.buffer = noiseBuf('brown', 2); w.loop = true; const g = ctx.createGain(); g.gain.value = .08; w.connect(g); g.connect(o); w.start(); b.stops.push(() => w.stop()); every(2, 5, () => tone(o, 600 + Math.random() * 300, now(), .8, 'sine', .015, { to: 300 }), b); },
+    doere(o, b) { every(2.5, 6, () => { tone(o, 140, now(), .6, 'sawtooth', .02, { to: 90, lp: 700 }); }, b); },
+    forgaars(o, b) { every(.4, 1.4, () => { const f = 300 + Math.random() * 900; tone(o, f * .3, now(), .5, 'sine', .02, { to: f }); }, b); },
     map(o, b) { every(2, 5, () => squeak(o, now(), .01), b); },
   };
-  const INDOOR = ['nest', 'hall', 'hall_torn', 'stair'];
+  const INDOOR = ['nest', 'hall', 'hall_torn', 'stair', 'doere'];
   function playAmb(name, ph = 0) {
     const key = name + ':' + ph;
     if (key === ambName) return; ambName = key;
@@ -118,7 +122,10 @@ const AUDIO = (() => {
     none: { k: '................', s: '................', h: '................' },
   };
   const THEMES = {
-    title:  { bpm: 116, root: 50, mode: MIX, prog: [0, 3, 4, 6], drums: 'bounce', bass: 'x..x..x.x..x..x.', arp: 'square', lead: 'saw', dens: .5, pad: true },
+    // the title screen has a real song: a fixed melody (scale degree, length in 16ths), 8 bars, verse then chorus
+    title:  { bpm: 118, root: 50, mode: MIX, prog: [0, 0, 3, 4, 5, 3, 6, 4], drums: 'bounce', bass: 'x..x..x.x..x..x.', arp: 'square', lead: null, dens: 0, pad: true,
+      song: [[4, 2], [4, 2], [5, 2], [4, 2], [2, 4], [0, 4], [1, 2], [2, 2], [4, 2], [5, 2], [4, 8], [7, 2], [6, 2], [4, 2], [2, 2], [4, 4], [5, 4], [4, 4], [2, 4], [1, 4], [0, 4],
+        [0, 2], [2, 2], [4, 2], [7, 2], [9, 4], [7, 4], [8, 2], [7, 2], [5, 2], [4, 2], [5, 8], [4, 2], [5, 2], [7, 2], [9, 2], [11, 4], [9, 4], [7, 4], [4, 2], [2, 2], [0, 8]] },
     void:   { bpm: 96, root: 52, mode: WHOLE, prog: [0, 1, 2, 3], drums: 'none', bass: null, arp: 'tri', lead: null, dens: 0, pad: true, fall: true },
     bottom: { bpm: 120, root: 53, mode: ION, prog: [0, 4, 5, 3], drums: 'four', bass: 'x.x.x.x.x.x.x.x.', arp: 'square', lead: 'saw', dens: .45, oct: true },
     road:   { bpm: 126, root: 55, mode: MIX, prog: [0, 6, 3, 0], drums: 'run', bass: 'x..xx..xx..xx..x', arp: 'tri', lead: 'square', dens: .4 },
@@ -129,6 +136,10 @@ const AUDIO = (() => {
     hall_torn: { bpm: 140, root: 49, mode: DOR, prog: [0, 1, 0, 6], drums: 'run', bass: 'xxxxxxxxxxxxxxxx', arp: 'square', lead: 'saw', dens: .6 },
     ponds:  { bpm: 98, root: 55, mode: LYD, prog: [0, 4, 1, 5], drums: 'soft', bass: 'x.....x...x.....', arp: 'box', lead: 'tri', dens: .3 },
     market: { bpm: 128, root: 52, mode: AEO, prog: [0, 0, 5, 4], drums: 'run', bass: 'x.xx.x.xx.x.xx.x', arp: 'square', lead: 'reed', dens: .55 },
+    enge:   { bpm: 124, root: 52, mode: MIX, prog: [0, 3, 0, 4], drums: 'bounce', bass: 'x..x..x.x..x..x.', arp: 'square', lead: 'reed', dens: .45, oct: true },
+    himmel: { bpm: 100, root: 57, mode: LYD, prog: [0, 1, 3, 4], drums: 'half', bass: 'x.......x.......', arp: 'box', lead: 'tri', dens: .35, pad: true },
+    doere:  { bpm: 112, root: 50, mode: DOR, prog: [0, 6, 5, 6], drums: 'four', bass: 'x...x.x.x...x.x.', arp: 'tri', lead: 'square', dens: .3 },
+    forgaars: { bpm: 96, root: 53, mode: WHOLE, prog: [3, 2, 1, 0], drums: 'half', bass: 'x.......x.......', arp: 'square', lead: 'saw', dens: .3, fall: true },
     map:    { bpm: 108, root: 55, mode: ION, prog: [0, 4, 3, 4], drums: 'soft', bass: 'x...x.x.x...x.x.', arp: 'tri', lead: null, dens: 0 },
   };
   function deg(T, d, oct = 0) { const n = T.mode.length, o = Math.floor(d / n), i = ((d % n) + n) % n; return T.root + T.mode[i] + 12 * (o + oct); }
@@ -157,7 +168,7 @@ const AUDIO = (() => {
     const prev = startTheme.out; if (prev) { prev.gain.setTargetAtTime(0, ctx.currentTime, .25); setTimeout(() => { try { prev.disconnect(); } catch (e) { } }, 2000); }
     startTheme.out = out;
     const x = 60 / T.bpm / 4, DR = D[T.drums];
-    let next = ctx.currentTime + .1, n = 0, mel = 4;
+    let next = ctx.currentTime + .1, n = 0, mel = 4, si = 0, sleft = 0;
     timer = setInterval(() => {
       if (!ctx || ctx.state !== 'running') return;
       while (next < ctx.currentTime + .2) {
@@ -169,6 +180,10 @@ const AUDIO = (() => {
         if (T.bass && T.bass[s] === 'x') tone(out, mtof(deg(T, ch, -2) + (T.oct && s % 4 === 2 ? 12 : 0)), t, x * 1.6, 'sawtooth', .13, { lp: 500, lpTo: 140, q: 4 });
         if (T.arp && s % 2 === 0) ARP[T.arp](out, mtof(deg(T, ch + [0, 2, 4, 7, 4, 2, 0, 4][(s / 2) % 8], 1) + (T.fall ? 12 - (s % 8) : 0)), t, x * 1.8);
         if (T.pad && s === 0) [0, 2, 4].forEach(k => tone(out, mtof(deg(T, ch + k)), t, x * 15, 'sawtooth', .018, { lp: 900, a: x * 3, det: k * 4 }));
+        if (T.song) { // the composed tune: a saw lead doubled an octave up by a square
+          if (sleft <= 0) { const [d, len] = T.song[si % T.song.length]; si++; sleft = len; const f = mtof(deg(T, d, 1)); LEAD.saw(out, f, t, x * len * .92); tone(out, f * 2, t, x * len * .7, 'square', .015, { lp: 3000 }); }
+          sleft--;
+        }
         if (T.lead && bar % 4 !== 3 && Math.random() < T.dens * (s % 4 === 0 ? 1.4 : s % 2 ? .4 : .8)) {
           mel += pick([-2, -1, 1, 1, 2, 3, -3]); if (s === 0) mel = [ch, ch + 2, ch + 4][Math.floor(Math.random() * 3)];
           mel = Math.max(0, Math.min(10, mel));

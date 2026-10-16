@@ -11,7 +11,7 @@ const CSS = fs.readFileSync(path.join(__dirname, '../css/style.css'), 'utf8').sp
   const srv = await serve(); const { browser, page, errors } = await phone();
   await page.goto(srv.url + '?fast'); await page.waitForTimeout(400);
   await page.evaluate(([only, css]) => {
-    const names = only ? only.split(',') : ['bottom', 'road', 'plain', 'stair', 'nest', 'hall', 'hall_torn', 'ponds', 'market', 'void', 'map', 'title'];
+    const names = only ? only.split(',') : ['bottom', 'road', 'plain', 'stair', 'nest', 'hall', 'hall_torn', 'ponds', 'market', 'void', 'map', 'title', 'enge', 'himmel', 'doere', 'forgaars'];
     document.body.style.cssText = 'overflow:visible;height:auto;background:#000';
     document.body.innerHTML = '<div style="display:grid;grid-template-columns:90px repeat(4,140px);gap:4px;padding:6px;color:#ccc;font:12px sans-serif">' +
       ['', 'Gult', 'Lyserødt', 'Blåt', 'Lilla nat'].map(h => `<b>${h}</b>`).join('') +

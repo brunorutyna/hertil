@@ -32,6 +32,23 @@ const ART = (() => {
     const ry = g === 0 ? r * .62 : g === 1 ? r * .72 : r * .88;
     return `<g class="blink"><ellipse cx="${x}" cy="${y}" rx="${r}" ry="${ry}" fill="${lid}" stroke="${INK}" stroke-width="2.2"/><g class="dart"><circle cx="${px}" cy="${py}" r="${r * .36}" fill="${INK}"/></g>${g >= 1 ? `<circle cx="${px - r * .1}" cy="${py - r * .12}" r="${r * .09}" fill="#fff"/>` : ''}</g>`;
   }
+  // other kinds of eyes: not every creature has round ones
+  // a slit: lies flat and closed when ignoring you, opens and tilts as attention grows
+  function slit(x, y, w, g, rot = 0) {
+    const h = [1.5, 4, 7, 10][g];
+    return `<g transform="rotate(${g >= 2 ? 0 : rot} ${x} ${y})" class="blink"><path d="M${x - w} ${y} Q${x} ${y - h * 1.4} ${x + w} ${y} Q${x} ${y + h * 1.4} ${x - w} ${y}Z" fill="${g ? '#fff' : INK}" stroke="${INK}" stroke-width="2.4"/>${g ? `<rect x="${x - 1.5 + (g >= 2 ? 0 : w * .4)}" y="${y - h}" width="3" height="${h * 2}" fill="${INK}"/>` : ''}</g>`;
+  }
+  // a ripple: rings that drift away from you, then settle on you
+  function ripple(x, y, g) {
+    const dx = [16, 9, 3, 0][g];
+    return `<g class="rip2">${[16, 10, 5].map((r, i) => `<ellipse cx="${x + dx * (i + 1) / 3}" cy="${y}" rx="${r}" ry="${r * .6}" fill="${i === 2 && g >= 3 ? INK : 'none'}" stroke="#fff" stroke-width="${3 - i * .6}"/>`).join('')}</g>`;
+  }
+  // a compound eye: a cluster of tiny windows; lit windows face you
+  function compound(x, y, r, g) {
+    let s = ''; const lit = [0, 2, 5, 9][g];
+    let k = 0; for (let j = -2; j <= 2; j++) for (let i = -2; i <= 2; i++) { if (i * i + j * j > 5) continue; const on = k++ < lit; s += `<rect x="${(x + i * r * .42 - r * .18).toFixed(1)}" y="${(y + j * r * .42 - r * .18).toFixed(1)}" width="${(r * .36).toFixed(1)}" height="${(r * .36).toFixed(1)}" fill="${on ? YEL : INK}" stroke="${INK}" stroke-width="1"/>`; }
+    return `<g>${s}</g>`;
+  }
   const shadow = (cx, cy, rx) => `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${rx * .12}" fill="${BLUE}" opacity=".35" ${M}/>`;
 
   /* ---------------- creatures (300 × 360) ---------------- */
@@ -155,7 +172,7 @@ const ART = (() => {
         <g class="rip" fill="none" stroke="#fff" stroke-width="3" opacity=".8"><path d="M86 150 q64 -14 128 0"/><path d="M78 214 q72 -14 144 0"/><path d="M90 280 q60 -12 120 0"/></g>
         <path d="M122 330 C120 250 130 172 150 132 C170 172 180 250 178 330Z" fill="${YEL}" opacity=".7" ${M}/>
         <ellipse cx="150" cy="200" rx="90" ry="150" fill="none" stroke="${INK}" stroke-width="4"/>
-        ${eye(g >= 2 ? 150 : 172, 112, 10, 10, g, { iris: BLUE })}
+        ${ripple(g >= 2 ? 150 : 176, 112, g)}
       </g>`;
     },
     /* Sluget: a mouth on a stalk, chewing a word */
@@ -171,7 +188,7 @@ const ART = (() => {
           <ellipse cx="${hx}" cy="96" rx="52" ry="38" fill="none" stroke="${INK}" stroke-width="3.5"/>
           <g class="chew"><path d="M${hx - 40} 100 C${hx - 20} 90 ${hx + 12} 92 ${hx + 44} 104 C${hx + 14} 124 ${hx - 22} 122 ${hx - 40} 100Z" fill="${INK}"/>
           <path d="M${hx - 26} 106 C${hx - 8} 114 ${hx + 8} 112 ${hx + 24} 106" fill="none" stroke="${YEL}" stroke-width="5" stroke-linecap="round"/></g>
-          ${eye(hx + 18, 74, 8, -20, g, { iris: ORA })}
+          ${slit(hx + 18, 74, 14, g, -20)}
         </g>
       </g>`;
     },
@@ -198,6 +215,92 @@ const ART = (() => {
         <path d="M${hx - 30} 204 C${hx - 28} 182 ${hx + 28} 178 ${hx + 32} 204 C${hx + 28} 224 ${hx - 28} 226 ${hx - 30} 204Z" fill="#fff" stroke="${INK}" stroke-width="3"/>
         <g stroke="${INK}" stroke-width="3.2" stroke-linecap="round">${[104, 118, 132, 146, 160, 174, 188].map((x, i) => `<path d="M${x} 328 l${(i - 3) * 3} 24"/>`).join('')}</g>
         ${eye(hx - 12, 204, 7, 200, g)}${eye(hx + 14, 202, 5.5, 200, g)}
+      </g>`;
+    },
+
+    /* Uret: a wardrobe on chicken legs; its face is a clock and the hands are its eyes. They point away from you */
+    uret(g) {
+      const ang = [60, 110, 180, 180][g], ang2 = [100, 140, 200, 160][g];
+      return `${shadow(150, 354, 100)}
+      <g class="hop">
+        <g stroke="${INK}" stroke-width="5" stroke-linecap="round" fill="none" class="sway2"><path d="M112 300 L100 340 L84 350 M100 340 L104 354 M100 340 L116 352"/><path d="M188 300 L200 340 L216 350 M200 340 L196 354 M200 340 L184 352"/></g>
+        <g class="mis"><rect x="84" y="70" width="132" height="232" fill="${ORA}" ${M}/></g>
+        <g class="mis2"><rect x="92" y="78" width="132" height="232" fill="url(#dB)" ${M} opacity=".6"/></g>
+        <rect x="84" y="70" width="132" height="232" fill="none" stroke="${INK}" stroke-width="4"/>
+        <path d="M84 70 L150 30 L216 70" fill="${PINK}" stroke="${INK}" stroke-width="4" ${M}/>
+        <rect x="138" y="40" width="24" height="20" fill="${YEL}" stroke="${INK}" stroke-width="3"/>
+        <g class="spin2" style="transform-origin:150px 150px"><circle cx="150" cy="150" r="50" fill="#fff" stroke="${INK}" stroke-width="4"/>
+        ${Array.from({ length: 12 }, (_, i) => `<path d="M150 104 V${i % 3 ? 110 : 116}" stroke="${INK}" stroke-width="3" transform="rotate(${i * 30} 150 150)"/>`).join('')}</g>
+        <path d="M150 150 L150 116" stroke="${PINK}" stroke-width="7" stroke-linecap="round" transform="rotate(${ang} 150 150)"/>
+        <path d="M150 150 L150 106" stroke="${INK}" stroke-width="4" stroke-linecap="round" transform="rotate(${ang2} 150 150)"/>
+        ${g >= 3 ? `<circle cx="150" cy="150" r="9" fill="${PINK}" stroke="${INK}" stroke-width="2"/><circle cx="150" cy="150" r="4" fill="${INK}"/>` : `<circle cx="150" cy="150" r="5" fill="${INK}"/>`}
+        <rect x="110" y="220" width="80" height="64" fill="${YEL}" stroke="${INK}" stroke-width="3" ${M}/>
+        <g class="swing" style="transform-origin:150px 222px"><line x1="150" y1="222" x2="150" y2="268" stroke="${INK}" stroke-width="3"/><circle cx="150" cy="272" r="9" fill="${PINK}" stroke="${INK}" stroke-width="3"/></g>
+      </g>`;
+    },
+    /* Savnet: a striped balloon with no eyes, only a mouth that turns. Missed things hang from it on strings */
+    savnet(g) {
+      const mx = [214, 196, 170, 150][g], sq = [.35, .55, .8, 1][g];
+      return `<g class="flt">
+        <g stroke="${INK}" stroke-width="2" fill="none" class="sway"><path d="M140 250 C130 280 150 300 136 330"/><path d="M160 250 C170 290 154 300 168 336"/><path d="M150 254 L150 300"/></g>
+        <g class="sway" stroke="${INK}" stroke-width="2.5"><rect x="124" y="328" width="22" height="18" fill="${GRN}"/><path d="M160 336 l16 0 l-3 14 l-10 0z" fill="${ORA}"/><circle cx="150" cy="306" r="7" fill="${YEL}"/></g>
+        <g class="mis"><ellipse cx="150" cy="150" rx="104" ry="108" fill="url(#stripe)" ${M}/></g>
+        <g class="mis2"><ellipse cx="160" cy="140" rx="70" ry="74" fill="url(#dB)" opacity=".5" ${M}/></g><ellipse cx="112" cy="104" rx="20" ry="30" fill="#fff" opacity=".6" transform="rotate(30 112 104)"/>
+        <ellipse cx="150" cy="150" rx="104" ry="108" fill="none" stroke="${INK}" stroke-width="4"/>
+        <path d="M140 256 L150 248 L160 256Z" fill="${PINK}" stroke="${INK}" stroke-width="3"/>
+        <g class="chew"><path d="M${mx - 26 * sq} 176 Q${mx} ${176 + 22 * sq} ${mx + 26 * sq} 176 Q${mx} ${176 + 6} ${mx - 26 * sq} 176Z" fill="${INK}"/>${g >= 3 ? `<path d="M${mx - 8} 186 q8 8 16 0" fill="${PINK}"/>` : ''}</g>
+        <g fill="${PINK}" opacity=".6"><circle cx="${mx - 34 * sq}" cy="166" r="${9 * sq}"/><circle cx="${mx + 34 * sq}" cy="166" r="${9 * sq}"/></g>
+      </g>`;
+    },
+    /* Timerne: the hours, small and woolly, with a clock in the belly and slit eyes */
+    timerne(g) {
+      const herd = [[60, 300, 1], [118, 284, -1], [176, 304, 1], [234, 288, -1]];
+      return herd.map(([x, y, d], i) => `<g class="hop" style="animation-delay:-${i * .23}s">${shadow(x, y + 46, 30)}
+        <g stroke="${INK}" stroke-width="3" stroke-linecap="round"><path d="M${x - 14} ${y + 26} v18 M${x + 14} ${y + 26} v18"/></g>
+        <g class="mis"><ellipse cx="${x}" cy="${y}" rx="34" ry="28" fill="${[PINK, YEL, GRN, BLUE][i]}" ${M}/></g>
+        <path d="M${x - 34} ${y} ${Array.from({ length: 10 }, (_, k) => { const a = Math.PI + k * Math.PI / 9; return `Q${(x + Math.cos(a - .17) * 42).toFixed(0)} ${(y + Math.sin(a - .17) * 34).toFixed(0)} ${(x + Math.cos(a) * 34).toFixed(0)} ${(y + Math.sin(a) * 28).toFixed(0)}`; }).join(' ')} L${x + 34} ${y} Q${x} ${y + 40} ${x - 34} ${y}Z" fill="none" stroke="${INK}" stroke-width="3"/>
+        <circle cx="${x}" cy="${y + 6}" r="12" fill="#fff" stroke="${INK}" stroke-width="2.4"/><path d="M${x} ${y + 6} v-8 M${x} ${y + 6} l${5 + i} 3" stroke="${INK}" stroke-width="2"/>
+        ${slit(x + d * 18, y - 14, 7, Math.min(g, i % 2 ? g : Math.max(0, g - 1)), d * 20)}</g>`).join('');
+    },
+    /* Mølen, before it has arrived: a cocoon hanging upside down, with a compound eye of tiny windows */
+    kokon(g) {
+      return `<line x1="150" y1="0" x2="150" y2="60" stroke="${INK}" stroke-width="3"/>
+      <g class="sway2" style="transform-origin:150px 60px">
+        <g class="mis"><path d="M150 60 C210 80 220 200 196 280 C184 320 116 320 104 280 C80 200 90 80 150 60Z" fill="${YEL}" ${M}/></g>
+        <path d="M150 60 C210 80 220 200 196 280 C184 320 116 320 104 280 C80 200 90 80 150 60Z" fill="url(#lnP)" stroke="${INK}" stroke-width="4"/>
+        ${[100, 140, 180, 220, 260].map(y => `<path d="M${100 + (y - 100) * .02} ${y} Q150 ${y + 14} ${200 - (y - 100) * .02} ${y}" fill="none" stroke="${INK}" stroke-width="2"/>`).join('')}
+        ${compound(g >= 2 ? 150 : 176, 210, 30, g)}
+      </g>`;
+    },
+    /* Ungen, four hundred times over (the same Tuesday) */
+    ungerne(g) {
+      const one = C.unge(g);
+      return [[-70, 30, .55], [70, 40, .55], [0, 10, .7], [-120, 60, .4], [120, 64, .4]].map(([dx, dy, sc], i) => `<g transform="translate(${150 + dx - 150 * sc} ${dy + 360 - 360 * sc - 20}) scale(${sc})" style="opacity:${1 - i * .12}">${one}</g>`).join('');
+    },
+    /* Huset: what Den Bagvendte became, small and on legs, one vertical eye in the door */
+    huset(g) {
+      return `${shadow(150, 352, 90)}
+      <g class="hop">
+        <g stroke="${INK}" stroke-width="5" stroke-linecap="round" class="sway2"><path d="M110 300 l-14 48"/><path d="M190 300 l14 48"/><path d="M150 300 l0 50"/></g>
+        <g class="mis"><path d="M70 300 L70 170 L150 100 L230 170 L230 300Z" fill="${ORA}" ${M}/></g>
+        <path d="M70 300 L70 170 L150 100 L230 170 L230 300Z" fill="url(#dY)" stroke="${INK}" stroke-width="4"/>
+        <path d="M60 176 L150 96 L240 176" fill="none" stroke="${INK}" stroke-width="6"/>
+        <rect x="88" y="190" width="34" height="34" fill="${YEL}" stroke="${INK}" stroke-width="3"/><rect x="178" y="190" width="34" height="34" fill="${YEL}" stroke="${INK}" stroke-width="3"/>
+        <path d="M128 300 L128 236 Q150 220 172 236 L172 300Z" fill="${PINK}" stroke="${INK}" stroke-width="3.5"/>
+        <g transform="rotate(90 150 262)">${slit(150, 262, 18, g, g >= 2 ? 0 : 25)}</g>
+        <g class="flt" fill="${BLUE}" opacity=".7"><circle cx="210" cy="80" r="8"/><circle cx="222" cy="60" r="11"/><circle cx="238" cy="36" r="14"/></g>
+      </g>`;
+    },
+    /* HVORNÅR: a door that asks. Its keyhole is its eye */
+    hvornaar(g) {
+      return `${shadow(150, 352, 80)}
+      <g class="wob">
+        <g class="mis"><rect x="86" y="40" width="128" height="310" fill="${VIO}" ${M}/></g>
+        <rect x="86" y="40" width="128" height="310" fill="url(#lnB)" stroke="${INK}" stroke-width="4"/>
+        <rect x="104" y="64" width="92" height="110" fill="none" stroke="${INK}" stroke-width="3"/><rect x="104" y="196" width="92" height="130" fill="none" stroke="${INK}" stroke-width="3"/>
+        <text x="150" y="128" text-anchor="middle" font-family="Rubik Mono One, monospace" font-size="15" fill="${YEL}" stroke="${INK}" stroke-width="1">HVOR</text><text x="150" y="150" text-anchor="middle" font-family="Rubik Mono One, monospace" font-size="15" fill="${YEL}" stroke="${INK}" stroke-width="1">NÅR?</text>
+        <circle cx="184" cy="250" r="10" fill="${YEL}" stroke="${INK}" stroke-width="3"/>
+        <g transform="rotate(90 150 262)">${slit(150, 262, 20, g, -30)}</g>
       </g>`;
     },
   };
@@ -314,6 +417,42 @@ const ART = (() => {
         ${stall(20, 130, 90, PINK, 0)}${stall(290, 150, 80, BLUE, 1)}${stall(156, 110, 70, GRN, 2)}
         <g class="mis"><path d="M0 400 Q200 380 393 404 V560 H0Z" fill="${VIO}" ${M}/></g><path d="M0 400 Q200 380 393 404" fill="none" stroke="${INK}" stroke-width="3"/>${confetti(40, 80, 540, 11)}`;
     },
+    enge() {
+      const grass = Array.from({ length: 40 }, (_, i) => { const x = (i * 37) % 393, y = 380 + (i * 53) % 170; return `<path class="${i % 2 ? 'sway' : 'sway2'}" d="M${x} ${y} q4 -16 0 -26 M${x + 6} ${y} q-2 -14 4 -22" stroke="${INK}" stroke-width="2" fill="none"/>`; }).join('');
+      return `${paper()}<g class="mis2"><rect width="393" height="360" fill="url(#dP)" opacity=".3" ${M}/></g>
+        <g class="spin" style="transform-origin:300px 110px"><circle cx="300" cy="110" r="70" fill="none" stroke="${INK}" stroke-width="3" stroke-dasharray="4 10"/></g>${sun(300, 110, 40, YEL)}
+        <g stroke="${INK}" stroke-width="3"><line x1="300" y1="110" x2="300" y2="82"/><line x1="300" y1="110" x2="322" y2="118" class="spin" style="transform-origin:300px 110px"/></g>
+        ${towers(350)}
+        <g class="mis"><path d="M0 360 Q120 330 220 356 T393 346 V560 H0Z" fill="${GRN}" ${M}/></g>
+        <g class="mis2"><path d="M0 420 Q160 396 393 430 V560 H0Z" fill="url(#dY)" ${M}/></g>
+        <path d="M0 360 Q120 330 220 356 T393 346" fill="none" stroke="${INK}" stroke-width="3"/>${grass}${confetti(20, 60, 340, 12)}`;
+    },
+    himmel() {
+      const cloud = (x, y, s, c) => `<g class="flt" style="animation-delay:-${x % 3}s"><g class="mis"><path d="M${x} ${y} q${10 * s} ${-24 * s} ${30 * s} ${-12 * s} q${14 * s} ${-26 * s} ${40 * s} ${-6 * s} q${26 * s} ${-6 * s} ${26 * s} ${18 * s}Z" fill="${c}" ${M}/></g><path d="M${x} ${y} q${10 * s} ${-24 * s} ${30 * s} ${-12 * s} q${14 * s} ${-26 * s} ${40 * s} ${-6 * s} q${26 * s} ${-6 * s} ${26 * s} ${18 * s}Z" fill="none" stroke="${INK}" stroke-width="3"/></g>`;
+      return `${paper('#bfe8ff')}<g class="mis2"><rect width="393" height="560" fill="url(#dB)" opacity=".35" ${M}/></g>
+        ${cloud(20, 120, 1.4, '#fff')}${cloud(250, 90, 1, PINK)}${cloud(60, 300, 1.1, YEL)}${cloud(240, 400, 1.6, '#fff')}${cloud(10, 500, 1, GRN)}
+        <g class="fall1" style="animation-duration:5s"><path d="M120 0 l10 18 l-20 0z" fill="${ORA}" stroke="${INK}" stroke-width="2"/></g>
+        <g class="fall1" style="animation-duration:6.5s;animation-delay:-2s"><rect x="300" y="0" width="16" height="12" fill="${PINK}" stroke="${INK}" stroke-width="2"/></g>
+        ${confetti(30, 0, 560, 13)}`;
+    },
+    doere() {
+      const door = (x, c, lab, i) => `<g class="wob" style="animation-delay:-${i * .4}s"><g class="mis"><rect x="${x}" y="190" width="96" height="250" fill="${c}" ${M}/></g>
+        <rect x="${x}" y="190" width="96" height="250" fill="none" stroke="${INK}" stroke-width="4"/><rect x="${x + 14}" y="214" width="68" height="80" fill="none" stroke="${INK}" stroke-width="2.5"/>
+        <circle cx="${x + 78}" cy="330" r="7" fill="${YEL}" stroke="${INK}" stroke-width="2.5"/>
+        <rect x="${x + 6}" y="150" width="84" height="30" fill="#fff" stroke="${INK}" stroke-width="3" transform="rotate(${i % 2 ? 3 : -3} ${x + 48} 165)"/>
+        <text x="${x + 48}" y="172" text-anchor="middle" font-family="Rubik Mono One, monospace" font-size="${lab.length > 4 ? 12 : 16}" fill="${INK}">${lab}</text></g>`;
+      return `${paper()}<g class="mis2"><rect width="393" height="560" fill="url(#dY)" opacity=".5" ${M}/></g>
+        <path d="M0 440 L393 440 L393 560 L0 560Z" fill="url(#check)" ${M}/><path d="M0 440 H393" stroke="${INK}" stroke-width="4"/>
+        ${door(20, PINK, 'DA', 0)}${door(148, GRN, 'NÅR', 1)}${door(276, VIO, 'HVORNÅR', 2)}
+        <line x1="196" y1="0" x2="196" y2="70" stroke="${INK}" stroke-width="3"/>${sun(196, 96, 20, ORA)}${confetti(16, 0, 140, 14)}`;
+    },
+    forgaars() {
+      // yesterday-before-yesterday: the same Hertil, upside down and in the wrong inks
+      return `${paper('#d9f5e4')}<g transform="rotate(180 196 280)"><g class="mis"><path d="M0 340 Q100 300 200 336 T393 324 V560 H0Z" fill="${VIO}" ${M}/></g>
+        <g class="mis2"><path d="M0 400 Q120 370 240 400 T393 390 V560 H0Z" fill="${GRN}" ${M}/></g>${towers(330)}${fallen(440)}</g>
+        ${sun(90, 470, 40, PINK)}
+        <g font-family="Rubik Mono One, monospace" font-size="13" fill="${INK}" opacity=".5"><text x="250" y="520" transform="rotate(-8 250 520)">I FORGÅRS</text></g>${confetti(30, 0, 560, 15)}`;
+    },
     map() {
       return `${paper()}<rect width="393" height="560" fill="url(#dY)" opacity=".35"/>
         <g ${M}><ellipse cx="290" cy="134" rx="90" ry="50" fill="${PINK}" opacity=".55"/><ellipse cx="173" cy="448" rx="60" ry="22" fill="${GRN}" opacity=".6"/><ellipse cx="86" cy="200" rx="60" ry="46" fill="${BLUE}" opacity=".45"/><ellipse cx="196" cy="280" rx="70" ry="40" fill="${ORA}" opacity=".35"/><ellipse cx="118" cy="350" rx="50" ry="36" fill="${YEL}" opacity=".9"/></g>
@@ -325,7 +464,7 @@ const ART = (() => {
 
   // the light of Hertil: Gult (as printed), Lyserødt (pink wash), Blåt (blue wash), Lilla nat (violet night, inks glow)
   const FIXED = { void: 1, map: 0, title: 0 };
-  const INDOOR = ['nest', 'hall', 'hall_torn', 'stair'];
+  const INDOOR = ['nest', 'hall', 'hall_torn', 'stair', 'doere'];
   const GRADE = [
     '',
     `<rect width="393" height="560" fill="${PINK}" opacity=".22" ${M}/>`,
@@ -341,11 +480,47 @@ const ART = (() => {
     return `<svg class="scene-svg ph${P} ${out ? 'out' : 'in'}" viewBox="0 0 393 560" preserveAspectRatio="xMidYMin slice"><defs>${DEFS}</defs>${body}${grade}<rect width="393" height="560" filter="url(#grain)"/></svg>`;
   }
 
+
+  function clock(h, m) {
+    const ha = ((h % 12) + m / 60) * 30, ma = m * 6;
+    return `<svg class="clock" viewBox="0 0 100 100"><circle cx="53" cy="53" r="44" fill="${PINK}"/><circle cx="50" cy="50" r="44" fill="#fff" stroke="${INK}" stroke-width="4"/>
+      ${Array.from({ length: 12 }, (_, i) => `<path d="M50 10 V${i % 3 ? 15 : 19}" stroke="${INK}" stroke-width="${i % 3 ? 2 : 3.6}" transform="rotate(${i * 30} 50 50)"/>`).join('')}
+      <path d="M50 50 V28" stroke="${INK}" stroke-width="6" stroke-linecap="round" transform="rotate(${ha} 50 50)"/>
+      <path d="M50 50 V14" stroke="${PINK}" stroke-width="3.4" stroke-linecap="round" transform="rotate(${ma} 50 50)"/><circle cx="50" cy="50" r="4" fill="${INK}"/></svg>`;
+  }
+  function timeline(kind, lab = '?') {
+    const T = (x, t, c = INK, sz = 10) => `<text x="${x}" y="66" font-size="${sz}" text-anchor="middle" fill="${c}" font-family="Rubik Mono One, monospace">${t}</text>`;
+    const L = x => `<text x="${x}" y="22" font-size="11" text-anchor="middle" fill="${INK}" font-weight="700">${lab}</text>`;
+    let mk = '';
+    if (kind === 'ago' || kind === 'once') mk = `<path d="M80 34 Q115 10 150 34" stroke="${PINK}" stroke-width="2.5" stroke-dasharray="4 3" fill="none"/><circle cx="80" cy="40" r="7" fill="${PINK}" stroke="${INK}" stroke-width="2"/>${L(80)}`;
+    if (kind === 'in' || kind === 'future') mk = `<path d="M150 34 Q185 10 220 34" stroke="${BLUE}" stroke-width="2.5" stroke-dasharray="4 3" fill="none"/><circle cx="220" cy="40" r="7" fill="${BLUE}" stroke="${INK}" stroke-width="2"/>${L(220)}`;
+    if (kind === 'len') mk = `<rect x="70" y="33" width="80" height="14" fill="${YEL}" stroke="${INK}" stroke-width="2"/>${L(110)}`;
+    if (kind === 'lenF') mk = `<rect x="150" y="33" width="80" height="14" fill="${YEL}" stroke="${INK}" stroke-width="2"/>${L(190)}`;
+    if (kind === 'often') mk = [40, 85, 130, 175, 220, 265].map(x => `<circle cx="${x}" cy="40" r="5" fill="${GRN}" stroke="${INK}" stroke-width="1.5"/>`).join('') + L(150);
+    return `<svg class="tline" viewBox="0 0 300 72"><path d="M12 40 H288" stroke="${INK}" stroke-width="3"/><path d="M280 34 L290 40 L280 46" stroke="${INK}" stroke-width="3" fill="none"/>
+      <path d="M150 28 V52" stroke="${PINK}" stroke-width="4"/>${mk}${T(30, 'FØR')}${T(150, 'NU', PINK, 12)}${T(270, 'SENERE')}</svg>`;
+  }
   function d20(n, cls = '') {
     return `<svg class="d20 ${cls}" viewBox="0 0 54 58"><path d="M30 5 L54 18 L54 46 L30 59 L6 46 L6 18Z" fill="${PINK}" opacity=".9"/><path d="M27 2 L51 15 L51 43 L27 56 L3 43 L3 15Z" fill="${YEL}" stroke="${INK}" stroke-width="2.4"/><path d="M27 2 L27 18 M3 15 L15 24 M51 15 L39 24 M15 24 L39 24 L27 44Z M27 44 V56 M15 24 L3 43 M39 24 L51 43" stroke="${INK}" stroke-width="1.4" fill="none"/><text x="27" y="36" text-anchor="middle" font-family="Rubik Mono One, monospace" font-size="12" fill="${INK}">${n}</text></svg>`;
   }
 
   const I = {
+    ur: '<circle cx="24" cy="24" r="18"/><path d="M24 12 V24 L32 28"/>',
+    kalender: '<rect x="6" y="10" width="36" height="32" rx="2"/><path d="M6 18 H42 M14 6 V14 M34 6 V14"/><path d="M12 24 h4 M22 24 h4 M32 24 h4 M12 32 h4 M22 32 h4 M32 32 h4" stroke-width="3"/>',
+    uge: '<rect x="4" y="14" width="40" height="20" rx="2"/><path d="M4 20 H44"/><path d="M8 27 h1 M13 27 h1 M18 27 h1 M23 27 h1 M28 27 h1 M33 27 h1 M38 27 h1" stroke-width="3.4"/>',
+    maaned: '<rect x="6" y="10" width="36" height="32" rx="2"/><path d="M6 18 H42"/><text x="24" y="37" font-size="15" text-anchor="middle" fill="currentColor" stroke="none" font-family="Marcellus, serif">30</text>',
+    aar: '<circle cx="24" cy="24" r="18"/><path d="M24 6 V42 M6 24 H42"/><circle cx="15" cy="15" r="3"/><path d="M33 12 l0 6 M30 15 l6 0"/><path d="M13 33 q3 -6 6 0"/><path d="M31 31 l4 4 M35 31 l-4 4"/>',
+    morgen: '<path d="M4 34 H44 M14 34 C14 22 34 22 34 34 M24 18 V8 M20 12 L24 8 L28 12 M8 26 L11 28 M40 26 L37 28"/>',
+    aften: '<path d="M4 34 H44 M14 34 C14 22 34 22 34 34 M24 8 V18 M20 14 L24 18 L28 14 M10 40 H38" opacity=".9"/>',
+    maane: '<path d="M30 6 C18 8 12 20 16 30 C20 40 32 44 40 38 C28 38 20 28 22 18 C24 12 28 8 30 6Z"/><path d="M38 12 l1 3 l3 1 l-3 1 l-1 3 l-1 -3 l-3 -1 l3 -1Z" fill="currentColor"/>',
+    sol: '<circle cx="24" cy="24" r="8"/><path d="M24 4 V10 M24 38 V44 M4 24 H10 M38 24 H44 M10 10 L14 14 M34 34 L38 38 M38 10 L34 14 M10 38 L14 34"/>',
+    regn: '<path d="M12 30 C4 30 4 20 12 20 C12 12 24 10 27 16 C31 10 42 13 40 22 C46 23 46 30 40 30Z"/><path d="M14 36 L11 43 M23 36 L20 43 M32 36 L29 43"/>',
+    sne: '<path d="M12 30 C4 30 4 20 12 20 C12 12 24 10 27 16 C31 10 42 13 40 22 C46 23 46 30 40 30Z"/><path d="M13 38 h4 M15 36 v4 M23 40 h4 M25 38 v4 M33 37 h4 M35 35 v4"/>',
+    blaest: '<path d="M4 16 H30 C36 16 36 8 30 8 M4 26 H38 C46 26 46 36 38 36 M4 36 H22"/>',
+    taage: '<path d="M6 14 H34 M12 22 H42 M4 30 H30 M14 38 H40"/>',
+    sky: '<path d="M12 30 C4 30 4 20 12 20 C12 12 24 10 27 16 C31 10 42 13 40 22 C46 23 46 30 40 30Z"/><path d="M30 18 C32 10 42 10 44 18" opacity=".7"/>',
+    torden: '<path d="M12 30 C4 30 4 20 12 20 C12 12 24 10 27 16 C31 10 42 13 40 22 C46 23 46 30 40 30Z"/><path d="M24 30 L18 40 H25 L21 47 L31 35 H24 L28 30Z" fill="#f0c873" stroke="#f0c873"/>',
+    regnbue: '<path d="M4 38 C4 14 44 14 44 38 M10 38 C10 22 38 22 38 38 M16 38 C16 28 32 28 32 38"/>',
     fjer: '<path d="M14 40 C18 26 26 12 38 8 C38 20 30 32 18 36 Z"/><path d="M14 40 L30 18"/>',
     knogle: '<path d="M14 18 a4 4 0 1 1 4 -6 l12 12 a4 4 0 1 1 6 4 a4 4 0 1 1 -4 6 l-12 -12 a4 4 0 1 1 -6 -4z"/>',
     tand: '<path d="M14 12 C14 8 22 8 24 12 C26 8 34 8 34 12 C34 22 32 26 30 38 C28 40 27 32 24 28 C21 32 20 40 18 38 C16 26 14 22 14 12Z"/>',
@@ -376,5 +551,5 @@ const ART = (() => {
   function icon(name, cls = '') {
     return `<svg class="ico ${cls}" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">${I[name] || '<circle cx="24" cy="24" r="16"/>'}</svg>`;
   }
-  return { creature, self, scene, d20, icon, ICONS: I, COLORS: { INK, PINK, BLUE, YEL, GRN, ORA, VIO, PAPER } };
+  return { creature, self, scene, d20, icon, clock, timeline, ICONS: I, COLORS: { INK, PINK, BLUE, YEL, GRN, ORA, VIO, PAPER } };
 })();

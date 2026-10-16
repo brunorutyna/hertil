@@ -1,6 +1,6 @@
 # Hertil
 
-*You fell in. Nobody looks at you. Everybody asks why you came.*
+*You fell in. Everybody is busy. Somebody asks why you came.*
 
 A story game for learning Danish, played in the browser (phone first). The narrator speaks English, two or three short lines at a time; the creatures of Hertil speak Danish, and Danish is how you get them to notice you.
 
@@ -13,7 +13,7 @@ Hertil is what its creatures call "here". It is loud, bright and printed in thre
 ## How it plays
 
 - **Contracts**, solved through dialogue and actions, with a d20. To say something you build the sentence from word tiles: perfect first try gives *advantage*, two or more mistakes *disadvantage*. Tap any Danish word for its meaning (press and hold inside buttons). Asking for English costs attention.
-- **Attention (opmærksomhed)** replaces standing. It decides where the creatures' eyes go: away, a sideways glance, the head half turned. A full look is never given by attention alone.
+- **Vægt (weight)** replaces standing: how much you count in Hertil. It is never explained in the game; you see it in how the creatures behave.
 - **Imprints (aftryk):** the Danish you catch sticks to you as marks. When you sleep in your nest, they settle (spaced repetition). The ones you miss stay faint.
 - **Ephemeral places:** some things happen once, and are gone when you leave. They flicker on the map.
 - **Strange dice:** sometimes the die melts, and only your sentence decides (perfect or not). Sometimes the numbers turn into glyphs for a while, and the result is said in Danish words.
@@ -22,16 +22,17 @@ Hertil is what its creatures call "here". It is loud, bright and printed in thre
 - **Art: Feberdrøm.** Everything looks like a risograph zine: fluorescent pink, cobalt, yellow, green and orange inks overprinted slightly off-register, halftone dots, and nothing ever still. All drawn in SVG; the interface is stamped buttons and stickers.
 - **Sound** generated in the browser: bouncy synth-pop with a theme per place (drums, bass, arpeggios, a wobbly lead), playful foley, and effects for stamps, melting dice and scrambled numbers. ⚙ settings for music, ambience, effects and voice.
 
-## Session 1 · Kapitel 1, Lektion 1 (“Hvorfor kom du hertil?”), about 1½ hours
+## Lessons (spoiler-free)
 
-Contracts: *Faldet* (you have no reason, so you sink; give one), *Ikket* (something is eating the word *ikke* out of sentences), *Den Bagvendte* (a monumental creature that has never turned around, because it does not know what it was before). Side jobs: Samleren's fallen things (hidden objects), Tælleren's list (guess the job), the ponds of the past (-ede / -te / irregular), Spejlet's corrections, Tælleren's archive (i or på). A market that is there only once.
-Grammar: fordi / for at / på grund af, ikke and gerne in a fordi-clause, før-clause inversion, past tense, i / på.
+**Lektion 1 · Hvorfor kom du hertil?** About 1½ hours. You fall into Hertil and have to give a reason. Three contracts, several endings, five side games. Grammar: fordi / for at / på grund af, ikke and gerne in a fordi-clause, før-clause inversion, past tense, i / på.
+
+**Lektion 2 · Hvor længe skal du være her?** About 1½ hours. Something has gone wrong with time. Continue with your character from Lektion 1 (your choices there change what you meet), or start fresh. Three contracts, several endings, six side games including a clock, a timeline, three doors and the weather. Grammar: for … siden / i / om, hvornår / da / når, inversion after a time clause, adverbs in subordinate clauses, savne, glad for.
 
 ## Files
 
 - `js/data.js`: skills, attention tiers, gifts, creatures, vocabulary, glossary.
-- `js/k1l1.js`: the lesson (locations, quests, nodes, travel encounters, mini-game data, lesson-only actions). Copy it for the next lesson and add its `<script>` to `index.html`.
-- `js/engine.js`: everything else, including reusable mini-games (`hunt`, `jobs`, `corr`, `boxes`) and the self-plate.
+- `js/k1l1.js`, `js/k1l2.js`: one file per lesson (locations, quests, nodes, travel encounters, mini-game data, lesson-only actions). Copy it for the next lesson and add its `<script>` to `index.html`.
+- `js/engine.js`: everything else, including reusable mini-games (`hunt`, `jobs`, `corr`, `boxes`, `fixEntry`, `clock`, `weather`, `guess`) and the self-plate.
 - `js/art.js`: creatures (`ART.creature(name, gaze)`), the player's plate (`ART.self`), scenes, icons.
 - `js/audio.js`: ambience and music per place, effects.
 - Built on the engine of *Det var ikke noget*.

@@ -13,7 +13,7 @@ const flag = f => args.includes(f), val = f => (args[args.indexOf(f) + 1]);
 const C = load();
 const lessons = args.filter(a => C.SESSIONS[a]);
 const runs = flag('--runs') ? +val('--runs') : 1, chain = flag('--chain'), shots = flag('--shots') ? val('--shots') : null;
-const AVOID = /(Leave|Go out|Back\.|Sleep|Walk on|Step around|Look at yourself|Walk away)/;
+const AVOID = /(Leave|Go out|Back\.|Back to|Sleep|Walk on|Step around|Look at yourself|Walk away)/;
 
 async function play(srv, lesson, chainOn) {
   const { browser, page: p, errors } = await phone();
@@ -67,7 +67,7 @@ async function play(srv, lesson, chainOn) {
     const pins = await p.$$('.pin:not(.shut)');
     if (pins.length) { await shot('map'); const marked = await p.$$('.pin.mark:not(.shut)'); const list = marked.length && Math.random() < .8 ? marked : pins; await list[Math.floor(Math.random() * list.length)].click({ force: true }); await p.waitForTimeout(shots ? 2500 : 20); continue; }
   }
-  if (!ends.length && !errors.length) errors.push(`no ending after ${n} steps (last state ${last})`);
+  if (!ends.length && !errors.length) errors.push(`no ending after ${n} steps (last state ${last}) flags: ${await p.evaluate(() => Object.keys(G.flags).filter(k => G.flags[k]).join(' ')).catch(() => '?')}`);
   await browser.close();
   return { lesson, steps: n, ends, errors };
 }

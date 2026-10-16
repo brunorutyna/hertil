@@ -59,7 +59,7 @@ for (const [k, v] of Object.entries(C.VOCAB)) if (!v.icon.startsWith('face:') &&
 const danish = [];
 const walk = o => { if (!o || typeof o !== 'object') return; if (Array.isArray(o)) return o.forEach(walk);
   for (const [k, v] of Object.entries(o)) {
-    if (k === 'qs' || k === 'en' || k === 'label' || ((k === 'good' || k === 'meh') && o.items)) continue; // English: quiz questions about letters, translations, button labels
+    if (k === 'qs' || k === 'en' || k === 'label' || ((k === 'good' || k === 'meh') && (o.items || o.rounds))) continue; // English: quiz questions about letters, translations, button labels
     if (typeof v === 'string' && ['da', 'bad', 'good', 't', 'def'].includes(k)) danish.push(v);
     else if ((k === 'lines' || k === 'wrong' || k === 'boxes' || (k === 'opts' && typeof (v || [])[0] === 'string')) && Array.isArray(v)) v.forEach(x => typeof x === 'string' && danish.push(x));
     else if (k === 'tiles' && Array.isArray(v)) v.forEach(x => danish.push(x));
@@ -71,7 +71,7 @@ Object.values(C.VOCAB).forEach(v => { danish.push(v.da); if (v.def) danish.push(
 const missing = {};
 danish.forEach(t => (t.match(/[A-Za-zÆØÅæøåáéüöÉÁ]+/g) || []).forEach(w => { if (!C.DICT[w.toLowerCase()] && !C.NAMES.includes(w)) missing[w.toLowerCase()] = (missing[w.toLowerCase()] || 0) + 1; }));
 const miss = Object.keys(missing).filter(w => w.length > 1);
-if (miss.length) err('glossary', `${miss.length} Danish words without a meaning in DICT: ${miss.slice(0, 40).join(', ')}`);
+if (miss.length) err('glossary', `${miss.length} Danish words without a meaning in DICT: ${miss.join(', ')}`);
 
 // no real people: names listed in tools/blocklist.txt must never appear in the game
 const block = fs.existsSync(path.join(__dirname, 'blocklist.txt')) ? read('tools/blocklist.txt').split('\n').map(s => s.trim()).filter(s => s && !s.startsWith('#')) : [];

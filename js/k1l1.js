@@ -33,7 +33,7 @@ const reasonFORDI = { en: 'I came here because I could not / would not stay ther
   tiles: ['Jeg', 'kom', 'hertil,', 'fordi', 'jeg', 'ikke', 'kunne', 'ville', 'blive', 'der.', 'på', 'at'] };
 
 SESSIONS.k1l1 = {
-  id: 'k1l1', order: 1, short: 'Lektion 1', chapter: 'Kapitel 1 · Baggrund', title: 'Lektion 1 · Hvorfor kom du hertil?', en: 'Why did you come here?',
+  id: 'k1l1', order: 1, short: 'Lektion 1', nextSession: 'k1l2', chapter: 'Kapitel 1 · Baggrund', title: 'Lektion 1 · Hvorfor kom du hertil?', en: 'Why did you come here?',
   blurb: 'You fall into Hertil, a world printed in three loud inks. Everyone asks why you came. Whatever you answer becomes true.',
   start: 'p_fall', home: 'rede', travelAfter: 'Areason', cluesFlag: 'Aclues', cluesNeed: 3,
 
@@ -50,7 +50,7 @@ SESSIONS.k1l1 = {
 
   ending: G => [G.flags.Bbound ? 'Bundet' : G.flags.Bsold ? 'Solgt' : G.flags.Bfree ? 'Fri' : null, G.flags.Clook ? 'Blikket' : G.flags.Cborrow ? 'Lånt fortid' : G.flags.Cgone ? 'Huset løb' : null].filter(Boolean).join(' · ') || '—',
   next: '<b>Lektion 2 · Hvor længe skal du være her?</b> Time in a place where clocks are pets: for … siden, om …, i …, da / når.',
-  carryFlags: ['Bbound', 'Bfree', 'Bsold', 'Cgone', 'Cborrow', 'Clook'],
+  carryFlags: ['Bbound', 'Bfree', 'Bsold', 'Cgone', 'Cborrow', 'Clook', 'hallGone'],
 
   quests: {
     A: { title: 'Faldet', en: 'The fall', obj: [['Give Tælleren a reason', 'Areason'], ['Settle the hall and the plain, then register at Trappen', 'Adone']] },
@@ -151,7 +151,7 @@ SESSIONS.k1l1 = {
     },
     async bundLine() {
       if (!G.flags.bundSeen) { G.flags.bundSeen = true; logAdd(`<p>Bunden: where things land. Four keys at once. A wet umbrella. A clock with no hands. Samleren files them all.</p>`, 'narr'); return; }
-      logAdd(`<p>${esc(pick(['Something lands behind you with a BOING. Samleren files it without looking.', 'Samleren holds a bone up to the light, checking it for jokes.', 'A shower of teeth. Samleren claps all its hands.']))}</p>`, 'narr');
+      logAdd(`<p>${esc(pick(['Something lands behind you with a BOING. Samleren files it mid-air, humming.', 'Samleren holds a bone up to the light, checking it for jokes.', 'A shower of teeth. Samleren claps all its hands.']))}</p>`, 'narr');
     },
     async trappeLine() {
       if (!G.flags.trapSeen) { G.flags.trapSeen = true; logAdd(`<p>Tælleren honks numbers at the sky. Every time you come, you are a different number. Today you are 7½.</p>`, 'narr'); return; }
@@ -256,14 +256,14 @@ SESSIONS.k1l1 = {
       opts: [{ kind: 'go', label: 'Get up.', next: 'p_bottom' }] },
     p_bottom: { bg: 'bottom', npc: 'samler', title: 'Bunden',
       steps: [
-        { n: 'Pink dust, keys, shells. A shell creature with a hundred arms is sorting it all, thrilled, and does not look at you.' },
+        { n: 'Pink dust, keys, shells. A shell creature with a hundred arms is sorting it all, thrilled about a tooth.' },
         { say: 'samler', da: 'En tand. En fjer. En … ting.', en: 'A tooth. A feather. A … thing.' },
         { n: 'The thing is you. And you are sinking. It tickles.' },
         { say: 'samler', da: 'Ting uden grund synker. Gå til Tælleren. Til Trappen.', en: 'Things without a reason sink. Go to the Counter. To the Stair.' },
       ],
       opts: [
         { kind: 'act', stat: 'INDSIGT', dc: 7, group: 'a', label: 'Read what it wrote about you.', ok: [{ glimpse: 'fald' }], fail: [{ n: 'An arm pulls the book away. Politely. Firmly.' }], next: 'p_stair' },
-        { kind: 'reply', group: 'a', da: 'Tak.', ok: [{ n: 'It waves three arms without looking up.' }], next: 'p_stair' },
+        { kind: 'reply', group: 'a', da: 'Tak.', ok: [{ n: 'Three arms wave somewhere near you. The other ninety-seven keep sorting.' }], next: 'p_stair' },
       ] },
     p_stair: { bg: 'stair', npc: 'taeller', title: 'Trappen', hub: true, card: ['Trappen', 'the stair that goes into itself'],
       steps: [
@@ -428,7 +428,7 @@ SESSIONS.k1l1 = {
         { kind: 'go', label: 'Leave.', next: 'map' },
       ] },
     c_folk: { bg: 'plain', npc: 'husfolk', title: 'Støvsletten',
-      steps: [{ n: 'Thumb-sized, chalk-coloured, with little doors in their bellies. They look at each other, never at you, and gossip.' }],
+      steps: [{ n: 'Thumb-sized, chalk-coloured, with little doors in their bellies. They are gossiping about a cloud that looked like a cousin.' }],
       opts: [
         { kind: 'say', stat: 'SPROG', dc: 9, label: 'Ask them what they did before they came here.', build: { en: 'What did you (all) do before you came here?', answers: [['Hvad', 'lavede', 'I,', 'før', 'I', 'kom', 'hertil?']], tiles: ['Hvad', 'lavede', 'I,', 'før', 'I', 'kom', 'hertil?', 'laver', 'du'] },
           ok: [{ say: 'husfolk', da: 'Vi boede i den. Den var vores hus. Vi spiste i køkkenet, og vi sov på loftet.', en: 'We lived in it. It was our house. We ate in the kitchen, and we slept in the attic.' }, { say: 'husfolk', da: 'Du lugter af køkken.', en: 'You smell of kitchen.' }, { glimpse: 'koekken' }, { fx: { flag: 'c_folk', resp: 1 } }, { special: 'cCheck' }],
@@ -449,7 +449,7 @@ SESSIONS.k1l1 = {
       steps: [
         { say: 'bagvendt', da: 'Jeg var et hus. Der boede nogen i mig. Nu ved jeg det.', en: 'I was a house. Someone lived in me. Now I know.' },
         { say: 'bagvendt', da: 'Hvad skal jeg gøre med det?', en: 'What shall I do with it?' },
-        { th: G => G.resp >= 5 ? 'Ask, and it might turn around. For you.' : 'It only turns for someone it has noticed. Get noticed first.' },
+        { th: G => G.resp >= 5 ? 'Its branches creak in your direction. Maybe ask.' : 'It hums to the towers, busy remembering being a house.' },
       ],
       opts: [
         { kind: 'say', stat: 'SPROG', dc: 13, die: 'melt', label: 'Ask it to turn around.', req: G => G.resp >= 5, build: { en: 'Will you turn around?', answers: [['Vil', 'du', 'vende', 'dig', 'om?']], tiles: ['Vil', 'du', 'vende', 'dig', 'om?', 'mig', 'ikke'] },
@@ -479,9 +479,9 @@ SESSIONS.k1l1 = {
       steps: [
         { special: 'turn' },
         { n: 'It turns. Dust flies off in pink sheets, branches scrape the sky, the ground rumbles like a drum.' },
-        { n: 'And then it is looking at you. Nothing in Hertil has looked at you before.' },
+        { n: 'And then it is looking at you. On the whole plain, nothing moves. Even the dust holds still.' },
         { say: 'bagvendt', da: 'Der er du.', en: 'There you are.' },
-        { th: 'A look weighs more than a reason. Somewhere inside it, a door your size opens.' },
+        { th: 'Somewhere inside it, a door your size opens.' },
         { fx: { boon: 'blik', flag: 'Clook', resp: 3 } }, { fx: { flag: 'Cdone' } },
       ],
       opts: [{ kind: 'go', label: 'Stay a while. Then go.', next: 'map' }] },
@@ -525,7 +525,7 @@ SESSIONS.k1l1 = {
     /* ===== FINALE: registration ===== */
     f_register: { bg: 'stair', npc: 'taeller', title: 'Trappen', card: ['Trappen', 'registration'],
       steps: [
-        { n: 'Tælleren opens a fresh page and, for once, bends its long neck your way. Not its eyes. Its neck.' },
+        { n: 'Tælleren opens a fresh page and, for once, bends its long neck your way, still counting under its breath.' },
         { say: 'taeller', da: 'Nu. Hvad lavede du, før du kom hertil?', en: 'Now. What did you do before you came here?' },
       ],
       opts: [
