@@ -14,7 +14,7 @@ const CSS = fs.readFileSync(path.join(__dirname, '../css/style.css'), 'utf8').sp
     const names = only ? only.split(',') : ['bottom', 'road', 'plain', 'stair', 'nest', 'hall', 'hall_torn', 'ponds', 'market', 'void', 'map', 'title'];
     document.body.style.cssText = 'overflow:visible;height:auto;background:#000';
     document.body.innerHTML = '<div style="display:grid;grid-template-columns:90px repeat(4,140px);gap:4px;padding:6px;color:#ccc;font:12px sans-serif">' +
-      ['', 'Hvidt', 'Gult', 'Rødt', 'Mørke'].map(h => `<b>${h}</b>`).join('') +
+      ['', 'Gult', 'Lyserødt', 'Blåt', 'Lilla nat'].map(h => `<b>${h}</b>`).join('') +
       names.map(n => `<span>${n}</span>` + [0, 1, 2, 3].map(ph => `<img width="140" height="200" style="object-fit:cover" src="data:image/svg+xml;charset=utf-8,${encodeURIComponent(ART.scene(n, ph).replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" width="393" height="560" ').replace('</svg>', `<style>${css}</style></svg>`))}">`).join('')).join('') + '</div>';
   }, [only, CSS]);
   await page.setViewportSize({ width: 680, height: 400 });

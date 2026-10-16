@@ -15,7 +15,7 @@ const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { c
 const pick = a => a[Math.floor(Math.random() * a.length)];
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const NAMES = ['Hertil', 'Tælleren', 'Samleren', 'Grundvæversken', 'Ikket', 'Bagvendte', 'Husfolket', 'Spejlet', 'Sluget', 'Mølen', 'Ungen', 'Bunden', 'Trappen', 'Reden', 'Vævehallen', 'Støvsletten', 'Dammene', 'Markedet', 'I'];
-const PHASES = ['Hvidt lys', 'Gult lys', 'Rødt lys', 'Mørke'];
+const PHASES = ['Gult lys', 'Lyserødt lys', 'Blåt lys', 'Lilla nat'];
 const MOD_CAP = 7; // skill + all bonuses never exceed +7: a natural roll always matters
 const S = () => SESSIONS[(G && G.sess) || 'k1l1'];
 const special = k => (S().special && S().special[k]) || SPECIAL[k]; // a lesson can add or override specials
@@ -158,14 +158,14 @@ function releaseOverlay() {
 }
 /* the light of Hertil changes colour instead of a sun crossing the sky: a small dial on the arrival card */
 let phaseDial = '';
-const LIGHT = ['#ece6d2', '#e2b860', '#b8502e', '#1a1210'];
+const LIGHT = ['#ffe800', '#ff48b0', '#0078bf', '#765ba7'];
 function dialHTML(from, to) {
-  return `<div class="dial"><svg viewBox="0 0 100 24">${PHASES.map((p, i) => `<circle cx="${14 + i * 24}" cy="12" r="${i === to ? 7 : 4}" fill="${LIGHT[i]}" stroke="#8a6a3a" stroke-width="${i === to ? 1.4 : .6}" class="${i === to ? 'd-now' : ''}"/>`).join('')}</svg>
+  return `<div class="dial"><svg viewBox="0 0 100 24">${PHASES.map((p, i) => `<circle cx="${14 + i * 24}" cy="12" r="${i === to ? 7 : 4}" fill="${LIGHT[i]}" stroke="#1d1a5e" stroke-width="${i === to ? 1.4 : .6}" class="${i === to ? 'd-now' : ''}"/>`).join('')}</svg>
     <div class="d-lab"><s>${PHASES[from]}</s> → <b>${PHASES[to]}</b></div></div>`;
 }
 
 /* time passing: the light changes, dims, returns, or several days go by */
-const SKY = { night: ['#b8502e', '#3a1a12', '#0c0806', '#120c08'], dusk: ['#e2b860', '#c8783a', '#7a3020'], dawn: ['#0c0806', '#5a3a26', '#ece6d2'], days: ['#2a1a10', '#c8a060', '#2a1a10', '#c8a060', '#2a1a10'] };
+const SKY = { night: ['#ff48b0', '#0078bf', '#765ba7', '#3a1a6a'], dusk: ['#ffe800', '#ff48b0', '#0078bf'], dawn: ['#3a1a6a', '#ff48b0', '#ffe800'], days: ['#ffe800', '#ff48b0', '#0078bf', '#00a95c', '#ffe800'] };
 async function passTime(kind, title, sub) {
   if (FAST) return;
   AUDIO.sting(kind === 'dawn' ? 'dawn' : kind === 'days' ? 'bell' : 'night');
@@ -306,15 +306,16 @@ function builder(b) {
     let src = b.tiles || [...b.answers[0], ...(b.extra || [])];
     if (hasBoon('ikket')) src = [...src, 'ikke']; // Ikket slips an extra ikke into your sentences
     const tiles = shuffle(src.map((t, i) => ({ t: /^[A-ZÆØÅ]/.test(t) && !NAMES.includes(t.replace(/[.,?!]/g, '')) ? t.toLowerCase() : t, i })));
-    let line = [], mistakes = 0;
+    let line = [], mistakes = 0, first = true;
     const ov = document.createElement('div'); ov.className = 'sheet-ov'; document.body.appendChild(ov);
     const render = (msg, bad) => {
-      ov.innerHTML = `<div class="sheet">
+      ov.innerHTML = `<div class="sheet ${first ? 'enter' : ''}">
         <div class="intent"><small>Sig det på dansk</small>${esc(b.en)}</div>
         <div class="line ${bad ? 'shake' : ''}">${line.map((x, k) => `<button class="tile in ${bad && k === bad.at ? 'wrong' : ''}" data-k="${k}">${esc(x.t)}</button>`).join('') || '<span class="ph">tap the words in order</span>'}</div>
         ${msg ? `<div class="msg">${msg}</div>` : ''}
         <div class="pool">${tiles.map(x => `<button class="tile" data-i="${x.i}" ${line.includes(x) ? 'disabled' : ''}>${esc(x.t)}</button>`).join('')}</div>
         <div class="brow"><button class="btn ghost" id="bClr">Ryd</button>${mistakes >= 2 ? '<button class="btn ghost" id="bShow">Vis svaret</button>' : ''}<button class="btn gold" id="bOk" ${line.length ? '' : 'disabled'}>Sig det</button></div></div>`;
+      first = false;
       ov.querySelectorAll('.pool .tile').forEach(t => t.onclick = () => { line.push(tiles.find(x => x.i === +t.dataset.i)); AUDIO.sting('tile'); render(); });
       ov.querySelectorAll('.line .tile').forEach(t => t.onclick = () => { line.splice(+t.dataset.k, 1); render(); });
       $('#bClr').onclick = () => { line = []; render(); };
@@ -542,8 +543,8 @@ function showMap() {
         <i>${ART.icon(PIN_ICON[l.bg] || 'sten')}</i>${m ? `<em>${m === 'later' ? '☾' : '!'}</em>` : ''}<span>${esc(l.name)}</span></button>`; }).join('')}
       <svg class="route" id="route" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
       <div class="walker" id="walker" style="left:${here.x}%;top:${here.y}%"><b></b></div></div>
-    <div class="mapinfo"><div class="mi-t">${night ? 'Mørke. Only the hollow and the plain are awake. Go and sleep.' : PHASES[G.phase] + ' · hvor vil du hen?'}</div>
-      <div class="mi-k"><span><em>!</em> noget at gøre</span>${marks.includes('later') ? '<span><em class="l">☾</em> i mørket</span>' : ''}${vis.some(([, l]) => l.eph) ? '<span class="ek">◌ only once</span>' : ''}</div>
+    <div class="mapinfo"><div class="mi-t">${night ? 'Lilla nat. Only your nest and the plain are awake. Go to sleep.' : PHASES[G.phase] + ' · hvor vil du hen?'}</div>
+      <div class="mi-k"><span><em>!</em> noget at gøre</span>${marks.includes('later') ? '<span><em class="l">☾</em> om natten</span>' : ''}${vis.some(([, l]) => l.eph) ? '<span class="ek">◌ only once</span>' : ''}</div>
       <div class="mi-q">${questSummary()}</div></div></div>`;
   AUDIO.play('map', G.phase); hud(); releaseOverlay();
   document.querySelectorAll('.pin').forEach(b => b.onclick = () => travel(b.dataset.k));
@@ -573,7 +574,7 @@ function walk(from, to, upto = 1) {
 async function travel(k) {
   if (travel.busy) return;
   const L = S().locations[k];
-  if (!openAt(k, L)) { toast('Mørke. That place is not there in the dark.', 'bad'); const b = document.querySelector(`.pin[data-k="${k}"]`); if (b) { b.classList.remove('nope'); void b.offsetWidth; b.classList.add('nope'); } return; }
+  if (!openAt(k, L)) { toast('Lilla nat. That place has folded itself up for the night.', 'bad'); const b = document.querySelector(`.pin[data-k="${k}"]`); if (b) { b.classList.remove('nope'); void b.offsetWidth; b.classList.add('nope'); } return; }
   travel.busy = true;
   document.querySelectorAll('.pin').forEach(b => b.classList.toggle('dest', b.dataset.k === k));
   if (k === G.loc) {
@@ -616,9 +617,9 @@ async function runInline(ev) {
 async function goSleep() {
   const late = G.phase >= 3;
   const here = S().nodes[G.node];
-  if (!(here && here.home)) await card('Reden', `${PHASES[G.phase]} · back to your hollow`);
+  if (!(here && here.home)) await card('Reden', `${PHASES[G.phase]} · back to your nest`);
   stage('nest', null, 'Reden');
-  logAdd(`<p>${esc(G.flags.Clook ? 'You curl up in the hollow. Far away, on the plain, something is facing this way. You sleep better than you have any right to.' : pick(['You fold yourself into the hollow. The amber is warm, the way a stone is warm after someone has sat on it.', 'You lie down. Your marks itch, then settle, like dust after a door is shut.']))}</p>`, 'narr');
+  logAdd(`<p>${esc(G.flags.Clook ? 'You curl up. Far away, something on the plain is facing this way. You sleep like a stone.' : pick(['You flop into the nest. It purrs.', 'You lie down. Your marks fizz, then settle.']))}</p>`, 'narr');
   await tapOn();
   if (G.today.length >= 3) await review();
   G.day++; G.phase = 0; G.today = []; G.loc = S().home; G.flags.ikketDay = false;
@@ -850,7 +851,7 @@ function journal() {
 function settingsHTML() {
   const row = (k, on, name, en) => `<div class="set"><div class="set-h"><b>${name}</b><i>${en}</i><button class="tog ${SETTINGS[on] ? 'on' : ''}" data-on="${on}" aria-label="${en}"><span></span></button></div>
     <input type="range" min="0" max="100" value="${Math.round(SETTINGS[k] * 100)}" data-k="${k}" ${SETTINGS[on] ? '' : 'disabled'}></div>`;
-  return `<div class="sets">${row('music', 'musicOn', 'Musik', 'music')}${row('amb', 'ambOn', 'Omgivelser', 'ambience: dust, wind, water, the loom')}${row('sfx', 'sfxOn', 'Effekter', 'dice, marks, steps')}${row('voice', 'voiceOn', 'Dansk stemme', 'Danish voice for dialogue')}
+  return `<div class="sets">${row('music', 'musicOn', 'Musik', 'music')}${row('amb', 'ambOn', 'Omgivelser', 'ambience: boings, bubbles, the loom')}${row('sfx', 'sfxOn', 'Effekter', 'dice, marks, steps')}${row('voice', 'voiceOn', 'Dansk stemme', 'Danish voice for dialogue')}
     <div class="set"><div class="set-h"><b>Taletempo</b><i>voice speed</i></div><input type="range" min="60" max="110" value="${Math.round((SETTINGS.rate || .9) * 100)}" data-k="rate"></div>
     <div class="set"><div class="set-h"><b>Animationer</b><i>transition cards & motion</i><button class="tog ${SETTINGS.motion ? 'on' : ''}" data-on="motion"><span></span></button></div></div>
     <button class="btn ghost" id="testv">♪ Test: “Hvorfor kom du hertil?”</button></div>
@@ -873,9 +874,9 @@ function title() {
   let sv = null; try { sv = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { }
   if (sv && !SESSIONS[sv.sess || 'k1l1']) sv = null;
   const svS = sv && SESSIONS[sv.sess || 'k1l1'];
-  $('#app').innerHTML = `<div class="stage title-st">${ART.scene('title', 1)}<div class="dustA"></div><div class="dustB"></div></div>
-    <div class="title"><p class="k">Atlas over et sted, der ikke er</p><h1>Hertil</h1>
-    <p class="tag">You fell. Nobody looks at you. Everybody asks why you came.</p>
+  $('#app').innerHTML = `<div class="stage title-st">${ART.scene('title', 0)}<div class="dustA"></div><div class="dustB"></div></div>
+    <div class="title"><p class="k">en feberdrøm på dansk</p><h1>Hertil</h1>
+    <p class="tag">You fell in. Nobody looks at you. Everybody asks why you came.</p>
     ${sv ? `<button class="btn gold big" id="cont">Fortsæt <small>· ${esc(svS.short)}, dag ${sv.day}</small></button>` : ''}
     <button class="btn ${sv ? 'ghost' : 'gold'} big" id="new">${sv ? 'Fald igen' : 'Fald'}</button>
     <button class="btn ghost big" id="sets">⚙ Indstillinger · lyd</button>

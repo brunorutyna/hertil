@@ -1,26 +1,26 @@
 # Hertil
 
-*You fell. Nobody looks at you. Everybody asks why you came.*
+*You fell in. Nobody looks at you. Everybody asks why you came.*
 
-A story game for learning Danish, played in the browser (phone first). The narrator speaks English; the creatures of Hertil speak Danish, and Danish is how you get them to notice you.
+A story game for learning Danish, played in the browser (phone first). The narrator speaks English, two or three short lines at a time; the creatures of Hertil speak Danish, and Danish is how you get them to notice you.
 
 **Play:** https://brunorutyna.github.io/hertil/ (Android Chrome. Danish speech uses the phone's own voice: Settings → Text-to-speech → install Danish if it is missing.)
 
 ## The world
 
-Hertil is what its creatures call "here". Things keep falling into it: feathers, teeth, keys, you. There are no humans. Everything in Hertil exists because of a reason, and the kind of reason matters: *på grund af* makes a thing that anchors you, *for at* makes a pull you have to follow, *fordi* makes a story you can stand inside. A misplaced *ikke* tears loose and starts eating sentences.
+Hertil is what its creatures call "here". It is loud, bright and printed in three inks that never quite line up. Things keep falling into it: feathers, teeth, keys, a trombone, you. There are no humans. Everything in Hertil exists because of a reason, and the kind of reason matters: *på grund af* makes a thing that anchors you, *for at* makes a pull you have to follow, *fordi* makes a story you can stand inside. A misplaced *ikke* tears loose and starts eating sentences.
 
 ## How it plays
 
 - **Contracts**, solved through dialogue and actions, with a d20. To say something you build the sentence from word tiles: perfect first try gives *advantage*, two or more mistakes *disadvantage*. Tap any Danish word for its meaning (press and hold inside buttons). Asking for English costs attention.
 - **Attention (opmærksomhed)** replaces standing. It decides where the creatures' eyes go: away, a sideways glance, the head half turned. A full look is never given by attention alone.
-- **Imprints (aftryk):** the Danish you catch sticks to you as marks. When you sleep in your hollow, they settle (spaced repetition). The ones you miss stay faint.
+- **Imprints (aftryk):** the Danish you catch sticks to you as marks. When you sleep in your nest, they settle (spaced repetition). The ones you miss stay faint.
 - **Ephemeral places:** some things happen once, and are gone when you leave. They flicker on the map.
 - **Strange dice:** sometimes the die melts, and only your sentence decides (perfect or not). Sometimes the numbers turn into glyphs for a while, and the result is said in Danish words.
 - **Skills grow by use** (Sprog, Løgn, Snige, Handel, Indsigt). No tutorials.
-- **Light instead of time:** Hvidt lys → Gult lys → Rødt lys → Mørke. Art, sound and what is open follow it.
-- **Art** in three manners: Atlas (creatures as specimen plates), Tempera (interiors like faded frescoes), Støv (open places in amber dust). All drawn in SVG.
-- **Sound** generated in the browser: drones, glass harmonica, bowed metal, a stair whose bell rises forever. ⚙ settings for music, ambience, effects and voice.
+- **Light instead of time:** Gult lys → Lyserødt lys → Blåt lys → Lilla nat. Art, sound and what is open follow it.
+- **Art: Feberdrøm.** Everything looks like a risograph zine: fluorescent pink, cobalt, yellow, green and orange inks overprinted slightly off-register, halftone dots, and nothing ever still. All drawn in SVG; the interface is stamped buttons and stickers.
+- **Sound** generated in the browser: bouncy synth-pop with a theme per place (drums, bass, arpeggios, a wobbly lead), playful foley, and effects for stamps, melting dice and scrambled numbers. ⚙ settings for music, ambience, effects and voice.
 
 ## Session 1 · Kapitel 1, Lektion 1 (“Hvorfor kom du hertil?”), about 1½ hours
 
