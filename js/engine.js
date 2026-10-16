@@ -908,7 +908,7 @@ const SPECIAL = {
       <div class="paper-s">${selfLines().map(l => `<p>${daHTML(l)}</p>`).join('') || '<p>(nothing said properly yet)</p>'}</div>
       <p class="dim">${marksCount()} marks have settled into you. ${G.glimpses.length} traces of what you were.</p><button class="btn gold big" id="close">Luk</button></div>`;
     wireWords(ov);
-    await new Promise(r => $('#close').onclick = () => { ov.remove(); r(); });
+    await new Promise(r => ov.querySelector('#close').onclick = () => { ov.remove(); r(); });
   },
 };
 const selfLines = () => [G.origin.reason, G.origin.job, G.origin.place, G.origin.fritid, G.origin.came, G.origin.stay, G.origin.happy].filter(Boolean);
@@ -969,7 +969,7 @@ function journal() {
   };
   ov.querySelectorAll('.jt button').forEach(b => b.onclick = () => show(b.dataset.t));
   show('k');
-  $('#close').onclick = () => ov.remove();
+  ov.querySelector('#close').onclick = () => ov.remove();
 }
 function settingsHTML() {
   const row = (k, on, name, en) => `<div class="set"><div class="set-h"><b>${name}</b><i>${en}</i><button class="tog ${SETTINGS[on] ? 'on' : ''}" data-on="${on}" aria-label="${en}"><span></span></button></div>
@@ -988,7 +988,7 @@ function wireSettings(root) {
 function settingsSheet() {
   const ov = document.createElement('div'); ov.className = 'prep-ov'; document.body.appendChild(ov);
   ov.innerHTML = `<div class="prep"><div class="p-head"><small>Indstillinger</small><h2>Lyd og visning</h2></div>${settingsHTML()}<button class="btn gold big" id="close">Luk</button></div>`;
-  wireSettings(ov); $('#close').onclick = () => ov.remove();
+  wireSettings(ov); ov.querySelector('#close').onclick = () => ov.remove();
 }
 
 /* ---------------- title ---------------- */
@@ -1025,7 +1025,7 @@ function lessonSheet() {
         <button class="btn ${from || L.order === 1 ? 'ghost' : 'gold'}" data-s="${L.id}">Begynd</button></div>`; }).join('')}</div>
     <button class="btn ghost big" id="close">Tilbage</button></div>`;
   ov.querySelectorAll('[data-s]').forEach(b => b.onclick = () => { ov.remove(); const L = SESSIONS[b.dataset.s]; newGame(L.id, b.dataset.carry ? carry[L.prevSession] : null); goNode(S().start); });
-  $('#close').onclick = () => ov.remove();
+  ov.querySelector('#close').onclick = () => ov.remove();
 }
 
 TTS.init();
