@@ -647,7 +647,7 @@ function review() {
       const k = words[i], V = VOCAB[k];
       const others = shuffle(Object.keys(VOCAB).filter(x => x !== k && VOCAB[x].set === V.set)).slice(0, 2);
       const opts = shuffle([k, ...others]);
-      const mode = V.def && Math.random() < .5 ? 'def' : pick(['icon2da', 'da2icon']);
+      const mode = V.def && (V.set === 'job' || Math.random() < .5) ? 'def' : pick(['icon2da', 'da2icon']); // job icons are only loose symbols, so jobs are asked by definition
       const prompt = mode === 'def' ? `<div class="rv-def">${daHTML(V.def)}</div>` : mode === 'icon2da' ? `<div class="rv-ico">${ART.icon(V.icon)}</div>` : `<div class="rv-da">${esc(V.da)}</div>`;
       ov.innerHTML = `<div class="prep rv"><div class="p-head"><small>Aftrykkene sætter sig · ${i + 1}/${words.length}</small><h2>${mode === 'da2icon' ? 'Which mark is it?' : 'What is it in Danish?'}</h2></div>
         ${prompt}<div class="rv-opts ${mode === 'da2icon' ? 'icons' : ''}">${opts.map(x => `<button class="rv-o" data-k="${x}">${mode === 'da2icon' ? ART.icon(VOCAB[x].icon) : esc(VOCAB[x].da)}</button>`).join('')}</div></div>`;
