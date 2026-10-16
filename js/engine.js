@@ -882,8 +882,8 @@ const SPECIAL = {
           ov.querySelector('.voc').innerHTML = `<div class="v-h"><small>${esc(Q.title)}</small><h2>${right} / ${Q.rounds.length}</h2><p>${esc(Q.end(right))}</p></div><button class="btn gold big" id="vDone">Færdig</button>`;
           $('#vDone').onclick = () => { ov.remove(); resolve(right); }; return;
         }
-        const r = Q.rounds[i];
-        const opts = shuffle([r.npc, ...shuffle(Q.pool.filter(n => n !== r.npc)).slice(0, 2)]);
+        const r0 = Q.rounds[i], r = r0.alt && r0.alt.req(G) ? { ...r0, ...r0.alt } : r0; // a round can follow the story (e.g. a creature still in its cocoon)
+        const opts = shuffle([r.npc, ...shuffle(Q.pool.filter(n => n !== r.npc && !(r.not || []).includes(n))).slice(0, 2)]);
         (r.words || []).forEach(addWord);
         ov.querySelector('.voc').innerHTML = `<div class="v-h"><small>${esc(Q.title)} · ${i + 1}/${Q.rounds.length}</small><h2>Hvem er det?</h2><div class="notice">${r.lines.map(l => daHTML(l)).join(' ')}</div></div>
           <div class="faces">${opts.map(n => `<button class="rv-o face" data-n="${n}">${ART.creature(NPCS[n].art, 0, true)}</button>`).join('')}</div>`;
