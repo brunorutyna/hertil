@@ -14,8 +14,10 @@ const sleep = ms => new Promise(r => setTimeout(r, FAST ? 0 : ms));
 const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 const pick = a => a[Math.floor(Math.random() * a.length)];
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-const NAMES = ['Hertil', 'Tælleren', 'Samleren', 'Grundvæversken', 'Ikket', 'Bagvendte', 'Husfolket', 'Spejlet', 'Sluget', 'Mølen', 'Ungen', 'Bunden', 'Trappen', 'Reden', 'Vævehallen', 'Støvsletten', 'Dammene', 'Markedet', 'I', 'Uret', 'Savnet', 'Engen', 'Fjergade', 'Tandvej', 'Torvet', 'Bydelen', 'Kirken', 'Bageren', 'Larmen', 'Vaskeriet', 'Naboen', 'Støvstræde', 'Ekko', 'Allé', 'Lilla', 'Plads', 'Klokkegade'];
+const NAMES = ['Hertil', 'Tælleren', 'Samleren', 'Grundvæversken', 'Ikket', 'Bagvendte', 'Husfolket', 'Spejlet', 'Sluget', 'Mølen', 'Ungen', 'Bunden', 'Trappen', 'Reden', 'Vævehallen', 'Støvsletten', 'Dammene', 'Markedet', 'I', 'Uret', 'Savnet', 'Engen', 'Fjergade', 'Tandvej', 'Torvet', 'Bydelen', 'Kirken', 'Bageren', 'Larmen', 'Vaskeriet', 'Naboen', 'Støvstræde', 'Ekko', 'Allé', 'Lilla', 'Plads', 'Klokkegade', 'Derhenne', 'Stemplet', 'Kranen', 'Elevatoren', 'Arkivet', 'Halvdelen', 'Haven', 'Kantinen', 'Blyanten', 'Kopimaskinen', 'Porten', 'Taget', 'Køjerne', 'Tegnestuen', 'Kontoret', 'Vejlederen', 'Knagen', 'Holdet', 'Rygtet', 'Kalenderen', 'Telefonen', 'Chefen', 'Skolen', 'Naboen'];
 const PHASES = ['Gult lys', 'Lyserødt lys', 'Blåt lys', 'Lilla nat'];
+const PH = i => ((typeof SESSIONS !== 'undefined' && G && S().phases) || PHASES)[i]; // a chapter can name its own times of day
+const chapOf = id => (SESSIONS[id] && SESSIONS[id].chap) || 1;
 const MOD_CAP = 4; // skill + all bonuses never exceed +4: the roll itself always matters (Bruno: bonuses made success too easy)
 const S = () => SESSIONS[(G && G.sess) || 'k1l1'];
 const special = k => (S().special && S().special[k]) || SPECIAL[k]; // a lesson can add or override specials
@@ -61,6 +63,7 @@ function newGame(sess = 'k1l1', from = null) {
   if (from) {
     ['statXP', 'resp', 'sk', 'boons', 'origin', 'day', 'met'].forEach(k => G[k] = JSON.parse(JSON.stringify(from[k] || G[k])));
     G.insp = Math.max(1, from.insp); G.prev = Object.assign({}, from.prev, from.carried || {}); G.prevGlimpses = (from.prevGlimpses || 0) + (from.glimpses || []).length;
+    if (chapOf(from.sess) !== chapOf(sess)) { G.resp = 0; G.day = 1; G.newPlace = true; } // a new place: nobody there knows you yet
   } else if (st) Object.assign(G, JSON.parse(JSON.stringify(st)));
 }
 function carryOut() {
@@ -115,7 +118,7 @@ function refreshGaze(before) {
 function hud() {
   const h = $('#hud');
   if (!G) { h.innerHTML = ''; return; }
-  h.innerHTML = `<div class="h-l"><b>${esc(tierName())}</b><small>Dag ${G.day} · ${PHASES[G.phase]}</small></div>
+  h.innerHTML = `<div class="h-l"><b>${esc(tierName())}</b><small>Dag ${G.day} · ${PH(G.phase)}</small></div>
     <div class="h-r"><span>${G.sk} skæl</span><span class="insp">✦ ${G.insp}</span><button class="ib" id="bJ" aria-label="Dagbog">☰</button></div>`;
   $('#bJ').onclick = journal;
 }
@@ -202,8 +205,8 @@ function releaseOverlay() {
 let phaseDial = '';
 const LIGHT = ['#ffe800', '#ff48b0', '#0078bf', '#765ba7'];
 function dialHTML(from, to) {
-  return `<div class="dial"><svg viewBox="0 0 100 24">${PHASES.map((p, i) => `<circle cx="${14 + i * 24}" cy="12" r="${i === to ? 7 : 4}" fill="${LIGHT[i]}" stroke="#1d1a5e" stroke-width="${i === to ? 1.4 : .6}" class="${i === to ? 'd-now' : ''}"/>`).join('')}</svg>
-    <div class="d-lab"><s>${PHASES[from]}</s> → <b>${PHASES[to]}</b></div></div>`;
+  return `<div class="dial"><svg viewBox="0 0 100 24">${[0, 1, 2, 3].map((p, i) => `<circle cx="${14 + i * 24}" cy="12" r="${i === to ? 7 : 4}" fill="${(S().light || LIGHT)[i]}" stroke="#1d1a5e" stroke-width="${i === to ? 1.4 : .6}" class="${i === to ? 'd-now' : ''}"/>`).join('')}</svg>
+    <div class="d-lab"><s>${PH(from)}</s> → <b>${PH(to)}</b></div></div>`;
 }
 
 /* time passing: the light changes, dims, returns, or several days go by */
@@ -234,8 +237,9 @@ function npcHTML(id, mode = '') {
   return `<div class="npc ${npc.small ? 'small' : ''} ${npc.big ? 'big' : ''} ${mode}" id="npc">${ART.creature(npc.art, gazeOf(id))}</div>`;
 }
 function meet(id) { if (id && !G.met.includes(id)) G.met.push(id); }
+function skin() { document.body.dataset.ch = G ? (S().chap || 1) : 1; }
 function stage(bg, npcId, title) {
-  G.bg = bg;
+  G.bg = bg; skin();
   $('#app').innerHTML = `
     <div class="stage" id="stage">${ART.scene(bg, G ? G.phase : 3)}<div class="dustA"></div><div class="dustB"></div>
       ${npcId ? npcHTML(npcId) : ''}
@@ -471,6 +475,10 @@ function modsFor(o) {
   if (o.stat === 'LOEGN' && hasBoon('band')) mods.push({ t: 'Bandet', v: 1 });
   if (o.stat === 'HANDEL' && hasBoon('glas')) mods.push({ t: 'Larm på glas', v: 1 });
   if (o.stat === 'SPROG' && hasBoon('artikel')) mods.push({ t: 'En artikel', v: 1 });
+  // Kapitel 2 gifts: a stat each (MOD_CAP keeps the roll risky however many you carry)
+  [['kode', 'INDSIGT', 'Koden'], ['bakke', 'HANDEL', 'Bakken'], ['hue', 'SPROG', 'Studenterhuen'], ['stillads', 'SNIGE', 'Stilladset'], ['froe', 'INDSIGT', 'Frøet'], ['kartotek', 'SPROG', 'Kartotekskortet'],
+    ['skuffe', 'HANDEL', 'Skuffen'], ['kompas', 'INDSIGT', 'Kompasnålen'], ['skema', 'SPROG', 'Skemaet'], ['knap', 'HANDEL', 'Knappen'], ['hat', 'LOEGN', 'Hans hat'], ['soed', 'SPROG', 'Sødmen'],
+    ['tavshed', 'SNIGE', 'Tavsheden'], ['kalenderblad', 'HANDEL', 'Kalenderbladet'], ['telefonroer', 'INDSIGT', 'Telefonrøret']].forEach(([b, st, t]) => { if (o.stat === st && hasBoon(b)) mods.push({ t, v: 1 }); });
   if (o.bonus) { const b = o.bonus(G); if (b) mods.push({ t: o.bonusWhy || 'Bonus', v: b }); }
   if ((o.kind === 'say' || o.kind === 'lie') && G.resp >= 5) mods.push({ t: 'Vægt', v: 1 });
   return mods;
@@ -550,7 +558,7 @@ async function goNode(id) {
     if (typeof next === 'function') next = next(G);
     save();
     if (o.newDay) { G.day++; G.phase = 0; save(); }
-    const ops = o.pass ? passArgs(o.pass, id) : o.newDay ? ['night', `Dag ${G.day}`, PHASES[0]] : null;
+    const ops = o.pass ? passArgs(o.pass, id) : o.newDay ? ['night', `Dag ${G.day}`, PH(0)] : null;
     if (ops) await passTime(...ops);
     if (next) return goNode(next);
     if (!node.hub) return showMap();
@@ -578,34 +586,37 @@ function locMarked(k) {
   return '';
 }
 const openAt = (k, l) => G.phase < 3 || l.night;
-const HUB = { x: 50, y: 50 }; // Bunden: every path in Hertil passes through where things land
+const HUB0 = { x: 50, y: 50 }; // Bunden: every path in Hertil passes through where things land
+const hubOf = () => S().hub || HUB0;
 const PIN_ICON = { nest: 'aeg', bottom: 'fjer', stair: 'trappe', hall: 'traad', plain: 'gren', ponds: 'spejl', market: 'skael' };
+// in a tower the paths are corridors: along your floor to the lift, up or down the shaft, along the other floor
 function roadPath(a, b) {
-  const d = Math.hypot(a.x - b.x, a.y - b.y);
+  if (S().map === 'tower') { const x = hubOf().x; return a.y === b.y ? `M${a.x} ${a.y} H${b.x}` : `M${a.x} ${a.y} H${x} V${b.y} H${b.x}`; }
+  const HUB = hubOf(), d = Math.hypot(a.x - b.x, a.y - b.y);
   const via = (Math.hypot(a.x - HUB.x, a.y - HUB.y) < 4 || Math.hypot(b.x - HUB.x, b.y - HUB.y) < 4 || d < 16) ? { x: (a.x + b.x) / 2 + (b.y - a.y) * .22, y: (a.y + b.y) / 2 - (b.x - a.x) * .22 } : { x: (HUB.x * 2 + a.x + b.x) / 4, y: (HUB.y * 2 + a.y + b.y) / 4 };
   return `M${a.x} ${a.y} Q${via.x} ${via.y} ${b.x} ${b.y}`;
 }
 function showMap() {
   checkVersion();
   G.node = 'map'; G.npc = null; save();
-  const L = S().locations;
+  const L = S().locations, HUB = hubOf();
   const night = G.phase >= 3;
   const vis = Object.entries(L).filter(([k, l]) => !l.req || l.req(G));
   const hubKey = Object.keys(L).find(k => Math.hypot(L[k].x - HUB.x, L[k].y - HUB.y) < 4);
-  const roads = vis.filter(([k]) => k !== hubKey).map(([k, l]) => `<path d="${roadPath(l, HUB)}" class="road ${l.eph ? 'eph' : ''}"/>`).join('');
+  const roads = vis.filter(([k]) => k !== hubKey).map(([k, l]) => `<path d="${S().map === 'tower' ? `M${l.x} ${l.y} H${HUB.x}` : roadPath(l, HUB)}" class="road ${l.eph ? 'eph' : ''}"/>`).join('') + (S().map === 'tower' ? `<path d="M${HUB.x} ${Math.min(...vis.map(([, l]) => l.y))} V${Math.max(...vis.map(([, l]) => l.y))}" class="road shaft"/>` : '');
   const here = L[G.loc] || L[S().home];
   const marks = vis.map(([k]) => locMarked(k));
-  $('#app').innerHTML = `<div class="mapview ph${G.phase}"><div class="mapbox">${ART.scene('map', G.phase).replace('xMidYMin slice', 'xMidYMid meet')}
+  $('#app').innerHTML = `<div class="mapview ph${G.phase}"><div class="mapbox">${ART.scene(S().mapScene || 'map', G.phase).replace('xMidYMin slice', 'xMidYMid meet')}
       <svg class="roads" viewBox="0 0 100 100" preserveAspectRatio="none">${roads}</svg>
       <div class="mapsky"></div><div class="mapdust"></div>
       ${vis.map(([k, l], n) => { const m = marks[n]; return `<button class="pin ${m === 'now' ? 'mark' : m === 'later' ? 'later' : ''} ${G.loc === k ? 'here' : ''} ${!openAt(k, l) ? 'shut' : ''} ${l.eph ? 'eph' : ''}" data-k="${k}" style="left:${l.x}%;top:${l.y}%;animation-delay:${.15 + n * .05}s">
-        <i>${ART.icon(PIN_ICON[l.bg] || 'sten')}</i>${m ? `<em>${m === 'later' ? '☾' : '!'}</em>` : ''}<span>${esc(l.name)}</span></button>`; }).join('')}
+        <i>${ART.icon(l.icon || PIN_ICON[l.bg] || 'sten')}</i>${m ? `<em>${m === 'later' ? '☾' : '!'}</em>` : ''}<span>${esc(l.name)}</span></button>`; }).join('')}
       <svg class="route" id="route" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
       <div class="walker" id="walker" style="left:${here.x}%;top:${here.y}%"><b></b></div></div>
-    <div class="mapinfo"><div class="mi-t">${night ? 'Lilla nat. Only your nest and the plain are awake. Go to sleep.' : PHASES[G.phase] + ' · hvor vil du hen?'}</div>
+    <div class="mapinfo"><div class="mi-t">${night ? (S().nightText || 'Lilla nat. Only your nest and the plain are awake. Go to sleep.') : PH(G.phase) + ' · hvor vil du hen?'}</div>
       <div class="mi-k"><span><em>!</em> noget at gøre</span>${marks.includes('later') ? '<span><em class="l">☾</em> om natten</span>' : ''}${vis.some(([, l]) => l.eph) ? '<span class="ek">◌ only once</span>' : ''}</div>
       <div class="mi-q">${questSummary()}</div></div></div>`;
-  AUDIO.play('map', G.phase); hud(); releaseOverlay();
+  AUDIO.play(S().mapScene || 'map', G.phase); skin(); hud(); releaseOverlay();
   document.querySelectorAll('.pin').forEach(b => b.onclick = () => travel(b.dataset.k));
 }
 function questSummary() {
@@ -633,7 +644,7 @@ function walk(from, to, upto = 1) {
 async function travel(k) {
   if (travel.busy) return;
   const L = S().locations[k];
-  if (!openAt(k, L)) { toast('Lilla nat. That place has folded itself up for the night.', 'bad'); const b = document.querySelector(`.pin[data-k="${k}"]`); if (b) { b.classList.remove('nope'); void b.offsetWidth; b.classList.add('nope'); } return; }
+  if (!openAt(k, L)) { toast(S().shutText || 'Lilla nat. That place has folded itself up for the night.', 'bad'); const b = document.querySelector(`.pin[data-k="${k}"]`); if (b) { b.classList.remove('nope'); void b.offsetWidth; b.classList.add('nope'); } return; }
   travel.busy = true;
   document.querySelectorAll('.pin').forEach(b => b.classList.toggle('dest', b.dataset.k === k));
   if (k === G.loc) {
@@ -659,7 +670,7 @@ async function travel(k) {
   const entry = L.entry(G), en = S().nodes[entry];
   if (en && (en.pass || en.card)) return goNode(entry);
   if (G.phase !== ph0) { phaseDial = dialHTML(ph0, G.phase); if (G.phase === 3) AUDIO.sting('night'); }
-  await card(L.name, `${PHASES[G.phase]} · ${L.en}`);
+  await card(L.name, `${PH(G.phase)} · ${L.en}`);
   phaseDial = '';
   goNode(entry);
 }
@@ -676,15 +687,16 @@ async function runInline(ev) {
 async function goSleep() {
   const late = G.phase >= 3;
   const here = S().nodes[G.node];
-  if (!(here && here.home)) await card('Reden', `${PHASES[G.phase]} · back to your nest`);
-  stage('nest', null, 'Reden');
-  logAdd(`<p>${esc(G.flags.Clook ? 'You curl up. Far away, something on the plain is facing this way. You sleep like a stone.' : pick(['You flop into the nest. It purrs.', 'You lie down. Your marks fizz, then settle.']))}</p>`, 'narr');
+  const bed = S().bed || { bg: 'nest', name: 'Reden', en: 'back to your nest', texts: ['You flop into the nest. It purrs.', 'You lie down. Your marks fizz, then settle.'] };
+  if (!(here && here.home)) await card(bed.name, `${PH(G.phase)} · ${bed.en}`);
+  stage(bed.bg, null, bed.name);
+  logAdd(`<p>${esc(G.flags.Clook && !S().bed ? 'You curl up. Far away, something on the plain is facing this way. You sleep like a stone.' : pick(bed.texts))}</p>`, 'narr');
   await tapOn();
   if (G.today.length >= 3) await review();
   G.day++; G.phase = 0; G.today = []; G.loc = S().home; G.flags.ikketDay = false;
-  G.insp = Math.max(G.insp, hasBoon('doer') ? 2 : 1) + (hasBoon('rytter') ? 1 : 0);
+  G.insp = Math.max(G.insp, hasBoon('doer') || hasBoon('dyne') ? 2 : 1) + (hasBoon('rytter') ? 1 : 0) + (hasBoon('tag') ? 1 : 0);
   save();
-  await passTime(late ? 'dawn' : 'night', `Dag ${G.day}`, PHASES[0]);
+  await passTime(late ? 'dawn' : 'night', `Dag ${G.day}`, PH(0));
   showMap();
 }
 function review() {
@@ -703,7 +715,7 @@ function review() {
       const k = words[i], V = VOCAB[k];
       const others = shuffle(Object.keys(VOCAB).filter(x => x !== k && VOCAB[x].set === V.set)).slice(0, 2);
       const opts = shuffle([k, ...others]);
-      const mode = V.def && (V.set === 'job' || Math.random() < .5) ? 'def' : pick(['icon2da', 'da2icon']); // job icons are only loose symbols, so jobs are asked by definition
+      const mode = V.def && (V.set === 'job' || V.defOnly || Math.random() < .5) ? 'def' : pick(['icon2da', 'da2icon']); // job icons are only loose symbols, so jobs are asked by definition
       const prompt = mode === 'def' ? `<div class="rv-def">${daHTML(V.def)}</div>` : mode === 'icon2da' ? `<div class="rv-ico">${ART.icon(V.icon)}</div>` : `<div class="rv-da">${esc(V.da)}</div>`;
       ov.innerHTML = `<div class="prep rv"><div class="p-head"><small>Aftrykkene sætter sig · ${i + 1}/${words.length}</small><h2>${mode === 'da2icon' ? 'Which mark is it?' : 'What is it in Danish?'}</h2></div>
         ${prompt}<div class="rv-opts ${mode === 'da2icon' ? 'icons' : ''}">${opts.map(x => `<button class="rv-o" data-k="${x}">${mode === 'da2icon' ? ART.icon(VOCAB[x].icon) : esc(VOCAB[x].da)}</button>`).join('')}</div></div>`;
@@ -996,6 +1008,103 @@ const SPECIAL = {
       round();
     });
   },
+  /* Hvem er det, der …? A row of creatures; a der-clause points at one of them */
+  lineup(id) {
+    return new Promise(resolve => {
+      const Q = S().lineups[id]; let i = 0, right = 0;
+      const ov = vocabSheet('');
+      const round = () => {
+        if (i >= Q.rounds.length) {
+          G.flags[Q.flag || id + 'Done'] = true; G.flags[id + 'Score'] = right;
+          ov.querySelector('.voc').innerHTML = `<div class="v-h"><small>${esc(Q.title)}</small><h2>${right} / ${Q.rounds.length}</h2><p>${esc(Q.end(right))}</p></div><button class="btn gold big" id="vDone">Færdig</button>`;
+          ov.querySelector('#vDone').onclick = () => { ov.remove(); resolve(right); }; return;
+        }
+        const r = Q.rounds[i];
+        ov.querySelector('.voc').innerHTML = `<div class="v-h"><small>${esc(Q.title)} · ${i + 1}/${Q.rounds.length}</small><h2>${esc(Q.h2 || 'Hvem er det?')}</h2><div class="notice">${daHTML(r.clue)} <button class="tb" id="luSay">♪</button></div></div>
+          <div class="faces lineup">${Q.pool.map(n => `<button class="rv-o face" data-n="${n}">${ART.creature(NPCS[n].art, 0, true)}</button>`).join('')}</div>`;
+        wireWords(ov); TTS.say(r.clue);
+        ov.querySelector('#luSay').onclick = () => TTS.say(r.clue, true);
+        ov.querySelectorAll('.rv-o').forEach(b => b.onclick = async () => {
+          const ok = b.dataset.n === r.npc;
+          ov.querySelectorAll('.rv-o').forEach(x => x.disabled = true);
+          b.classList.add(ok ? 'ok' : 'no'); if (!ok) ov.querySelector(`.rv-o[data-n="${r.npc}"]`).classList.add('ok');
+          if (ok) { right++; AUDIO.sting('coin'); statGain('INDSIGT', 1); } else AUDIO.sting('lose');
+          const cap = document.createElement('div'); cap.className = 'rv-cap'; cap.innerHTML = `<b>${esc(NPCS[r.npc].name)}</b><br><i>${esc(r.why)}</i>`; ov.querySelector('.voc').appendChild(cap);
+          await sleep(ok ? 1400 : 2600); i++; round();
+        });
+      };
+      round();
+    });
+  },
+  /* Kan vi sige …? A week, a few times a day, and creatures with hidden calendars.
+     Propose a slot; each creature answers. A refusal tells you a rule ("om mandagen …"), and the grid remembers it. */
+  calendar(id) {
+    return new Promise(resolve => {
+      const K = S().calendars[id], nD = K.days.length, nT = K.times.length;
+      const known = {}, tried = {}; let props = 0;
+      const covers = (b, d, t) => (b.d === undefined || b.d === d) && (b.t === undefined || b.t === t);
+      const busyRule = (w, d, t) => w.busy.find(b => covers(b, d, t));
+      const ov = vocabSheet(''); const log = [];
+      const cellHTML = (d, t) => { const marks = K.who.filter((w, wi) => (known[wi] || []).some(b => covers(b, d, t))); return `<button class="rv-o cal-c ${marks.length ? 'busy' : ''} ${tried[d + '-' + t] ? 'tried' : ''}" data-d="${d}" data-t="${t}" ${tried[d + '-' + t] ? 'disabled' : ''}>${marks.map(w => `<i style="background:${w.color}"></i>`).join('')}</button>`; };
+      const draw = done => {
+        ov.querySelector('.voc').innerHTML = `<div class="v-h"><small>${esc(K.title)} · ${props} ${props === 1 ? 'forslag' : 'forslag'}</small><h2>${done ? 'Det er en aftale.' : esc(K.q || 'Hvornår kan alle?')}</h2>${done ? '' : `<p>${esc(K.hint)}</p>`}</div>
+          <div class="cal-who">${K.who.map(w => `<span><i style="background:${w.color}"></i>${esc(NPCS[w.npc].name)}</span>`).join('')}</div>
+          <div class="cal" style="grid-template-columns:auto repeat(${nD},1fr)"><span></span>${K.days.map(d => `<b>${esc(d.slice(0, 3))}</b>`).join('')}
+            ${K.times.map((tm, t) => `<b class="tm">${esc(tm[1])}</b>${K.days.map((_, d) => cellHTML(d, t)).join('')}`).join('')}</div>
+          <div class="cal-log">${log.slice(-6).map(l => `<p class="${l.c || ''}">${l.h}</p>`).join('')}</div>${done ? '<button class="btn gold big" id="vDone">Færdig</button>' : ''}`;
+        wireWords(ov);
+        if (done) { ov.querySelector('#vDone').onclick = () => { ov.remove(); resolve(props); }; return; }
+        ov.querySelectorAll('.cal-c:not([disabled])').forEach(b => b.onclick = () => propose(+b.dataset.d, +b.dataset.t));
+        __dev.cal = () => { for (let d = 0; d < nD; d++) for (let t = 0; t < nT; t++) if (K.who.every(w => !busyRule(w, d, t))) return [d, t]; };
+      };
+      const propose = async (d, t) => {
+        props++; tried[d + '-' + t] = true;
+        const q = `Kan vi sige på ${K.days[d]}, ${K.times[t][0]}?`; log.push({ h: `<b>Du:</b> “${daHTML(q)}”`, c: 'you' }); TTS.say(q, false, true);
+        let all = true;
+        K.who.forEach((w, wi) => {
+          const b = busyRule(w, d, t);
+          if (b) { all = false; (known[wi] = known[wi] || []).includes(b) || known[wi].push(b); log.push({ h: `<b style="color:${w.color}">${esc(NPCS[w.npc].name)}:</b> “${daHTML('Det kan jeg desværre ikke. ' + b.why)}”` }); }
+          else log.push({ h: `<b style="color:${w.color}">${esc(NPCS[w.npc].name)}:</b> “${daHTML('Det passer mig fint.')}”` });
+        });
+        if (all) { log.push({ h: `“${daHTML('Lad os sige det. Det er en aftale.')}”`, c: 'ok' }); AUDIO.sting('win'); statGain('HANDEL', 2); G.flags[K.flag || id + 'Done'] = true; G.flags[id + 'Props'] = props; G.flags[id + 'Slot'] = K.days[d] + ', ' + K.times[t][0]; draw(true); return; }
+        AUDIO.sting('tick');
+        draw(false);
+      };
+      draw(false);
+    });
+  },
+  /* Hvor er han henne? A tower, floor by floor. ned / op / ind / ud / hen / hjem: on the way (in the lift).
+     nede / oppe / inde / ude / henne / hjemme: already there (in the room). */
+  whereis(id) {
+    return new Promise(resolve => {
+      const W = S().whereis[id]; let i = 0, right = 0, miss = 0;
+      const ov = vocabSheet('');
+      const round = () => {
+        if (i >= W.rounds.length) {
+          G.flags[W.flag || id + 'Done'] = true; G.flags[id + 'Score'] = right;
+          ov.querySelector('.voc').innerHTML = `<div class="v-h"><small>${esc(W.title)}</small><h2>${right} / ${W.rounds.length}</h2><p>${esc(right >= W.rounds.length - 1 ? W.good : W.meh)}</p></div><button class="btn gold big" id="vDone">Færdig</button>`;
+          ov.querySelector('#vDone').onclick = () => { ov.remove(); resolve(right); }; return;
+        }
+        const r = W.rounds[i];
+        ov.querySelector('.voc').innerHTML = `<div class="v-h"><small>${esc(W.title)} · ${i + 1}/${W.rounds.length}</small><h2>Hvor er ${esc(NPCS[r.npc].name)} henne?</h2>
+          <div class="fp-clue"><span class="wi-face">${ART.creature(NPCS[r.npc].art, 0, true)}</span><div>${daHTML(r.clue)} <button class="tb" id="wiSay">♪</button></div></div></div>
+          <div class="wi"><div class="wi-h"><small>på vej</small><small>der</small></div>${W.floors.map(([k, name]) => `<div class="wi-row"><button class="rv-o wi-lift" data-f="${k}" data-m="1" aria-label="på vej til ${esc(name)}">⇅</button><button class="rv-o wi-room" data-f="${k}" data-m="0">${esc(name)}</button></div>`).join('')}</div>`;
+        wireWords(ov); TTS.say(r.clue);
+        ov.querySelector('#wiSay').onclick = () => TTS.say(r.clue, true);
+        const target = `.rv-o[data-f="${r.floor}"][data-m="${r.moving ? 1 : 0}"]`;
+        ov.querySelectorAll('.rv-o').forEach(b => b.onclick = async () => {
+          const ok = b.dataset.f === r.floor && (b.dataset.m === '1') === !!r.moving;
+          ov.querySelectorAll('.rv-o').forEach(x => x.disabled = true);
+          b.classList.add(ok ? 'ok' : 'no'); if (!ok) ov.querySelector(target).classList.add('ok');
+          if (ok) { right++; AUDIO.sting('win'); statGain('INDSIGT', 1); } else { miss++; AUDIO.sting('lose'); }
+          const cap = document.createElement('div'); cap.className = 'rv-cap'; cap.innerHTML = `<i>${esc(r.why)}</i>`; ov.querySelector('.voc').appendChild(cap);
+          await sleep(ok ? 1500 : 2800); i++; round();
+        });
+        __dev.wi = () => target;
+      };
+      round();
+    });
+  },
   async buyInsp() { if (G.sk >= 6) { G.sk -= 6; fx({ insp: 1 }); AUDIO.sting('coin'); } else toast('You cannot afford it. The moth is busy counting its own sparks.', 'bad'); },
   /* look at yourself: a plate in the atlas of Hertil, drawn from what you have said and caught */
   async selfPlate() {
@@ -1007,7 +1116,7 @@ const SPECIAL = {
     await new Promise(r => ov.querySelector('#close').onclick = () => { ov.remove(); r(); });
   },
 };
-const selfLines = () => [G.origin.reason, G.origin.job, G.origin.place, G.origin.fritid, G.origin.came, G.origin.stay, G.origin.happy, G.origin.addr, G.origin.hood].filter(Boolean);
+const selfLines = () => [G.origin.reason, G.origin.job, G.origin.place, G.origin.fritid, G.origin.came, G.origin.stay, G.origin.happy, G.origin.addr, G.origin.hood, G.origin.work, G.origin.busy, G.origin.wish, G.origin.going, G.origin.colleague, G.origin.opinion, G.origin.appt, G.origin.promise].filter(Boolean);
 
 /* ---------------- end of lesson ---------------- */
 function endScreen() {
@@ -1026,7 +1135,7 @@ function endScreen() {
     <h3>Registreret · as you said it</h3><div class="paper-s">${selfLines().map(l => `<p>${daHTML(l)}</p>`).join('') || '<p>(nothing said properly yet)</p>'}</div>
     <div class="grid">
       <div><span>Vægt</span><b>${esc(tierName())}</b><small>${G.resp}</small></div>
-      <div><span>Dage</span><b>${G.day}</b><small>in Hertil</small></div>
+      <div><span>Dage</span><b>${G.day}</b><small>in ${esc(S().place || 'Hertil')}</small></div>
       <div><span>Sætninger</span><b>${L.built}</b><small>${L.perfect} perfect first try</small></div>
       <div><span>Terninger</span><b>${L.wins}/${L.rolls}</b><small>${L.melted ? `${L.melted} melted` : 'successful rolls'}</small></div>
       <div><span>Aftryk</span><b>${known}</b><small>words caught</small></div>
@@ -1059,7 +1168,7 @@ function journal() {
     s: () => settingsHTML() + `<button class="btn ghost big" id="restart">Start forfra (new game)</button>`,
   };
   const names = { k: 'Kontrakter', f: 'Færdigheder', o: 'Aftryk', r: 'Regler', g: 'Spor', a: 'Atlas', s: 'Indstillinger' };
-  ov.innerHTML = `<div class="prep"><div class="p-head"><small>Dagbog</small><h2>Dag ${G.day} · ${PHASES[G.phase]}</h2></div>
+  ov.innerHTML = `<div class="prep"><div class="p-head"><small>Dagbog</small><h2>Dag ${G.day} · ${PH(G.phase)}</h2></div>
     <div class="jt">${Object.keys(tabs).map((k, i) => `<button data-t="${k}" class="${i ? '' : 'on'}">${names[k]}</button>`).join('')}</div><div class="jb"></div>
     <button class="btn gold big" id="close">Luk</button>
     <button class="btn ghost big" id="jMenu">Til menuen <small>· your game is saved</small></button></div>`;
@@ -1098,7 +1207,7 @@ function settingsSheet() {
 
 /* ---------------- title ---------------- */
 function title() {
-  G = null; hud();
+  G = null; hud(); skin();
   let sv = null; try { sv = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { }
   if (sv && !SESSIONS[sv.sess || 'k1l1']) sv = null;
   const svS = sv && SESSIONS[sv.sess || 'k1l1'];
@@ -1124,12 +1233,13 @@ function lessonSheet() {
   if (list.length === 1) { newGame(list[0].id); goNode(S().start); return; }
   const carry = META.carry || {};
   const ov = document.createElement('div'); ov.className = 'prep-ov'; document.body.appendChild(ov);
-  ov.innerHTML = `<div class="prep"><div class="p-head"><small>Kapitel 1</small><h2>Vælg lektion</h2><p>Each lesson follows one session of the book and takes about an hour and a half.</p>${sv ? `<p class="warn">Starting a lesson replaces your saved game (${esc((SESSIONS[sv.sess || 'k1l1'] || {}).short || '')}, dag ${sv.day}).</p>` : ''}</div>
-    <div class="lessons">${list.map(L => { const from = L.prevSession && carry[L.prevSession];
+  const chaps = [...new Set(list.map(L => chapOf(L.id)))];
+  ov.innerHTML = `<div class="prep"><div class="p-head"><small>Hertil</small><h2>Vælg lektion</h2><p>Each lesson follows one session of the book and takes about an hour and a half.</p>${sv ? `<p class="warn">Starting a lesson replaces your saved game (${esc((SESSIONS[sv.sess || 'k1l1'] || {}).short || '')}, dag ${sv.day}).</p>` : ''}</div>
+    ${chaps.map(c => `<h3 class="chap-h">${esc(list.find(L => chapOf(L.id) === c).chapter)}</h3><div class="lessons">${list.filter(L => chapOf(L.id) === c).map(L => { const from = L.prevSession && carry[L.prevSession];
       const dn = (META.done || {})[L.id] || (carry[L.id] ? { n: 1, endings: [] } : null);
-      return `<div class="lesson ${dn ? 'done' : ''}">${dn ? `<span class="done-stamp">✓ Gennemført${dn.n > 1 ? ' ×' + dn.n : ''}${dn.endings.length ? ` · ${dn.endings.length} ${dn.endings.length > 1 ? 'slutninger' : 'slutning'}` : ''}</span>` : ''}<b>${esc(L.short)} · ${esc(L.title.replace(/^Lektion \d+ · /, ''))}</b><i>${esc(L.en)}</i><p>${esc(L.blurb || '')}</p>
+      return `<div class="lesson ${dn ? 'done' : ''}">${dn ? `<span class="done-stamp">✓ Gennemført${dn.n > 1 ? ' ×' + dn.n : ''}${dn.endings.length ? ` · ${dn.endings.length} ${dn.endings.length > 1 ? 'slutninger' : 'slutning'}` : ''}</span>` : ''}<b>${esc(L.title)}</b><i>${esc(L.en)}</i><p>${esc(L.blurb || '')}</p>
         ${from ? `<button class="btn gold" data-s="${L.id}" data-carry="1">Fortsæt med dig selv <small>(${esc(tierName(from))}, dag ${from.day})</small></button>` : ''}
-        <button class="btn ${from || L.order === 1 ? 'ghost' : 'gold'}" data-s="${L.id}">Begynd</button></div>`; }).join('')}</div>
+        <button class="btn ${from || L.order === 1 ? 'ghost' : 'gold'}" data-s="${L.id}">Begynd</button></div>`; }).join('')}</div>`).join('')}
     <button class="btn ghost big" id="close">Tilbage</button></div>`;
   ov.querySelectorAll('[data-s]').forEach(b => b.onclick = () => { ov.remove(); const L = SESSIONS[b.dataset.s]; newGame(L.id, b.dataset.carry ? carry[L.prevSession] : null); goNode(S().start); });
   ov.querySelector('#close').onclick = () => ov.remove();

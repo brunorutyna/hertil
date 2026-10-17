@@ -102,8 +102,23 @@ const AUDIO = (() => {
     vaskeri(o, b) { const w = ctx.createBufferSource(); w.buffer = noiseBuf('brown', 2); w.loop = true; const fl = ctx.createBiquadFilter(); fl.type = 'lowpass'; fl.frequency.value = 400; const g = ctx.createGain(); g.gain.value = .07; w.connect(fl); fl.connect(g); g.connect(o); w.start(); b.stops.push(() => w.stop());
       every(.7, .7, () => tone(o, 110, now(), .3, 'sine', .03, { to: 80 }), b); every(2, 5, () => { const f = 500 + Math.random() * 500; tone(o, f, now(), .12, 'sine', .03, { to: f * 2.2, toT: .1 }); }, b); },
     bageri(o, b) { every(.5, .5, () => hit(o, now(), 2600, .03, .03, 8), b); every(3, 6, () => tone(o, 196, now(), 1.4, 'sine', .03, { vib: 4 }), b); },
+    // Kapitel 2 · Derhenne: typewriters, lift bells, rubber stamps, pneumatic mail, a pot on the boil
+    port(o, b) { every(.18, .5, () => hit(o, now(), 3800, .025, .05, 7), b); every(2.5, 5, () => { hit(o, now(), 900, .5, .05, .7); tone(o, 600, now(), .4, 'sine', .02, { to: 1600 }); }, b); every(4, 8, () => { SFX.stamp(o, now(), .5); }, b); },
+    koeje(o, b) { every(.62, .62, () => tone(o, 66, now(), .22, 'sine', .045, { to: 52 }), b); every(5, 10, () => tone(o, 1046, now(), .9, 'sine', .015), b); },
+    tag(o, b) { const w = ctx.createBufferSource(); w.buffer = noiseBuf('brown', 2); w.loop = true; const g = ctx.createGain(); g.gain.value = .09; w.connect(g); g.connect(o); w.start(); b.stops.push(() => w.stop());
+      every(3, 6, () => tone(o, 110, now(), 1.2, 'sawtooth', .02, { to: 140, lp: 500, q: 6 }), b); every(5, 9, () => { [1318, 1046].forEach((f, i) => tone(o, f, now() + i * .2, .6, 'triangle', .02)); }, b); },
+    kontor(o, b) { every(.12, .35, () => hit(o, now(), 3500 + Math.random() * 1500, .02, .05, 8), b); every(2.5, 6, () => tone(o, 1760, now(), .25, 'triangle', .03), b); every(4, 9, () => hit(o, now(), 1400, .25, .05, 1), b); },
+    halv(o, b) { every(1.5, 3.5, () => { hit(o, now(), 2200, .05, .08, 9); tone(o, 880 + Math.random() * 200, now(), .5, 'triangle', .02, { vib: 6 }); }, b); every(4, 8, () => tone(o, 200, now(), .9, 'sawtooth', .02, { to: 196, lp: 700, q: 3 }), b); },
+    tegnestue(o, b) { every(.5, 1.4, () => hit(o, now(), 5200, .15, .025, 3), b); every(3, 7, () => tone(o, 523, now(), .3, 'sine', .02, { to: 784 }), b); },
+    kantine(o, b) { every(.25, .9, () => { const f = 300 + Math.random() * 500; tone(o, f, now(), .1, 'sine', .05, { to: f * 2.2, toT: .08 }); }, b); every(2, 4, () => hit(o, now(), 3000, .08, .06, 10), b); },
+    kopi(o, b) { every(1.2, 1.2, () => { tone(o, 140, now(), .9, 'sawtooth', .025, { lp: 900, to: 220 }); hit(o, now() + .6, 2600, .2, .04, 2); }, b); },
+    skole(o, b) { every(.7, 2, () => hit(o, now(), 4600, .06, .03, 12), b); every(5, 9, () => { [784, 659].forEach((f, i) => tone(o, f, now() + i * .4, .6, 'sine', .03)); }, b); },
+    gang(o, b) { every(.5, .5, () => { hit(o, now(), 900, .05, .04, 4); }, b); every(3, 6, () => squeak(o, now(), .012), b); },
+    chef(o, b) { const w = ctx.createBufferSource(); w.buffer = noiseBuf('brown', 2); w.loop = true; const g = ctx.createGain(); g.gain.value = .05; w.connect(g); g.connect(o); w.start(); b.stops.push(() => w.stop()); every(4, 7, () => tone(o, 220, now(), 1.5, 'sine', .02, { to: 223 }), b); },
+    tarn(o, b) { every(2, 5, () => { tone(o, 1568, now(), .5, 'sine', .015); }, b); every(1.4, 3, () => hit(o, now(), 3800, .02, .03, 7), b); },
   };
-  const INDOOR = ['nest', 'hall', 'hall_torn', 'stair', 'doere', 'vaskeri', 'bageri'];
+  const SFX = { stamp(o, t, v = 1) { tone(o, 120, t, .18, 'sine', .4 * v, { to: 45 }); hit(o, t, 1200, .09, .2 * v, 1.5); } };
+  const INDOOR = ['nest', 'hall', 'hall_torn', 'stair', 'doere', 'vaskeri', 'bageri', 'port', 'koeje', 'kontor', 'halv', 'tegnestue', 'kantine', 'kopi', 'skole', 'gang', 'chef'];
   function playAmb(name, ph = 0) {
     const key = name + ':' + ph;
     if (key === ambName) return; ambName = key;
@@ -126,6 +141,7 @@ const AUDIO = (() => {
     soft: { k: 'x.......x.......', s: '................', h: '....x.......x...' },
     run: { k: 'x...x...x...x...', s: '....x..o....x.o.', h: 'xxxxxxxxxxxxxxxx' },
     none: { k: '................', s: '................', h: '................' },
+    type: { k: 'x..x....x..x....', s: '....x.......x.x.', h: 'xxx.xxx.xxx.xx.x' }, // the typewriter shuffle of Derhenne
   };
   const THEMES = {
     // the title screen has a real song: a fixed melody (scale degree, length in 16ths), 8 bars, verse then chorus
@@ -150,6 +166,19 @@ const AUDIO = (() => {
     torv:   { bpm: 136, root: 50, mode: DOR, prog: [0, 0, 6, 4], drums: 'run', bass: 'xx.xx.xxxx.xx.xx', arp: 'square', lead: 'saw', dens: .6 },
     vaskeri:{ bpm: 110, root: 55, mode: LYD, prog: [0, 1, 0, 4], drums: 'four', bass: 'x.x.x.x.x.x.x.x.', arp: 'box', lead: 'tri', dens: .35, oct: true },
     bageri: { bpm: 94, root: 57, mode: ION, prog: [0, 5, 3, 4], drums: 'soft', bass: 'x.......x...x...', arp: 'box', lead: 'tri', dens: .3, pad: true },
+    // Kapitel 2 · Derhenne (Natskift): faster, marimba and typewriter drums, a lift bell
+    port:   { bpm: 128, root: 50, mode: MIX, prog: [0, 4, 6, 4], drums: 'type', bass: 'x..x..x.x..x..x.', arp: 'mar', lead: 'square', dens: .4, bell: true },
+    koeje:  { bpm: 92, root: 55, mode: PEN, prog: [0, 3, 1, 4], drums: 'soft', bass: 'x.......x.......', arp: 'mar', lead: null, dens: 0, pad: true },
+    tag:    { bpm: 132, root: 53, mode: LYD, prog: [0, 1, 4, 3], drums: 'run', bass: 'x..xx..xx..xx..x', arp: 'mar', lead: 'saw', dens: .45, oct: true },
+    kontor: { bpm: 126, root: 52, mode: DOR, prog: [0, 3, 0, 6], drums: 'type', bass: 'x.x.x.x.x.x.x.x.', arp: 'mar', lead: 'reed', dens: .4 },
+    halv:   { bpm: 116, root: 50, mode: WHOLE, prog: [0, 1, 0, 2], drums: 'half', bass: 'x...x...x.......', arp: 'mar', lead: 'tri', dens: .3, fall: true },
+    tegnestue: { bpm: 112, root: 57, mode: ION, prog: [0, 5, 3, 4], drums: 'soft', bass: 'x.....x...x.....', arp: 'mar', lead: 'tri', dens: .35 },
+    kantine: { bpm: 122, root: 48, mode: MIX, prog: [0, 0, 3, 4], drums: 'bounce', bass: 'x.xx.x.xx.x.xx.x', arp: 'mar', lead: 'reed', dens: .5 },
+    kopi:   { bpm: 138, root: 49, mode: WHOLE, prog: [0, 1, 2, 1], drums: 'run', bass: 'xxxxxxxxxxxxxxxx', arp: 'square', lead: 'saw', dens: .5 },
+    skole:  { bpm: 118, root: 55, mode: ION, prog: [0, 4, 5, 3], drums: 'type', bass: 'x..x..x...x..x..', arp: 'mar', lead: 'square', dens: .4 },
+    gang:   { bpm: 130, root: 52, mode: MIX, prog: [0, 6, 3, 0], drums: 'type', bass: 'x..xx..xx..xx..x', arp: 'mar', lead: 'square', dens: .35 },
+    chef:   { bpm: 98, root: 50, mode: LYD, prog: [0, 1, 3, 4], drums: 'half', bass: 'x.......x.......', arp: 'box', lead: 'tri', dens: .3, pad: true },
+    tarn:   { bpm: 120, root: 55, mode: MIX, prog: [0, 4, 3, 4], drums: 'type', bass: 'x...x.x.x...x.x.', arp: 'mar', lead: null, dens: 0, bell: true },
     map:    { bpm: 108, root: 55, mode: ION, prog: [0, 4, 3, 4], drums: 'soft', bass: 'x...x.x.x...x.x.', arp: 'tri', lead: null, dens: 0 },
   };
   function deg(T, d, oct = 0) { const n = T.mode.length, o = Math.floor(d / n), i = ((d % n) + n) % n; return T.root + T.mode[i] + 12 * (o + oct); }
@@ -166,6 +195,7 @@ const AUDIO = (() => {
     square: (o, f, t, d) => tone(o, f, t, d, 'square', .035, { lp: 3000, lpTo: 800 }),
     tri: (o, f, t, d) => tone(o, f, t, d, 'triangle', .06),
     box: (o, f, t, d) => { tone(o, f * 2, t, .9, 'sine', .05); tone(o, f * 5.4, t, .3, 'sine', .01); },
+    mar: (o, f, t, d) => { tone(o, f, t, .35, 'sine', .07); tone(o, f * 4, t, .06, 'sine', .02); hit(o, t, f * 3, .02, .02, 12); }, // marimba
   };
   // at night outdoors the same tune goes half-speed and dreamy
   const nightCache = {};
@@ -189,6 +219,7 @@ const AUDIO = (() => {
         if (DR.h[s] === 'x') hat(out, t, s % 4 === 2 ? .1 : .05);
         if (T.bass && T.bass[s] === 'x') tone(out, mtof(deg(T, ch, -2) + (T.oct && s % 4 === 2 ? 12 : 0)), t, x * 1.6, 'sawtooth', .13, { lp: 500, lpTo: 140, q: 4 });
         if (T.arp && s % 2 === 0) ARP[T.arp](out, mtof(deg(T, ch + [0, 2, 4, 7, 4, 2, 0, 4][(s / 2) % 8], 1) + (T.fall ? 12 - (s % 8) : 0)), t, x * 1.8);
+        if (T.bell && s === 0 && bar % 4 === 0) { tone(out, 1318, t, .9, 'triangle', .03); tone(out, 1046, t + x * 2, .9, 'triangle', .025); }
         if (T.pad && s === 0) [0, 2, 4].forEach(k => tone(out, mtof(deg(T, ch + k)), t, x * 15, 'sawtooth', .018, { lp: 900, a: x * 3, det: k * 4 }));
         if (T.song) { // the composed tune: a saw lead doubled an octave up by a square
           if (sleft <= 0) { const [d, len] = T.song[si % T.song.length]; si++; sleft = len; const f = mtof(deg(T, d, 1)); LEAD.saw(out, f, t, x * len * .92); tone(out, f * 2, t, x * len * .7, 'square', .015, { lp: 3000 }); }
@@ -229,6 +260,8 @@ const AUDIO = (() => {
     if (kind === 'melt') { tone(o, 880, t, 1.6, 'square', .05, { to: 55, lp: 2000, vib: 9 }); tone(o, 440, t + .1, 1.4, 'sawtooth', .04, { to: 40, lp: 1200 }); }
     if (kind === 'glyph') for (let i = 0; i < 12; i++) tone(o, 300 + Math.random() * 2600, t + i * .035, .04, 'square', .04, { to: 200 + Math.random() * 2600 });
     if (kind === 'soft') { tone(o, 392, t, .4, 'sine', .1, { to: 330 }); }
+    if (kind === 'stamp') SFX.stamp(o, t);
+    if (kind === 'lift') { tone(o, 1318, t, .8, 'triangle', .06); tone(o, 1046, t + .25, .9, 'triangle', .05); }
     if (kind === 'hard') { hit(o, t, 3500, .04, .2, 6); tone(o, 1318, t, .12, 'square', .05, { lp: 4000 }); }
   }
   function resume() { init(); if (ctx && ctx.state === 'suspended') ctx.resume(); }

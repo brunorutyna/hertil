@@ -446,3 +446,39 @@ body.still *, body.still *::before, body.still *::after { animation-duration: .0
 .chap-end b { display: block; font: 400 24px 'Rubik Mono One', monospace; margin: 4px 0; }
 .chap-end p { margin: 0; font-size: 15px; }
 .fp-cell:disabled { opacity: 1; cursor: default; }
+
+/* ---------- Kapitel 2 · Derhenne: Natskift. The same zine, new inks: teal, signal red, mustard, lilac ---------- */
+body[data-ch="2"] { --pink: #ff3b30; --blue: #00838a; --yel: #ffb511; --grn: #2e9e5b; --vio: #b28dd6; --ora: #ff7a1a; }
+body[data-ch="2"]::after { background-image: radial-gradient(rgba(0, 131, 138, .16) 1px, transparent 1.4px); }
+body[data-ch="2"] .w { border-bottom-color: rgba(255, 59, 48, .45); }
+body[data-ch="2"] .tc-t { text-shadow: 4px 3px 0 var(--pink), -3px -2px 0 var(--blue); }
+body[data-ch="2"] .road.shaft { stroke: var(--blue); stroke-width: 2.2; stroke-dasharray: none; opacity: .55; animation: none; }
+body[data-ch="2"] .h-l { background: var(--yel); }
+.chap-h { font-family: var(--disp); font-weight: 400; font-size: 13px; margin: 16px 0 0; color: var(--pink); }
+
+/* lineup: who is it, der …? */
+.faces.lineup { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+.faces.lineup .rv-o { padding: 4px; min-height: 0; display: flex; flex-direction: column; align-items: center; }
+.faces.lineup .rv-o svg { width: 100%; height: auto; max-height: 120px; }
+.faces.lineup small { font-family: var(--disp); font-size: 8.5px; font-weight: 400; margin-top: 2px; }
+
+/* calendar: find the one slot everybody can */
+.cal { display: grid; gap: 4px; margin-top: 10px; align-items: center; }
+.cal > b { font-family: var(--disp); font-weight: 400; font-size: 10px; text-align: center; }
+.cal > b.tm { font-family: var(--body); font-weight: 700; font-size: 12px; text-align: right; padding-right: 4px; white-space: nowrap; }
+.cal-c { min-height: 46px; padding: 2px; display: flex; flex-wrap: wrap; gap: 3px; align-content: center; justify-content: center; box-shadow: 2px 2px 0 var(--blue) !important; }
+.cal-c i { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid var(--ink); }
+.cal-c.busy { background: #eee6d6; }
+.cal-c.tried { background: repeating-linear-gradient(45deg, #fff 0 5px, #e8dfcf 5px 10px); }
+.cal-who { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; font-size: 13px; font-weight: 700; }
+.cal-who i { display: inline-block; width: 11px; height: 11px; border-radius: 50%; border: 1.5px solid var(--ink); margin-right: 4px; vertical-align: -1px; }
+.cal-log { margin-top: 10px; font-size: 14.5px; line-height: 1.35; min-height: 60px; }
+.cal-log p { margin: 3px 0; } .cal-log p.you { margin-top: 8px; } .cal-log p.ok { color: var(--grn); font-weight: 700; }
+
+/* where is she? the tower, floor by floor: in the lift (on the way) or in the room (there) */
+.wi { display: flex; flex-direction: column; gap: 5px; margin-top: 10px; }
+.wi-h { display: grid; grid-template-columns: 64px 1fr; gap: 6px; font-family: var(--disp); font-size: 9px; color: var(--dim); }
+.wi-row { display: grid; grid-template-columns: 64px 1fr; gap: 6px; }
+.wi-row .rv-o { min-height: 44px; font-size: 15px; padding: 4px 8px; }
+.wi-row .wi-lift { font-size: 20px; } .wi-lift:not(.ok):not(.no) { background: #e6f2f2; }
+.wi-face svg { width: 64px; height: 76px; }

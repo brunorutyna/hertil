@@ -23,7 +23,7 @@ const tiredBuild = { en: 'No, I am not. There are far too many cars, and I am ti
   tiles: ['Nej,', 'det', 'er', 'jeg', 'ikke.', 'Der', 'er', 'alt', 'for', 'mange', 'biler,', 'og', 'det', 'er', 'jeg', 'træt', 'af.', 'meget', 'gør'] };
 
 SESSIONS.k1l3 = {
-  id: 'k1l3', order: 3, short: 'Lektion 3', prevSession: 'k1l2', nextSession: null, chapter: 'Kapitel 1 · Baggrund & bydel', title: 'Lektion 3 · Hvor ligger den henne?', en: 'Where is it?',
+  id: 'k1l3', order: 3, short: 'Lektion 3', prevSession: 'k1l2', nextSession: 'k2l1', chapter: 'Kapitel 1 · Baggrund & bydel', title: 'Lektion 3 · Hvor ligger den henne?', en: 'Where is it?',
   blurb: 'Hertil grew a neighbourhood overnight. Nothing in it stays where it is.',
   start: 'p3_wake', home: 'rede', travelAfter: 'p3seen', cluesFlag: 'clues3', cluesNeed: 3, dcMod: 3,
   startState: { resp: 8, sk: 10, insp: 1, boons: ['anker', 'urnoegle'], statXP: { SPROG: 12, LOEGN: 3, SNIGE: 5, HANDEL: 3, INDSIGT: 9 },
@@ -44,7 +44,7 @@ SESSIONS.k1l3 = {
   ending: G => [G.flags.Abind ? 'Fast gade' : G.flags.Awalk ? 'Vandregade' : G.flags.Ahome ? 'Dit hjørne' : null,
     G.flags.Bquiet ? 'Stille' : G.flags.Bband ? 'Bandet' : G.flags.Bjar ? 'Larm på glas' : null,
     G.flags.Cwash ? 'Vasket' : G.flags.Cno ? 'Uvasket' : null].filter(Boolean).join(' · ') || '—',
-  chapterEnd: ['Kapitel 1 · Baggrund & bydel', 'Kapitel 1 er slut', 'You have a reason, a stay and an address. Next: Kapitel 2 · Arbejde & uddannelse, somewhere new, with new creatures. Coming soon.'],
+  chapterEnd: ['Kapitel 1 · Baggrund & bydel', 'Kapitel 1 er slut', 'You have a reason, a stay and an address. Next: Kapitel 2 · Arbejde & uddannelse, somewhere new, with new creatures.'],
   carryFlags: ['Abind', 'Awalk', 'Ahome', 'Bquiet', 'Bband', 'Bjar', 'Cwash', 'Cno'],
 
   quests: {

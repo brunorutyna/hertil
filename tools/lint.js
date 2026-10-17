@@ -60,13 +60,21 @@ const danish = [];
 const walk = o => { if (!o || typeof o !== 'object') return; if (Array.isArray(o)) return o.forEach(walk);
   for (const [k, v] of Object.entries(o)) {
     if (k === 'qs' || k === 'en' || k === 'label' || ((k === 'good' || k === 'meh') && (o.items || o.rounds))) continue; // English: quiz questions about letters, translations, button labels
-    if (typeof v === 'string' && ['da', 'bad', 'good', 't', 'def'].includes(k)) danish.push(v);
+    if (typeof v === 'string' && ['da', 'bad', 'good', 't', 'def', 'clue'].includes(k)) danish.push(v);
     else if ((k === 'lines' || k === 'wrong' || k === 'boxes' || (k === 'opts' && typeof (v || [])[0] === 'string')) && Array.isArray(v)) v.forEach(x => typeof x === 'string' && danish.push(x));
     else if (k === 'tiles' && Array.isArray(v)) v.forEach(x => danish.push(x));
     else if (k === 'answers' && Array.isArray(v)) v.forEach(a => danish.push(a.join(' ')));
     else walk(v);
   } };
-for (const S of Object.values(C.SESSIONS)) { walk(S); (S.clockRounds || []).forEach(r => danish.push(r[2])); }
+for (const S of Object.values(C.SESSIONS)) { walk(S); (S.clockRounds || []).forEach(r => danish.push(r[2])); ((S.clockGame || {}).rounds || []).forEach(r => danish.push(r[2]));
+  // calendars: the days, the spoken times and every creature's reason are Danish
+  Object.values(S.calendars || {}).forEach(K => { K.days.forEach(d => danish.push(d)); K.times.forEach(t => danish.push(t[0])); K.who.forEach(w => w.busy.forEach(b => danish.push(b.why))); });
+  Object.values(S.letters || {}).forEach(L => (L.lines || []).forEach(l => danish.push(l))); }
+// every calendar must have exactly one slot that suits everybody, or the puzzle has no single answer
+for (const [sid, S] of Object.entries(C.SESSIONS)) Object.entries(S.calendars || {}).forEach(([id, K]) => {
+  let free = 0; for (let d = 0; d < K.days.length; d++) for (let t = 0; t < K.times.length; t++) if (K.who.every(w => !w.busy.some(b => (b.d === undefined || b.d === d) && (b.t === undefined || b.t === t)))) free++;
+  if (free !== 1) err(sid, `calendar ${id} has ${free} free slots (needs exactly 1)`);
+});
 Object.values(C.VOCAB).forEach(v => { danish.push(v.da); if (v.def) danish.push(v.def); });
 const missing = {};
 danish.forEach(t => (t.match(/[A-Za-zÆØÅæøåáéüöÉÁ]+/g) || []).forEach(w => { if (!C.DICT[w.toLowerCase()] && !C.NAMES.includes(w)) missing[w.toLowerCase()] = (missing[w.toLowerCase()] || 0) + 1; }));

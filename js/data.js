@@ -225,7 +225,7 @@ const ruleText = t => t.toLowerCase().replace(/[.,!?“”"]/g, '').replace(/\s+
   .replace(/æ/g, 'ae').replace(/ø/g, 'oe').replace(/å/g, 'aa'); // JS \b does not know æøå, so the tests are written in ae/oe/aa
 const rulesFor = t => { const s = ruleText(t); return RULES.filter(r => { try { return r.t(s); } catch (e) { return false; } }); };
 const RULES = [
-  { id: 'v2', name: 'Verbet står på plads 2', t: s => /^(naar|da|foer|hvis|om \w+ \w+|for \w+ \w+ siden|i min fritid|i dag|i gaar|i morgen|nogle gange|nu|saa|ved siden af \w+|(lige )?overfor \w+|paa hjoernet af|det (kan|er|goer|ved) (jeg|du))\b/.test(s) && !/\?$/.test(s),
+  { id: 'v2', name: 'Verbet står på plads 2', t: s => /^(naar|da|foer|hvis|om \w+ \w+|for \w+ \w+ siden|i min fritid|i dag|i gaar|i morgen|nogle gange|lige nu|lige for tiden|nu|saa|ved siden af \w+|(lige )?overfor \w+|paa hjoernet af|det (kan|er|goer|ved) (jeg|du))\b/.test(s) && !/\?$/.test(s),
     en: 'A Danish main clause always has the verb in second place. If the sentence starts with something other than the subject (a time, or a whole når/da/før-clause), the verb comes right after it, and the subject after the verb.',
     ex: ['Om en time rejser jeg hjem.', 'Når jeg har fundet mit navn, rejser jeg hjem.'] },
   { id: 'bis', name: 'ikke · gerne · altid i en bisætning', t: s => /\b(fordi|naar|da|hvis|foer|at|selvom|som) (jeg|du|han|hun|den|det|vi|i|de|man|nogen) (ikke|gerne|altid|aldrig|ogsaa|tit|nogle gange)\b/.test(s),

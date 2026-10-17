@@ -30,13 +30,23 @@ Hertil is what its creatures call "here". It is loud, bright and printed in thre
 
 **Lektion 3 · Hvor ligger den henne?** About 1½ hours, and the end of Kapitel 1. Hertil grew a neighbourhood overnight, and nothing in it stays where it is. Continue from Lektion 2 or start fresh. Three contracts, several endings, five side games, including a street you have to pin down with place words. Grammar: ved siden af / overfor / i nærheden af / tæt på / på hjørnet af, i / på with streets, en bager or bageren, den / det / de / der, short answers (det er jeg, det gør jeg, jo), mange / meget, glad for / træt af / kan godt lide.
 
-**Kapitel 2 · Arbejde & uddannelse** comes next, in a new place with new creatures.
+### Kapitel 2 · Arbejde & uddannelse — Derhenne
+
+A new place: Derhenne, a building that never finished being built, reached by pneumatic post. The map is a tower: floors, a lift shaft, a canteen in the basement. Your character comes along (body, gifts, imprints, traces), but nobody there knows you, so your weight starts over. Art and sound change too: the same risograph zine in new inks (teal, signal red, mustard, lilac), marimba and typewriter drums, a lift bell. Times of day become shifts: Morgenvagt, Dagvagt, Aftenvagt, Natskift.
+
+**Lektion 1 · Hvad er det nu, du laver?** About 1½ hours. You arrive without a job, and in Derhenne that is a problem. Three contracts, several endings, three side games and a room that is there only once. Grammar: Hv… er det nu, …?, i gang med / ved at, at + infinitive after a preposition, kunne godt tænke sig at, i / på with workplaces, mange / meget about work, present tense or infinitive.
+
+**Lektion 2 · Hvordan går det med dit studie?** About 1½ hours. The second floor has become a school, and names will not stick to anyone there. Three contracts, several endings, a new mini-game where you point someone out by what they always do, and a letter home. Grammar: relative clauses with der, sin / sit / sine or hans / hendes / deres, ham / hende, synes + adverb, adjectives for people, Hvordan går det med dit …?
+
+**Lektion 3 · Kan vi flytte vores aftale?** About 1½ hours, and the end of Kapitel 2. Every appointment in Derhenne has come loose, somebody important is missing, and you have a cold. Three contracts and a finale with three endings; new mini-games: find one meeting time for creatures with hidden calendars, and find who is where in the tower (on the way, or already there). Grammar: calling in sick, cancelling and moving appointments, short answers with modal verbs, på mandag / om mandagen, dates, clock times, ned / nede, op / oppe, hjem / hjemme, tror or synes.
 
 ## Files
 
 - `js/data.js`: skills, attention tiers, gifts, creatures, vocabulary, glossary.
-- `js/k1l1.js`, `js/k1l2.js`, `js/k1l3.js`: one file per lesson (locations, quests, nodes, travel encounters, mini-game data, lesson-only actions). Copy it for the next lesson and add its `<script>` to `index.html`.
-- `js/engine.js`: everything else, including reusable mini-games (`hunt`, `jobs`, `corr`, `boxes`, `fixEntry`, `clock`, `weather`, `guess`, `findPlace`) and the self-plate.
+- `js/data2.js`: the same for Kapitel 2 (Derhenne), plus its grammar notes.
+- `js/k1l1.js` … `js/k2l3.js`: one file per lesson (`k2l1.js` also holds what the whole of Kapitel 2 shares: shifts, the tower map, the bunk) (locations, quests, nodes, travel encounters, mini-game data, lesson-only actions). Copy it for the next lesson and add its `<script>` to `index.html`.
+- `js/engine.js`: everything else, including reusable mini-games (`hunt`, `jobs`, `corr`, `boxes`, `fixEntry`, `clock`, `weather`, `guess`, `findPlace`, `lineup`, `calendar`, `whereis`); chapters (`chap`) with their own map style, shifts, bed and colours and the self-plate.
+- `js/art2.js`: Derhenne's creatures, scenes, icons and shift light (Natskift inks).
 - `js/art.js`: creatures (`ART.creature(name, gaze)`), the player's plate (`ART.self`), scenes, icons.
 - `js/audio.js`: ambience and music per place, effects.
 - Built on the engine of *Det var ikke noget*.

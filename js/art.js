@@ -607,6 +607,7 @@ const ART = (() => {
   // the light of Hertil: Gult (as printed), Lyserødt (pink wash), Blåt (blue wash), Lilla nat (violet night, inks glow)
   const FIXED = { void: 1, map: 0, title: 0 };
   const INDOOR = ['nest', 'hall', 'hall_torn', 'stair', 'doere', 'vaskeri', 'bageri'];
+  const GRADES = {}; // a chapter can bring its own light (scene name → four overlays)
   const GRADE = [
     '',
     `<rect width="393" height="560" fill="${PINK}" opacity=".22" ${M}/>`,
@@ -618,7 +619,7 @@ const ART = (() => {
     const P = FIXED[name] !== undefined ? FIXED[name] : ph;
     const body = (SCENES[name] || SCENES.bottom)();
     const out = !INDOOR.includes(name);
-    const grade = name === 'map' ? ['', GRADE_IN[1], GRADE_IN[2], GRADE_IN[3]][ph] : name === 'void' ? '' : (out ? GRADE : GRADE_IN)[P];
+    const grade = GRADES[name] ? GRADES[name][P] : name === 'map' ? ['', GRADE_IN[1], GRADE_IN[2], GRADE_IN[3]][ph] : name === 'void' ? '' : (out ? GRADE : GRADE_IN)[P];
     return `<svg class="scene-svg ph${P} ${out ? 'out' : 'in'}" viewBox="0 0 393 560" preserveAspectRatio="xMidYMin slice"><defs>${DEFS}</defs>${body}${grade}<rect width="393" height="560" filter="url(#grain)"/></svg>`;
   }
 
@@ -707,5 +708,6 @@ const ART = (() => {
   function icon(name, cls = '') {
     return `<svg class="ico ${cls}" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">${I[name] || '<circle cx="24" cy="24" r="16"/>'}</svg>`;
   }
-  return { creature, self, scene, d20, icon, clock, timeline, ICONS: I, COLORS: { INK, PINK, BLUE, YEL, GRN, ORA, VIO, PAPER } };
+  return { creature, self, scene, d20, icon, clock, timeline, ICONS: I, COLORS: { INK, PINK, BLUE, YEL, GRN, ORA, VIO, PAPER },
+    C, SCENES, INDOOR, FIXED, GRADES, eye, slit, shadow, confetti, M }; // open for chapter files (js/art2.js) to add to
 })();
