@@ -24,7 +24,7 @@ const valves = G => ['v_samler', 'v_spejl', 'v_moel'].filter(k => G.flags[k]).le
 SESSIONS.k1l2 = {
   id: 'k1l2', order: 2, short: 'Lektion 2', prevSession: 'k1l1', chapter: 'Kapitel 1 · Baggrund', title: 'Lektion 2 · Hvor længe skal du være her?', en: 'How long are you staying here?',
   blurb: 'Somebody let the hours out. Now everything in Hertil happens at the wrong time.',
-  start: 'p2_wake', home: 'rede', travelAfter: 'p2seen', cluesFlag: 'clues2', cluesNeed: 3, dcMod: 1,
+  start: 'p2_wake', home: 'rede', travelAfter: 'p2seen', cluesFlag: 'clues2', cluesNeed: 3, dcMod: 2,
   // a ready-made character for those who start here
   startState: { resp: 5, sk: 8, insp: 1, boons: ['anker'], statXP: { SPROG: 8, LOEGN: 2, SNIGE: 3, HANDEL: 2, INDSIGT: 6 }, origin: { reason: 'Jeg kom hertil på grund af en lyd.' }, met: ['taeller', 'samler', 'spejl', 'bagvendt'] },
 

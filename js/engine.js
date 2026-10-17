@@ -16,7 +16,7 @@ const pick = a => a[Math.floor(Math.random() * a.length)];
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const NAMES = ['Hertil', 'Tælleren', 'Samleren', 'Grundvæversken', 'Ikket', 'Bagvendte', 'Husfolket', 'Spejlet', 'Sluget', 'Mølen', 'Ungen', 'Bunden', 'Trappen', 'Reden', 'Vævehallen', 'Støvsletten', 'Dammene', 'Markedet', 'I'];
 const PHASES = ['Gult lys', 'Lyserødt lys', 'Blåt lys', 'Lilla nat'];
-const MOD_CAP = 7; // skill + all bonuses never exceed +7: a natural roll always matters
+const MOD_CAP = 4; // skill + all bonuses never exceed +4: the roll itself always matters (Bruno: bonuses made success too easy)
 const S = () => SESSIONS[(G && G.sess) || 'k1l1'];
 const special = k => (S().special && S().special[k]) || SPECIAL[k]; // a lesson can add or override specials
 const GLYPH = 'ᛟᚠᚢᚦᚨᚱᚲᚷᚹᚺ'; // what digits turn into when the numbers go strange
