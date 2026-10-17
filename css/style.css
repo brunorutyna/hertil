@@ -400,3 +400,7 @@ button:focus-visible { outline: 3px solid var(--pink); outline-offset: 2px; }
 
 body.still *, body.still *::before, body.still *::after { animation-duration: .001s !important; animation-iteration-count: 1 !important; transition: none !important; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+/* update sticker */
+.newver { position: fixed; z-index: 96; left: 50%; bottom: calc(14px + env(safe-area-inset-bottom)); transform: translateX(-50%) rotate(-2deg); background: var(--yel); color: var(--ink); border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--pink); padding: 8px 16px; font: 700 15px Chivo, sans-serif; display: flex; flex-direction: column; align-items: center; animation: stick .4s cubic-bezier(.3, 1.8, .5, 1); }
+.newver small { font-weight: 400; font-size: 11.5px; white-space: nowrap; }

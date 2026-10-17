@@ -121,6 +121,19 @@ function hud() {
 }
 function toast(m, c = '') { const t = document.createElement('div'); t.className = 'toast ' + c; t.textContent = m; $('#toasts').appendChild(t); setTimeout(() => t.classList.add('out'), FAST ? 30 : 2600); setTimeout(() => t.remove(), FAST ? 60 : 3200); }
 
+/* a newer version is online: offer a reload (the open page keeps running old code otherwise) */
+const MY_VER = ((document.querySelector('script[src*="engine.js?v="]') || {}).src || '').split('v=')[1] || '';
+let newVerShown = false;
+function checkVersion() {
+  if (!MY_VER || newVerShown || FAST || location.protocol === 'file:') return;
+  fetch('version.txt?t=' + Date.now(), { cache: 'no-store' }).then(r => r.ok ? r.text() : '').then(v => {
+    v = (v || '').trim(); if (!v || v === MY_VER || newVerShown) return; newVerShown = true;
+    const b = document.createElement('button'); b.className = 'newver'; b.innerHTML = 'Ny version ↻<small>tap to reload · your game is saved</small>';
+    b.onclick = () => { if (G) save(); location.reload(); }; document.body.appendChild(b);
+  }).catch(() => { });
+}
+setInterval(checkVersion, 120000); document.addEventListener('visibilitychange', () => { if (!document.hidden) checkVersion(); });
+
 function daHTML(s) { return esc(s).replace(/([A-Za-zÆØÅæøåáéüöÉÁ]+)/g, w => `<span class="w" data-w="${w.toLowerCase()}">${w}</span>`); }
 function wireWords(el, longpress) {
   el.querySelectorAll('.w').forEach(sp => {
@@ -539,6 +552,7 @@ function roadPath(a, b) {
   return `M${a.x} ${a.y} Q${via.x} ${via.y} ${b.x} ${b.y}`;
 }
 function showMap() {
+  checkVersion();
   G.node = 'map'; G.npc = null; save();
   const L = S().locations;
   const night = G.phase >= 3;
