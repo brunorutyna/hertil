@@ -77,7 +77,7 @@ const ART = (() => {
     },
     /* Samleren: a shell spiral with many arms, each holding something it is thrilled about */
     samler(g) {
-      const stalks = g === 0 ? [[172, 128, 214, 150], [184, 132, 230, 166]] : g === 1 ? [[172, 128, 214, 150], [184, 132, 168, 98]] : [[172, 128, 146, 92], [184, 132, 178, 88]];
+      const stalks = g === 0 ? [[190, 136, 214, 150], [192, 136, 230, 166]] : g === 1 ? [[190, 136, 214, 150], [192, 136, 168, 98]] : [[190, 136, 146, 92], [192, 136, 178, 88]]; // both stalks grow out of the tip of the neck
       const arms = [[62, 210, 16, 160, PINK], [76, 280, 10, 262, YEL], [96, 300, 40, 344, GRN], [196, 282, 268, 266, ORA], [212, 240, 284, 222, PINK], [206, 200, 274, 172, YEL], [122, 166, 100, 108, GRN], [152, 162, 156, 100, ORA]];
       return `${shadow(150, 342, 120)}
       <g class="wob">
@@ -89,7 +89,7 @@ const ART = (() => {
         <path d="M134 236 m-62 0 a62 62 0 1 1 62 62 a46 46 0 1 1 -46 -46 a32 32 0 1 1 32 32 a18 18 0 1 1 -18 -18 a8 8 0 1 1 8 8" fill="none" stroke="${INK}" stroke-width="3"/>
         <circle cx="134" cy="236" r="80" fill="none" stroke="${INK}" stroke-width="3.5"/>
         <path d="M56 336 Q150 296 254 336" stroke="${INK}" stroke-width="4" fill="${PINK}"/>
-        <path d="M204 266 C224 240 216 180 192 132" stroke="${INK}" stroke-width="3" fill="none"/>
+        <path d="M204 266 C224 240 216 180 191 136" stroke="${INK}" stroke-width="9" stroke-linecap="round" fill="none"/><path d="M204 266 C224 240 216 180 191 136" stroke="${GRN}" stroke-width="4" stroke-linecap="round" fill="none"/>
         ${stalks.map(([x0, y0, x1, y1]) => `<path d="M${x0} ${y0} Q${(x0 + x1) / 2 + 6} ${(y0 + y1) / 2 - 10} ${x1} ${y1}" stroke="${INK}" stroke-width="3" fill="none"/>`).join('')}
         ${stalks.map(([, , x1, y1], i) => eye(x1, y1, 9, i === 0 ? 30 : 60, g, { iris: GRN })).join('')}
       </g>`;
