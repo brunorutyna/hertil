@@ -962,7 +962,10 @@ const selfLines = () => [G.origin.reason, G.origin.job, G.origin.place, G.origin
 /* ---------------- end of lesson ---------------- */
 function endScreen() {
   localStorage.removeItem(KEY); META.runs++;
-  META.carry = META.carry || {}; META.carry[G.sess] = carryOut(); saveMeta();
+  META.carry = META.carry || {}; META.carry[G.sess] = carryOut();
+  META.done = META.done || {}; const dn = META.done[G.sess] = META.done[G.sess] || { n: 0, endings: [] }; dn.n++;
+  { const e = S().ending ? S().ending(G) : ''; if (e && !dn.endings.includes(e)) dn.endings.push(e); }
+  saveMeta();
   stage(S().endBg || 'stair', null, '');
   const L = G.log, nx = S().nextSession && SESSIONS[S().nextSession];
   const ending = S().ending ? S().ending(G) : '—';
@@ -1069,7 +1072,8 @@ function lessonSheet() {
   const ov = document.createElement('div'); ov.className = 'prep-ov'; document.body.appendChild(ov);
   ov.innerHTML = `<div class="prep"><div class="p-head"><small>Kapitel 1</small><h2>Vælg lektion</h2><p>Each lesson follows one session of the book and takes about an hour and a half.</p></div>
     <div class="lessons">${list.map(L => { const from = L.prevSession && carry[L.prevSession];
-      return `<div class="lesson"><b>${esc(L.short)} · ${esc(L.title.replace(/^Lektion \d+ · /, ''))}</b><i>${esc(L.en)}</i><p>${esc(L.blurb || '')}</p>
+      const dn = (META.done || {})[L.id] || (carry[L.id] ? { n: 1, endings: [] } : null);
+      return `<div class="lesson ${dn ? 'done' : ''}">${dn ? `<span class="done-stamp">✓ Gennemført${dn.n > 1 ? ' ×' + dn.n : ''}${dn.endings.length ? ` · ${dn.endings.length} ${dn.endings.length > 1 ? 'slutninger' : 'slutning'}` : ''}</span>` : ''}<b>${esc(L.short)} · ${esc(L.title.replace(/^Lektion \d+ · /, ''))}</b><i>${esc(L.en)}</i><p>${esc(L.blurb || '')}</p>
         ${from ? `<button class="btn gold" data-s="${L.id}" data-carry="1">Fortsæt med dig selv <small>(${esc(tierName(from))}, dag ${from.day})</small></button>` : ''}
         <button class="btn ${from || L.order === 1 ? 'ghost' : 'gold'}" data-s="${L.id}">Begynd</button></div>`; }).join('')}</div>
     <button class="btn ghost big" id="close">Tilbage</button></div>`;

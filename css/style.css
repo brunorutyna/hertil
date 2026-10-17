@@ -417,3 +417,8 @@ body.still *, body.still *::before, body.still *::after { animation-duration: .0
 .rule p { margin: 0 0 6px; font-size: 14.5px; line-height: 1.4; }
 .rex { font-weight: 700; color: var(--blue); font-size: 15px; padding: 2px 0; }
 .rex.mine { background: var(--yel); color: var(--ink); padding: 3px 8px; border: 2px solid var(--ink); width: fit-content; margin: 4px 0; }
+
+/* lesson picker: completed lessons */
+.lesson { position: relative; }
+.lesson.done { background: #e6fbe9; }
+.done-stamp { display: block; width: fit-content; margin: 0 0 8px; background: var(--grn); color: #fff; font: 700 12.5px 'Chivo Mono', monospace; letter-spacing: .04em; padding: 3px 10px; border: 2px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); transform: rotate(-2deg); }
