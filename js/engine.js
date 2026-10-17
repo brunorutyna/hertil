@@ -27,18 +27,26 @@ const TTS = {
   ok: 'speechSynthesis' in window, voice: null,
   get on() { return SETTINGS.voiceOn; },
   init() { if (!this.ok) return; const p = () => { this.voice = speechSynthesis.getVoices().find(v => /^da/i.test(v.lang)) || null; }; p(); speechSynthesis.onvoiceschanged = p; },
-  // you: the player's own line. The next line (usually the answer) waits for it instead of cutting it off.
+  // A line being spoken always finishes; the next one waits for it. Tapping ahead past several lines keeps
+  // only the newest one waiting (no backlog). ♪ (force) replays at once. you: the player's own line.
   say(t, force, you) {
     if (!this.ok || FAST || (!SETTINGS.voiceOn && !force)) return;
-    try {
-      const keep = !force && this.you && speechSynthesis.speaking;
-      if (!keep) speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(t.replace(/[“”…]/g, '')); u.lang = 'da-DK'; if (this.voice) u.voice = this.voice; u.rate = SETTINGS.rate || .9; u.pitch = SETTINGS.pitch || .85; u.volume = Math.max(.05, SETTINGS.voice);
-      this.you = !!you; if (you) { this.youDone = new Promise(r => { u.onend = u.onerror = r; setTimeout(r, 900 + t.length * 90); }); }
-      speechSynthesis.speak(u);
-    } catch (e) { }
+    let done; const job = { t, you, p: new Promise(r => done = r) }; job.done = done;
+    if (you) { this.you = true; this.youDone = job.p; } else if (!this.busy || force) this.you = false;
+    if (force || !this.busy) { try { speechSynthesis.cancel(); } catch (e) { } if (this.next) this.next.done(); this.next = null; this.speak(job); }
+    else { if (this.next) this.next.done(); this.next = job; }
   },
-  waitYou() { return this.ok && !FAST && SETTINGS.voiceOn && this.you && this.youDone ? Promise.race([this.youDone, sleep(3500)]) : sleep(400); },
+  speak(job) {
+    const tok = this.tok = (this.tok || 0) + 1; this.busy = true;
+    let fired = false; const end = () => { if (fired || tok !== this.tok) return; fired = true; this.busy = false; job.done(); const n = this.next; this.next = null; if (n) this.speak(n); };
+    try {
+      const u = new SpeechSynthesisUtterance(job.t.replace(/[“”…]/g, '')); u.lang = 'da-DK'; if (this.voice) u.voice = this.voice; u.rate = SETTINGS.rate || .9; u.pitch = SETTINGS.pitch || .85; u.volume = Math.max(.05, SETTINGS.voice);
+      u.onend = u.onerror = end;
+      setTimeout(end, 2500 + job.t.length * 110 / (SETTINGS.rate || .9)); // some phones never fire onend
+      speechSynthesis.speak(u);
+    } catch (e) { end(); }
+  },
+  waitYou() { return this.ok && !FAST && SETTINGS.voiceOn && this.you && this.youDone ? Promise.race([this.youDone, sleep(6000)]) : sleep(400); },
 };
 
 /* ---------------- state ---------------- */
@@ -611,7 +619,7 @@ async function runInline(ev) {
   stage(ev.bg, ev.npc, 'Undervejs'); G.npc = ev.npc;
   await steps(ev.steps);
   const avail = ev.opts.filter(o => !(o.req && !o.req(G)));
-  const i = await choices(avail.map(o => ({ html: (o.stat ? `<span class="tag t-${o.kind}">[${STATS[o.stat].name.toUpperCase()}${o.dc ? ' ' + o.dc : ''}]</span> ` : o.kind === 'eng' ? '<span class="tag t-eng">[ENGELSK]</span> ' : '') + esc(o.label) })));
+  const i = await choices(avail.map(o => ({ html: (o.stat ? `<span class="tag t-${o.kind}">[${STATS[o.stat].name.toUpperCase()}${o.dc ? ' ' + (G.glyph > 0 ? glyph(o.dc) : o.dc) : ''}]</span> ` : o.kind === 'eng' ? '<span class="tag t-eng">[ENGELSK]</span> ' : '') + (o.kind === 'reply' ? `“${daHTML(o.da)}”` : esc(o.label)), cls: 'k-' + o.kind })));
   await runOption(ev, avail[i], i);
   save();
 }

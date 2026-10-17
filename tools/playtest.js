@@ -25,6 +25,8 @@ async function play(srv, lesson, chainOn) {
     await p.waitForTimeout(shots ? 120 : 12);
     const state = await p.evaluate(() => G ? `${G.sess}:${G.node}:${G.day}:${G.phase}:${document.querySelector('#log') ? document.querySelector('#log').childElementCount : 0}` : '-');
     same = state === last ? same + 1 : 0; last = state;
+    const bad = await p.evaluate(() => /\bundefined\b|\bNaN\b|\[object Object\]/.test(document.body.innerText) ? (document.body.innerText.match(/.{0,40}(undefined|NaN|\[object Object\]).{0,20}/) || [''])[0] : '');
+    if (bad && !errors.some(e => e.includes(bad))) errors.push(`broken text at ${state}: “${bad.replace(/\s+/g, ' ')}”`);
     if (same > 400) { errors.push(`stuck at ${state}`); break; }
     if (await p.$('#again')) {
       ends.push(await p.evaluate(() => `${G.sess} ended "${S().ending ? S().ending(G) : ''}" day ${G.day}, standing ${G.resp}, ${G.sk} sk, gifts: ${G.boons.join(', ') || '—'}`));
@@ -36,10 +38,11 @@ async function play(srv, lesson, chainOn) {
     if (await p.$('.roll-ov')) { await shot('roll'); if (await click('#rGo')) { await p.waitForTimeout(shots ? 1400 : 20); continue; } await click('#rOk'); continue; }
     if (await p.$('.sheet-ov')) {
       await shot('builder');
+      if (await p.$('.sheet.enter')) await p.waitForTimeout(400); // let the sheet finish sliding up, or the first tap misses
       const ans = await p.evaluate(() => { const b = __dev.cur; return b.answers[Math.floor(Math.random() * b.answers.length)]; });
       for (const w of ans) for (const t of await p.$$('.pool .tile:not([disabled])')) if ((await t.innerText()).toLowerCase().replace(/[.,?!]/g, '') === w.toLowerCase().replace(/[.,?!]/g, '')) { await t.click({ force: true }); break; }
       await click('#bOk'); await p.waitForTimeout(20);
-      if (await p.$('.sheet-ov')) { if (!(await click('#bShow'))) { errors.push(`builder answer not accepted: ${ans.join(' ')}`); await click('#bClr'); } }
+      if (await p.$('.sheet-ov')) { if (!(await click('#bShow'))) { errors.push(`builder answer not accepted: ${ans.join(' ')} · built: ${await p.$$eval('.line .tile', x => x.map(e => e.innerText).join(' '))} · pool: ${await p.$$eval('.pool .tile', x => x.map(e => e.innerText + (e.disabled ? '*' : '')).join(' '))}`); await click('#bClr'); } }
       continue;
     }
     if (await p.$('.voc-ov')) {
