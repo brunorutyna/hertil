@@ -161,7 +161,8 @@ setInterval(checkVersion, 120000); document.addEventListener('visibilitychange',
 function daHTML(s) { return esc(s).replace(/([A-Za-zÆØÅæøåáéüöÉÁ]+)/g, w => `<span class="w" data-w="${w.toLowerCase()}">${w}</span>`); }
 function wireWords(el, longpress) {
   el.querySelectorAll('.w').forEach(sp => {
-    if (!longpress) { sp.onclick = e => { e.stopPropagation(); showGloss(sp); }; return; }
+    // a plain tap shows the meaning; press-and-hold is only needed inside a button, where a tap would choose the answer
+    if (!longpress || !sp.closest('button')) { sp.onclick = e => { e.stopPropagation(); showGloss(sp); }; return; }
     let t = null, fired = false;
     sp.addEventListener('pointerdown', () => { fired = false; t = setTimeout(() => { fired = true; showGloss(sp); }, 420); });
     ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => sp.addEventListener(ev, () => clearTimeout(t)));
