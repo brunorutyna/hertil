@@ -19,18 +19,18 @@ const D2 = { phases: ['Morgenvagt', 'Dagvagt', 'Aftenvagt', 'Natskift'], light: 
 
 const jobQ = [
   { flag: 'Aprog', label: 'Say you are a programmer in an IT company.', build: { en: 'I am a programmer in an IT company.', origin: 'work', answers: [['Jeg', 'er', 'programmør', 'i', 'et', 'it-firma.']], tiles: ['Jeg', 'er', 'programmør', 'i', 'et', 'it-firma.', 'en', 'på', 'som'] } },
-  { flag: 'Atjener', label: 'Say you work as a waiter in a café.', build: { en: 'I work as a waiter in a café.', origin: 'work', answers: [['Jeg', 'arbejder', 'som', 'tjener', 'på', 'en', 'café.']], tiles: ['Jeg', 'arbejder', 'som', 'tjener', 'på', 'en', 'café.', 'i', 'en', 'er'] } },
+  { flag: 'Atjener', label: 'Say you work as a waiter in a café.', build: { en: 'I work as a waiter in a café.', origin: 'work', answers: [['Jeg', 'arbejder', 'som', 'tjener', 'på', 'en', 'café.'], ['Jeg', 'er', 'tjener', 'på', 'en', 'café.']], tiles: ['Jeg', 'arbejder', 'som', 'tjener', 'på', 'en', 'café.', 'i', 'en', 'er'] } },
   { flag: 'Astud', label: 'Say you are studying to be an architect at the university.', build: { en: 'I am studying to be an architect at the university.', origin: 'work', answers: [['Jeg', 'læser', 'til', 'arkitekt', 'på', 'universitetet.']], tiles: ['Jeg', 'læser', 'til', 'arkitekt', 'på', 'universitetet.', 'i', 'som', 'en'] } },
 ];
 const busyQ = {
-  Aprog: { en: 'Right now I am busy designing a computer game.', origin: 'busy', answers: [['Jeg', 'er', 'i', 'gang', 'med', 'at', 'designe', 'et', 'computerspil', 'lige', 'nu.']], best: [['Lige', 'nu', 'er', 'jeg', 'i', 'gang', 'med', 'at', 'designe', 'et', 'computerspil.']], tiles: ['Lige', 'nu', 'er', 'jeg', 'i', 'gang', 'med', 'at', 'designe', 'et', 'computerspil.', 'ved', 'designer'] },
-  Atjener: { en: 'At the moment I am making a new menu.', origin: 'busy', answers: [['Jeg', 'er', 'ved', 'at', 'lave', 'en', 'ny', 'menu', 'lige', 'for', 'tiden.']], best: [['Lige', 'for', 'tiden', 'er', 'jeg', 'ved', 'at', 'lave', 'en', 'ny', 'menu.']], tiles: ['Lige', 'for', 'tiden', 'er', 'jeg', 'ved', 'at', 'lave', 'en', 'ny', 'menu.', 'med', 'laver'] },
+  Aprog: { en: 'Right now I am busy designing a computer game.', origin: 'busy', answers: [['Jeg', 'er', 'i', 'gang', 'med', 'at', 'designe', 'et', 'computerspil', 'lige', 'nu.'], ['Jeg', 'er', 'ved', 'at', 'designe', 'et', 'computerspil', 'lige', 'nu.']], best: [['Lige', 'nu', 'er', 'jeg', 'i', 'gang', 'med', 'at', 'designe', 'et', 'computerspil.'], ['Lige', 'nu', 'er', 'jeg', 'ved', 'at', 'designe', 'et', 'computerspil.']], tiles: ['Lige', 'nu', 'er', 'jeg', 'i', 'gang', 'med', 'at', 'designe', 'et', 'computerspil.', 'ved', 'designer', 'på'] },
+  Atjener: { en: 'At the moment I am making a new menu.', origin: 'busy', answers: [['Jeg', 'er', 'ved', 'at', 'lave', 'en', 'ny', 'menu', 'for', 'tiden.']], best: [['For', 'tiden', 'er', 'jeg', 'ved', 'at', 'lave', 'en', 'ny', 'menu.']], tiles: ['For', 'tiden', 'er', 'jeg', 'ved', 'at', 'lave', 'en', 'ny', 'menu.', 'med', 'laver'] },
   Astud: { en: 'Right now I am busy with an assignment about bridges.', origin: 'busy', answers: [['Jeg', 'er', 'i', 'gang', 'med', 'en', 'opgave', 'om', 'broer', 'lige', 'nu.']], best: [['Lige', 'nu', 'er', 'jeg', 'i', 'gang', 'med', 'en', 'opgave', 'om', 'broer.']], tiles: ['Lige', 'nu', 'er', 'jeg', 'i', 'gang', 'med', 'en', 'opgave', 'om', 'broer.', 'at', 'ved'] },
 };
 // "Hvad er det nu, …?" asked of three creatures who have forgotten their own jobs (contract C)
 const askOpt = (flag, npcLine, build, label) => ({ kind: 'say', stat: 'SPROG', dc: 9, label, req: G => G.flags.Cmet && !G.flags[flag], build,
   ok: [{ say: npcLine[0], da: npcLine[1], en: npcLine[2] }, { n: 'A card flies out of it, up the lift shaft, toward the fourth floor and one of Arkivet’s drawers.' }, { fx: { flag, resp: 1 } }, { special: 'askCheck' }],
-  fail: [{ n: 'It only catches “… det nu …”. That is enough. It remembers anyway, with a jolt.' }, { say: npcLine[0], da: npcLine[1], en: npcLine[2] }, { fx: { flag } }, { special: 'askCheck' }] });
+  fail: [{ n: 'The words come out in a tangle, but “det nu” is in there somewhere, and in Derhenne that phrase works like a key. It remembers with a jolt.' }, { say: npcLine[0], da: npcLine[1], en: npcLine[2] }, { fx: { flag } }, { special: 'askCheck' }] });
 
 SESSIONS.k2l1 = Object.assign({}, D2, {
   id: 'k2l1', order: 4, short: 'K2 · Lektion 1', prevSession: 'k1l3', nextSession: 'k2l2', title: 'Lektion 1 · Hvad er det nu, du laver?', en: 'What is it you do again?',
@@ -83,7 +83,7 @@ SESSIONS.k2l1 = Object.assign({}, D2, {
   jobs: {
     arkiv: { title: 'Arkivets skuffer', h2: 'Gæt jobbet', ask: 'Hvad er det for et job?', flag: 'job2Done', pay: 2,
       keys: ['programmoer', 'konsulent', 'tjener', 'paedagog', 'tandlaege', 'fotograf', 'grafiker', 'underviser', 'sekretaer', 'skuespiller', 'studerende', 'kranfoerer'],
-      end: r => r >= 5 ? 'Six drawers rattle shut, full. Arkivet stops pulling at itself and reads its own labels, moving its lips.' : 'Some cards go into the wrong drawers. The dentist is now filed under theatre. Nobody will notice for years.' },
+      end: r => r >= 5 ? 'Six drawers rattle shut, full. Arkivet stops pulling at itself and reads its own labels, moving its lips.' : 'Some cards go into the wrong drawers. Nobody will notice for years.' },
   },
 
   boxes: {
@@ -95,7 +95,7 @@ SESSIONS.k2l1 = Object.assign({}, D2, {
         { t: 'Arkivet har arbejdet ___ et kontor i hundrede år.', a: 1, why: 'på et kontor.' },
         { t: 'Pædagogen arbejder ___ en børnehave.', a: 0, why: 'i en børnehave.' },
         { t: 'Blyanten tegner ___ en tegnestue.', a: 1, why: 'på en tegnestue.' },
-        { t: 'Kantinen har engang været kok ___ et hotel.', a: 1, why: 'på et hotel.' },
+        { t: 'Kantinen var engang kok ___ et hotel.', a: 1, why: 'på et hotel.' },
         { t: 'Konsulenten sidder ___ en bank.', a: 0, why: 'i en bank.' },
         { t: 'Jeg læser ___ universitetet.', a: 1, why: 'på universitetet. Schools and universities take på.' },
       ] },
@@ -103,12 +103,12 @@ SESSIONS.k2l1 = Object.assign({}, D2, {
       good: 'Everything that was stuck halfway simply happens. The floor sighs, like a room after a long meeting.', meh: 'Most things get moving. A lamp is still about to switch on. It will get there.',
       items: [
         { t: 'Skrivebordet er ved ___ falde.', opts: ['at', 'med'], a: 0, why: 'være ved at + infinitive: ved at falde.' },
-        { t: 'Kaffen er ___ blive kold. Det har den været i ti år.', opts: ['ved at', 'i gang med'], a: 0, why: 'A verb follows (blive): ved at blive.' },
+        { t: 'Kaffen er ___ blive kold. Det har den været i ti år.', opts: ['ved at', 'i gang med'], a: 0, why: 'A verb follows (blive), and i gang med has no at in front of it: ved at blive.' },
         { t: 'Muren er i gang ___ et stort projekt.', opts: ['med', 'ved'], a: 0, why: 'i gang MED + a noun: i gang med et projekt.' },
-        { t: 'Lampen er i gang med ___ tænde.', opts: ['at', 'om'], a: 0, why: 'After a preposition (med), a verb takes at: i gang med at tænde.' },
-        { t: 'Stigen er ___ en ny etage.', opts: ['i gang med', 'ved at'], a: 0, why: 'A noun follows (en ny etage): i gang med.' },
-        { t: 'Uret er ___ gå i stå.', opts: ['ved at', 'i gang med'], a: 0, why: 'A verb follows (gå): ved at gå i stå.' },
-        { t: 'Vinduet er i gang med at ___ sig.', opts: ['åbne', 'åbner'], a: 0, why: 'After at: the infinitive, without -r.' },
+        { t: 'Blyanten er i gang med ___ tegne en etage.', opts: ['at', 'om'], a: 0, why: 'After a preposition (med), a verb takes at: i gang med at tegne.' },
+        { t: 'Kranen er ___ en ny etage.', opts: ['i gang med', 'ved at'], a: 0, why: 'A noun follows (en ny etage): i gang med.' },
+        { t: 'Uret er ___ gå i stå.', opts: ['ved at', 'i gang med'], a: 0, why: 'A verb follows (gå), and i gang med has no at: ved at gå i stå.' },
+        { t: 'Kantinen er i gang med at ___ suppe.', opts: ['lave', 'laver'], a: 0, why: 'After at: the infinitive, without -r.' },
         { t: 'Taget er ___ blæse væk.', opts: ['ved at', 'i gang med'], a: 0, why: 'ved at + infinitive: ved at blæse væk.' },
       ] },
     verb: { title: 'Kantinens suppe', q: 'Hvilken form?', boxes: ['a', 'b', 'c'],
@@ -147,18 +147,18 @@ SESSIONS.k2l1 = Object.assign({}, D2, {
       opts: [{ kind: 'reply', group: 'k', da: 'Hvem leder du efter?', ok: [{ n: 'It looks up at you for a long, hot second. Then it shrugs its handle and walks on. Wrong person. Or not yet.' }], next: 'map' }, { kind: 'go', group: 'k', label: 'Step aside.', next: 'map' }] },
     { id: 'post4', bg: 'gang', req: G => G.prev.Bband || G.prev.Bquiet || G.prev.Bjar, steps: [{ n: G => G.prev.Bband ? 'The pneumatic pipe in the wall coughs up a postcard from Hertil. On the front: Larmen and its band. On the back: a single drum roll, drawn in pencil.' : 'The pneumatic pipe in the wall coughs up a postcard from Hertil. It is blank. It is the quietest thing you have ever held.' }],
       opts: [{ kind: 'go', label: 'Pocket it. Walk on.', fx: { resp: 1 }, next: 'map' }] },
-    { id: 'ikket4', bg: 'gang', req: G => hasBoon('ikket'), steps: [{ n: 'Ikket wriggles in your mouth. Everybody in Derhenne says “ikke nu” all day long, and it is getting very fat.' }],
+    { id: 'ikket4', bg: 'gang', req: G => hasBoon('ikket'), steps: [{ n: 'Ikket wriggles in your mouth. In a building this busy there is a lot of “ikke” lying around, and it is getting fat.' }],
       opts: [{ kind: 'go', label: 'Keep your mouth shut. Walk on.', next: 'map' }] },
     { id: 'tal4', bg: 'gang', req: G => !hasBoon('urnoegle'), steps: [{ n: 'The floor numbers on the lift buttons come loose and swap places. Floor 3 is now floor ᚦ.' }, { special: 'glyphs' }], opts: [{ kind: 'go', label: 'Press a button anyway.', next: 'map' }] },
   ],
 
   special: {
     async arrive() {
-      logAdd(`<p>${esc(G.newPlace ? 'Nobody here has heard of you. Your weight did not fit through the pipe; you will have to earn it again.' : 'Nobody here has heard of you. That is what Derhenne is like: everybody is new, every morning.')}</p>`, 'thought'); await tapOn();
+      logAdd(`<p>${esc(G.newPlace ? 'Your weight did not fit through the pipe. Here you will have to earn it again.' : 'Here you are new. That is what Derhenne is like: everybody is new, every morning.')}</p>`, 'thought'); await tapOn();
     },
     async portLine() {
       const f = G.flags;
-      logAdd(`<p>${esc(f.Fdone ? 'Stemplet is stamping the post. Your profile is pinned on the board, a little crooked, between a dentist and a crane.' : f.Adone && f.Bdone && f.Cdone ? 'Stemplet has a fresh card out: JOBPROFIL. It is inking itself, slowly, looking at nothing in particular.' : pick(['Rørpost pops out of the pipes every few seconds. Stemplet stamps every single item, including a pigeon.', 'Stemplet stamps a letter, a parcel, a sandwich and, by accident, itself.']))}</p>`, 'narr');
+      logAdd(`<p>${esc(f.Fdone ? 'Stemplet is stamping the post. Your profile is pinned on the board, a little crooked, between a dentist and a crane.' : f.Adone && f.Bdone && f.Cdone ? 'Stemplet has a fresh card out: JOBPROFIL. It is inking itself, slowly, humming.' : pick(['Rørpost pops out of the pipes every few seconds. Stemplet stamps every single item, including a pigeon.', 'Stemplet stamps a letter, a parcel, a sandwich and, by accident, itself.']))}</p>`, 'narr');
     },
     async tagLine() { logAdd(`<p>${esc(G.flags.Adone ? 'Kranen swings another floor into place. It does not ask the floor what it is. The floor tells it.' : 'Kranen swings floors around in the wind, waiting for somebody to say what they are.')}</p>`, 'narr'); },
     async halvLine() { logAdd(`<p>${esc(G.flags.Bwhole ? 'The third floor is a whole wall now. It keeps touching its own roof, as if to check it is still there.' : G.flags.Bgoing ? 'Halvdelen is building itself, very slowly and very proudly. A brick goes up. A brick comes down. That is work.' : G.flags.Bwish ? 'The third floor is a garden. A bee that is also partly a brick bumbles past.' : G.flags.gangDone ? 'Everything on the floor has finished happening. Only Halvdelen is still in the middle of itself.' : 'A desk is falling. A cup is going cold. A lamp is about to switch on. Nothing gets there.')}</p>`, 'narr'); },
@@ -188,7 +188,7 @@ SESSIONS.k2l1 = Object.assign({}, D2, {
         { n: 'Now a pipe spits you out onto a counter with a pop. Rørpost. Everything that arrives in Derhenne arrives like this.' },
         { npc: 'stempel' },
         { say: 'stempel', da: 'Velkommen til Derhenne. Hvad laver du?', en: 'Welcome to Derhenne. What do you do?' },
-        { th: 'It is asking the counter. It stamps the envelope you came in: KA-CHUNK.' },
+        { th: 'It stamps the envelope you came in, mid-question: KA-CHUNK.' },
         { th: 'In Hertil you were a reason, a stay, an address. Here they want a job, and you do not have one.' },
         { n: 'Without one you are too light. Your feet leave the counter. You float up past the directory board toward the ceiling.' },
       ],
@@ -196,14 +196,14 @@ SESSIONS.k2l1 = Object.assign({}, D2, {
     p4_lift: { bg: 'gang', npc: 'elevator', title: 'Elevatoren',
       steps: [
         { n: 'The lift catches you in its folding gate like a fish. Its floor dial swings about, busy with some other floor.' },
-        { say: 'elevator', da: 'Intet job? Så flyder man. Det gør alle her i starten.', en: 'No job? Then you float. Everybody does here at the start.' },
+        { say: 'elevator', da: 'Intet job? Så svæver man. Det gør alle her i starten.', en: 'No job? Then you float. Everybody does here at the start.' },
         { say: 'elevator', da: 'Du kan sove på første sal, indtil du ved, hvad du laver.', en: 'You can sleep on the first floor until you know what you do.' },
         { say: 'elevator', da: 'Spørg Kranen på taget. Den bygger det hele.', en: 'Ask Kranen on the roof. It builds the whole thing.' },
         { special: 'arrive' },
         { th: 'Somewhere above, something is being built. Somewhere below, something is boiling. On the third floor, something has been falling for a very long time.' },
         { fx: { quest: ['A', 'B', 'C', 'F', 'S4'], flag: 'p4seen' } },
       ],
-      opts: [{ kind: 'reply', group: 'l', da: 'Tak!', ok: [{ say: 'elevator', da: 'Hvilken etage?', en: 'Which floor?' }, { th: 'It does not wait for an answer.' }], next: 'map' }, { kind: 'go', group: 'l', label: 'Get out on the first floor.', next: 'map' }] },
+      opts: [{ kind: 'reply', group: 'l', da: 'Tak!', ok: [{ say: 'elevator', da: 'Hvilken etage?', en: 'Which floor?' }, { th: 'It is already on its way down.' }], next: 'map' }, { kind: 'go', group: 'l', label: 'Get out on the first floor.', next: 'map' }] },
 
     /* ===== KØJERNE: your bunk ===== */
     koeje_hub: { bg: 'koeje', title: 'Køjerne', hub: true, idle: true, home: true,
@@ -223,8 +223,8 @@ SESSIONS.k2l1 = Object.assign({}, D2, {
       steps: [
         { n: 'The roof. Derhenne goes on up into the sky as steel beams with nothing between them. Kranen swings a whole floor through the air, misses, swings again.' },
         { say: 'kran', da: 'Jeg er i gang med en ny etage. Den skal være et it-firma. Eller en café. Eller et universitet.', en: 'I am busy with a new floor. It is supposed to be an IT company. Or a café. Or a university.' },
-        { say: 'kran', da: 'Men etagerne vil ikke blive liggende. De vil vide, om de er i eller på.', en: 'But the floors will not stay put. They want to know whether they are i or på.' },
-        { th: 'Above you, a café, a hospital and a newspaper drift about on their cables, waiting for their prepositions.' },
+        { say: 'kran', da: 'Men etagerne vil ikke blive på plads. De vil vide, om de er i eller på.', en: 'But the floors will not stay in place. They want to know whether they are i or på.' },
+        { th: 'Above you, an IT company, a café and a university drift about on their cables, waiting for their prepositions.' },
         { fx: { flag: 'Akran', quest: ['S1'] } },
       ],
       opts: [{ kind: 'act', special: 'boxes:ipaa', label: 'Give each workplace its i or på.', next: 'a4_landed' }] },
@@ -236,7 +236,7 @@ SESSIONS.k2l1 = Object.assign({}, D2, {
         { fx: { flag: 'ipaaDone', resp: 1 } },
       ],
       opts: jobQ.map(q => ({ kind: 'say', stat: 'SPROG', dc: 10, group: 'job', label: q.label, build: q.build,
-        ok: [{ n: 'Your feet touch the roof. You weigh something.' }], fail: [{ n: 'The wind takes half your sentence. Kranen hears the other half, which is the important half.' }], next: { Aprog: 'a4_prog', Atjener: 'a4_tjener', Astud: 'a4_stud' }[q.flag] })) },
+        ok: [{ n: 'Your feet touch the roof. You weigh something.' }], fail: [{ n: 'The wind takes half your sentence away over the edge. Kranen catches it on its hook and hands it back. Your feet touch the roof.' }], next: { Aprog: 'a4_prog', Atjener: 'a4_tjener', Astud: 'a4_stud' }[q.flag] })) },
     a4_prog: { bg: 'kontor', title: 'Et it-firma',
       steps: [{ n: 'A door opens in the new floor. Inside, screens blink at each other in code. One of them has a space for your name and a chair that fits.' }, { th: 'You are a programmer now. Your fingers find that they know where the semicolon is.' }, { fx: { boon: 'kode', flag: 'Aprog', resp: 2 } }, { fx: { flag: 'Adone' } }],
       opts: [{ kind: 'go', label: 'Take the lift back down.', next: 'map' }] },
@@ -287,7 +287,7 @@ SESSIONS.k2l1 = Object.assign({}, D2, {
         { kind: 'say', stat: 'SPROG', dc: 10, group: 'end', label: 'Tell it it is finished now.', build: { en: 'Now you are finished.', answers: [['Du', 'er', 'færdig', 'nu.']], best: [['Nu', 'er', 'du', 'færdig.']], tiles: ['Nu', 'er', 'du', 'færdig.', 'ved', 'at', 'bliver'] },
           ok: [{ n: 'The word lands like the last brick.' }], fail: [{ n: 'A bit of scaffolding clangs halfway through your sentence. Halvdelen hears “færdig” and decides that was the point.' }], next: 'b4_whole' },
         { kind: 'say', stat: 'SPROG', dc: 10, group: 'end', label: 'Tell it it is busy with something big.', build: { en: 'You are busy with something big.', answers: [['Du', 'er', 'i', 'gang', 'med', 'noget', 'stort.']], tiles: ['Du', 'er', 'i', 'gang', 'med', 'noget', 'stort.', 'ved', 'at'] },
-          ok: [{ n: 'Halvdelen straightens its scaffolding.' }], fail: [{ n: 'Halvdelen catches “i gang”, and that is all it ever wanted to hear.' }], next: 'b4_going' },
+          ok: [{ n: 'Halvdelen straightens its scaffolding.' }], fail: [{ n: 'Halvdelen lays a brick on top of your sentence while you are still saying it. It got the idea.' }], next: 'b4_going' },
         { kind: 'say', stat: 'SPROG', dc: 11, group: 'end', label: 'Ask what it would really like to do.', build: { en: 'What would you like to do?', answers: [['Hvad', 'kunne', 'du', 'godt', 'tænke', 'dig', 'at', 'lave?']], tiles: ['Hvad', 'kunne', 'du', 'godt', 'tænke', 'dig', 'at', 'lave?', 'mig', 'laver'] },
           ok: [{ n: 'Nobody has ever asked it that. The window frame lights up, all four panes.' }], fail: [{ n: 'A brick falls between you mid-question. Halvdelen answers anyway. It had the answer ready for years.' }], next: 'b4_wish' },
       ] },
@@ -307,7 +307,7 @@ SESSIONS.k2l1 = Object.assign({}, D2, {
         { n: 'The fourth floor. Desks, papers, a lamp swinging over nobody.' },
         { n: 'A filing cabinet on bird legs is pulling out its own drawers, one after another. They are all empty.' },
         { say: 'arkiv', da: 'Hvad er det nu, du laver?', en: 'What is it you do again?' },
-        { th: 'It is asking the lamp.' },
+        { th: 'It says it to the lamp, then to a drawer, then to the lamp again.' },
         { say: 'arkiv', da: 'Alle mine skuffer er tomme. Nu kan ingen i Derhenne huske, hvad de andre laver. Heller ikke, hvad de selv laver.', en: 'All my drawers are empty. Now nobody in Derhenne can remember what the others do. Or what they do themselves.' },
         { fx: { flag: 'Cmet' } },
       ],
@@ -327,16 +327,16 @@ SESSIONS.k2l1 = Object.assign({}, D2, {
       ],
       opts: [
         { kind: 'say', stat: 'SPROG', dc: 10, group: 'end', label: 'Tell it: it is the archive. It can remember everything.', build: { en: 'You are the archive. You can remember everything.', answers: [['Du', 'er', 'arkivet.', 'Du', 'kan', 'huske', 'alt.']], tiles: ['Du', 'er', 'arkivet.', 'Du', 'kan', 'huske', 'alt.', 'glemmer', 'at'] },
-          ok: [{ n: 'Arkivet stands very still. Then every drawer opens at once.' }], fail: [{ n: 'Arkivet only hears “huske”. It is the one word it needed.' }], next: 'c4_remember' },
+          ok: [{ n: 'Arkivet stands very still. Then every drawer opens at once.' }], fail: [{ n: 'A drawer slams halfway through, but the word “huske” falls into it, and that drawer starts filling up first.' }], next: 'c4_remember' },
         { kind: 'say', stat: 'SPROG', dc: 10, group: 'end', label: 'Tell it it could try something new.', build: { en: 'You could try something new.', answers: [['Du', 'kunne', 'prøve', 'noget', 'nyt.']], tiles: ['Du', 'kunne', 'prøve', 'noget', 'nyt.', 'at', 'prøver'] },
-          ok: [{ n: 'Arkivet’s label window goes wide.' }], fail: [{ n: 'Arkivet catches “noget nyt”, and that is quite enough for a cabinet that has stood in one place for a hundred years.' }], next: 'c4_new' },
+          ok: [{ n: 'Arkivet’s label window goes wide.' }], fail: [{ n: 'You stumble over the words. Arkivet does not mind. After a hundred years in one place, any sentence with “nyt” in it sounds like a door opening.' }], next: 'c4_new' },
       ] },
     c4_remember: { bg: 'kontor', npc: 'arkiv', title: 'Kontoret',
       steps: [
         { n: 'The drawers fill with a rustle like rain. Every card comes back. Arkivet reads them all at once, out loud, very fast.' },
-        { say: 'arkiv', da: 'Kokken laver suppe. Kranen bygger. Stemplet stempler. Og her … en lap i din håndskrift.', en: 'The cook makes soup. The crane builds. The stamp stamps. And here … a note in your handwriting.' },
+        { say: 'arkiv', da: 'Kokken laver suppe. Kranen bygger. Stemplet stempler. Og her … en seddel med din håndskrift.', en: 'The cook makes soup. The crane builds. The stamp stamps. And here … a note in your handwriting.' },
         { glimpse: 'skrift' },
-        { th: 'It hands you the note without looking. It is already reading the next drawer.' },
+        { th: 'It holds the note out to you while already reading the next drawer.' },
         { fx: { boon: 'kartotek', flag: 'Cremember', resp: 2 } }, { fx: { flag: 'Cdone' } },
       ],
       opts: [{ kind: 'go', label: 'Leave it reading.', next: 'map' }] },
@@ -354,8 +354,8 @@ SESSIONS.k2l1 = Object.assign({}, D2, {
       steps: [{ special: 'kantLine' }],
       opts: [
         { kind: 'act', special: 'boxes:verb', label: 'Fish the verbs out of the soup.', req: G => !G.flags.verbDone, next: 'kant_verbs' },
-        askOpt('askK', ['kantine', 'Jeg? Jeg er kok. Jeg arbejder i et køkken, nede i kælderen. Nåh ja, det er også rigtigt!', 'Me? I am a cook. I work in a kitchen, down in the basement. Oh yes, that is right!'],
-          { en: 'What is it you do again?', answers: [['Hvad', 'er', 'det', 'nu,', 'du', 'laver?']], tiles: ['Hvad', 'er', 'det', 'nu,', 'du', 'laver?', 'laver', 'hvem'] }, 'Ask Kantinen what it does, again.'),
+        askOpt('askK', ['kantine', 'Jeg? Jeg er kok. Jeg arbejder i et køkken, nede i kælderen. Nåh ja, det er rigtigt!', 'Me? I am a cook. I work in a kitchen, down in the basement. Oh yes, that is right!'],
+          { en: 'What is it you do again?', answers: [['Hvad', 'er', 'det', 'nu,', 'du', 'laver?']], tiles: ['Hvad', 'er', 'det', 'nu,', 'du', 'laver?', 'laver', 'hvem'] }, 'Ask Kantinen what it does. It has forgotten, so ask the “er det nu” way.'),
         { kind: 'reply', once: true, da: 'Hvad er der i suppen i dag?', ok: [{ say: 'kantine', da: 'Ord. Der er altid ord i suppen. I dag er det verber.', en: 'Words. There are always words in the soup. Today it is verbs.' }] },
         { kind: 'go', label: 'Look at the cups on the shelf.', req: G => !G.glimpses.includes('kop'), next: 'kant_kop' },
         { kind: 'go', label: 'Leave.', next: 'map' },
@@ -373,7 +373,7 @@ SESSIONS.k2l1 = Object.assign({}, D2, {
       opts: [
         { kind: 'act', special: 'boxes:mmjob', label: 'Help Blyanten count its work.', req: G => !G.flags.mmjobDone, next: 'tegne_counted' },
         askOpt('askB', ['blyant', 'Hvor jeg arbejder? På en tegnestue. Her! Jeg er arkitekt. Nåh ja!', 'Where I work? In a drawing studio. Here! I am an architect. Oh yes!'],
-          { en: 'Where is it you work again?', answers: [['Hvor', 'er', 'det', 'nu,', 'du', 'arbejder?'], ['Hvor', 'er', 'det', 'nu,', 'du', 'arbejder', 'henne?']], tiles: ['Hvor', 'er', 'det', 'nu,', 'du', 'arbejder', 'henne?', 'arbejder?', 'hvad'] }, 'Ask Blyanten where it works, again.'),
+          { en: 'Where is it you work again?', answers: [['Hvor', 'er', 'det', 'nu,', 'du', 'arbejder?'], ['Hvor', 'er', 'det', 'nu,', 'du', 'arbejder', 'henne?']], tiles: ['Hvor', 'er', 'det', 'nu,', 'du', 'arbejder', 'henne?', 'arbejder?', 'hvad'] }, 'Ask Blyanten where it works. It has forgotten, so ask the “er det nu” way.'),
         { kind: 'reply', once: true, da: 'Hvad laver du så for tiden?', ok: [{ say: 'blyant', da: 'Lige nu er jeg i gang med at tegne en ny etage. Den skal være rund.', en: 'Right now I am busy drawing a new floor. It is supposed to be round.' }] },
         { kind: 'go', label: 'Leave.', next: 'map' },
       ] },
@@ -388,7 +388,7 @@ SESSIONS.k2l1 = Object.assign({}, D2, {
         { kind: 'go', label: 'Get your job profile stamped.', req: G => G.flags.Adone && G.flags.Bdone && G.flags.Cdone && !G.flags.Fdone, next: 'f4_1', mark: true },
         { kind: 'act', special: 'hunt:port', label: 'Find the workplaces on the board.', req: G => G.flags.Akran && !G.flags.huntDone4, next: 'port_hunted' },
         askOpt('askS', ['stempel', 'Før Derhenne? Jeg var et viskelæder. Nu stempler jeg alt, der kommer. Nåh ja.', 'Before Derhenne? I was an eraser. Now I stamp everything that comes. Oh yes.'],
-          { en: 'What was it you did before, again?', answers: [['Hvad', 'var', 'det', 'nu,', 'du', 'lavede?']], tiles: ['Hvad', 'var', 'det', 'nu,', 'du', 'lavede?', 'laver', 'er'] }, 'Ask Stemplet what it did before, again.'),
+          { en: 'What was it you used to do, again?', answers: [['Hvad', 'var', 'det', 'nu,', 'du', 'lavede?']], tiles: ['Hvad', 'var', 'det', 'nu,', 'du', 'lavede?', 'laver', 'er'] }, 'Ask Stemplet what it used to do. It has forgotten, so ask the “var det nu” way.'),
         { kind: 'go', label: 'Leave.', next: 'map' },
       ] },
     port_hunted: { bg: 'port', npc: 'stempel', title: 'Porten',
@@ -396,14 +396,14 @@ SESSIONS.k2l1 = Object.assign({}, D2, {
       opts: [{ kind: 'go', label: 'Back.', next: 'port_hub' }] },
     f4_1: { bg: 'port', npc: 'stempel', title: 'Porten', card: ['Porten', 'jobprofil'],
       steps: [{ n: 'Stemplet pulls out a fresh card: JOBPROFIL. It inks itself with great care.' }, { say: 'stempel', da: 'Hvad er det nu, du laver?', en: 'What is it you do again?' }],
-      opts: jobQ.map(q => ({ kind: 'say', stat: 'SPROG', dc: 10, label: q.label.replace('Say', 'Say again'), req: G => G.flags[q.flag], build: q.build,
+      opts: jobQ.map(q => ({ kind: 'say', stat: 'SPROG', dc: 10, label: 'Tell Stemplet again: ' + q.label.replace('Say you are', 'you are').replace('Say you work', 'you work').replace('Say you are studying', 'you are studying'), req: G => G.flags[q.flag], build: q.build,
         ok: [{ say: 'stempel', da: 'Godt.', en: 'Good.' }], fail: [{ n: 'Stemplet sneezes ink halfway through. It writes down what you meant.' }], next: 'f4_2' })) },
     f4_2: { bg: 'port', npc: 'stempel', title: 'Porten',
       steps: [{ say: 'stempel', da: 'Og hvad er du i gang med for tiden?', en: 'And what are you busy with at the moment?' }],
       opts: Object.entries(busyQ).map(([flag, b]) => ({ kind: 'say', stat: 'SPROG', dc: 10, label: 'Say what you are busy with right now.', req: G => G.flags[flag], build: b,
         ok: [{ say: 'stempel', da: 'Det lyder spændende.', en: 'That sounds exciting.' }], fail: [{ say: 'stempel', da: 'Det lyder … travlt.', en: 'That sounds … busy.' }], next: 'f4_3' })) },
     f4_3: { bg: 'port', npc: 'stempel', title: 'Porten',
-      steps: [{ say: 'stempel', da: 'Er du glad for at arbejde der?', en: 'Are you happy working there?' }],
+      steps: [{ say: 'stempel', da: 'Er du glad for det?', en: 'Are you happy with it?' }],
       opts: [
         { kind: 'reply', group: 'h', da: 'Ja, det er jeg.', ok: [{ fx: { origin: { happy2: 'Ja, det er jeg.' } } }, { say: 'stempel', da: 'Så er jeg også glad.', en: 'Then I am happy too.' }], next: 'f4_4' },
         { kind: 'say', stat: 'SPROG', dc: 10, group: 'h', label: 'Say yes, but you have a bit too much to do.', build: { en: 'Yes, but I have a little too much to do.', answers: [['Ja,', 'men', 'jeg', 'har', 'lidt', 'for', 'meget', 'at', 'lave.']], tiles: ['Ja,', 'men', 'jeg', 'har', 'lidt', 'for', 'meget', 'at', 'lave.', 'mange', 'laver'] },
@@ -415,7 +415,7 @@ SESSIONS.k2l1 = Object.assign({}, D2, {
       opts: [
         { kind: 'say', stat: 'SPROG', dc: 10, group: 'w', label: 'Say you would like to try something new.', build: { en: 'I would like to try something new.', origin: 'wish', answers: [['Jeg', 'kunne', 'godt', 'tænke', 'mig', 'at', 'prøve', 'noget', 'nyt.']], tiles: ['Jeg', 'kunne', 'godt', 'tænke', 'mig', 'at', 'prøve', 'noget', 'nyt.', 'dig', 'prøver'] },
           ok: [{ say: 'stempel', da: 'Nu må vi se.', en: 'We will see.' }], fail: [{ say: 'stempel', da: 'Noget nyt. Nu må vi se.', en: 'Something new. We will see.' }], next: 'f4_end' },
-        { kind: 'reply', group: 'w', da: 'Det ved jeg ikke rigtig.', ok: [{ say: 'stempel', da: 'Det er der ingen, der gør.', en: 'Nobody does.' }], next: 'f4_end' },
+        { kind: 'reply', group: 'w', da: 'Det ved jeg ikke rigtig.', ok: [{ say: 'stempel', da: 'Det ved ingen.', en: 'Nobody knows.' }], next: 'f4_end' },
       ] },
     f4_end: { bg: 'port', npc: 'stempel', title: 'Porten',
       steps: [
@@ -430,7 +430,7 @@ SESSIONS.k2l1 = Object.assign({}, D2, {
       steps: [
         { n: 'That night a second card comes down the pipe and lands on your pillow.' },
         { n: 'It is a timetable. It says: SKOLEN. 2. SAL. I MORGEN.' },
-        { th: 'The second floor was a drawing studio when you went to sleep.' },
+        { th: 'The second floor was a drawing studio the last time you looked.' },
       ],
       opts: [{ kind: 'go', label: 'End the lesson.', next: 'end' }] },
 
