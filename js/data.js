@@ -158,3 +158,61 @@ const DICT = {
 
 /* numbers as words (for the glyph dice and prices said aloud) */
 const NUMS = ['nul', 'en', 'to', 'tre', 'fire', 'fem', 'seks', 'syv', 'otte', 'ni', 'ti', 'elleve', 'tolv', 'tretten', 'fjorten', 'femten', 'seksten', 'sytten', 'atten', 'nitten', 'tyve', 'enogtyve', 'toogtyve', 'treogtyve', 'fireogtyve', 'femogtyve', 'seksogtyve', 'syvogtyve'];
+
+/* ---------------- grammar notes: why a sentence is right ----------------
+   Shown behind the small "Hvorfor?" button under every sentence the player says, and collected in
+   the journal (Regler). Found from the sentence itself, so new lessons get them for free.
+   t: test on the lower-case sentence (no punctuation, a leading ja/nej/men/og removed). */
+const ruleText = t => t.toLowerCase().replace(/[.,!?“”"]/g, '').replace(/\s+/g, ' ').trim().replace(/^(ja|nej|men|og|okay|hm)( (men|og))? /, '')
+  .replace(/æ/g, 'ae').replace(/ø/g, 'oe').replace(/å/g, 'aa'); // JS \b does not know æøå, so the tests are written in ae/oe/aa
+const rulesFor = t => { const s = ruleText(t); return RULES.filter(r => { try { return r.t(s); } catch (e) { return false; } }); };
+const RULES = [
+  { id: 'v2', name: 'Verbet står på plads 2', t: s => /^(naar|da|foer|hvis|om \w+ \w+|for \w+ \w+ siden|i min fritid|i dag|i gaar|i morgen|nogle gange|nu|saa)\b/.test(s) && !/\?$/.test(s),
+    en: 'A Danish main clause always has the verb in second place. If the sentence starts with something other than the subject (a time, or a whole når/da/før-clause), the verb comes right after it, and the subject after the verb.',
+    ex: ['Om en time rejser jeg hjem.', 'Når jeg har fundet mit navn, rejser jeg hjem.'] },
+  { id: 'bis', name: 'ikke · gerne · altid i en bisætning', t: s => /\b(fordi|naar|da|hvis|foer|at|selvom|som) (jeg|du|han|hun|den|det|vi|i|de|man|nogen) (ikke|gerne|altid|aldrig|ogsaa|tit|nogle gange)\b/.test(s),
+    en: 'In a subordinate clause (after fordi, når, da, hvis, før, at…), words like ikke, gerne, altid, aldrig come BEFORE the verb. In a main clause they come after it.',
+    ex: ['Jeg kommer ikke. → …fordi jeg ikke kommer.', 'Jeg vil gerne hjem. → …fordi jeg gerne vil hjem.'] },
+  { id: 'hs_ikke', name: 'ikke i en hovedsætning', t: s => /^(jeg|du|han|hun|den|det|vi|de|man) \w+ (ikke|gerne|altid|aldrig)\b/.test(s),
+    en: 'In a main clause, ikke / gerne / altid come right AFTER the verb.',
+    ex: ['Jeg kan ikke finde det.', 'Jeg vil gerne hjem.'] },
+  { id: 'fordi', name: 'fordi + en hel sætning', t: s => /\bfordi\b/.test(s),
+    en: 'fordi (because) is followed by a whole clause with its own subject and verb, in normal order: fordi jeg savner…, not fordi savner jeg….',
+    ex: ['Jeg kom hertil, fordi jeg faldt.'] },
+  { id: 'forat', name: 'for at + infinitiv', t: s => /\bfor at\b/.test(s) && !/\b(glad|traet|bange|ked) for at\b/.test(s),
+    en: 'for at means in order to. After it comes the verb in the infinitive (no -r): for at finde, for at være.',
+    ex: ['Jeg kom hertil for at finde mit navn.'] },
+  { id: 'pga', name: 'på grund af + et navneord', t: s => /\bpaa grund af\b/.test(s),
+    en: 'på grund af (because of) is followed by a noun or a thing, not by a clause.',
+    ex: ['Jeg kom hertil på grund af en lyd.'] },
+  { id: 'siden', name: 'for … siden = ago', t: s => /\bfor \w+( \w+)? siden\b/.test(s),
+    en: 'for … siden means ago. It points to a moment in the past, so the verb is in the past tense.',
+    ex: ['Jeg kom hertil for tre dage siden.'] },
+  { id: 'om', name: 'om + tid = in (the future)', t: s => /\bom (et|en|to|tre|fire|fem|nogle|lidt) ?(aar|time|uge|maaned|dag|minut|timer|uger|dage|maaneder|minutter)?\b/.test(s) && /\bom (et|en|to|tre|fire|fem|nogle)\b/.test(s),
+    en: 'om + a time means in, counted from now into the future.',
+    ex: ['Jeg rejser hjem om en time.'] },
+  { id: 'i_tid', name: 'i + tid = for (how long)', t: s => /\bi (et|en|to|tre|fire|fem|mange|nogle) (aar|time|uge|maaned|dag|minut|timer|uger|dage|maaneder|minutter)\b/.test(s),
+    en: 'i + a length of time says how long something lasts.',
+    ex: ['Jeg har været her i en uge.', 'Jeg skal være her i et år.'] },
+  { id: 'danar', name: 'da · når · hvornår', t: s => /\b(da|naar|hvornaar)\b/.test(s),
+    en: 'da = when, about one time in the past. når = when, about the future or every time it happens. hvornår = when? only in questions, also indirect ones (Jeg ved ikke, hvornår …).',
+    ex: ['Da jeg faldt, kom jeg hertil.', 'Når jeg har fundet mit navn, rejser jeg hjem.', 'Hvornår rejser du?'] },
+  { id: 'gladfor', name: 'glad for · træt af', t: s => /\b(glad for|traet af)\b/.test(s),
+    en: 'Some adjectives take a fixed preposition: glad for (happy about), træt af (tired of). After them comes a noun, or at + infinitive.',
+    ex: ['Jeg er glad for at være her.', 'Jeg er træt af tirsdag.'] },
+  { id: 'savne', name: 'savne', t: s => /\bsavne[rt]?\b/.test(s),
+    en: 'savne = miss (someone or something). It takes its object directly, with no preposition.',
+    ex: ['Jeg savner mit navn.'] },
+  { id: 'som', name: 'som + job, uden en/et', t: s => /\b(arbejder|arbejdede|er|var) som \w+/.test(s),
+    en: 'After som (as), a job has no en/et.',
+    ex: ['Jeg arbejdede som musiker.'] },
+  { id: 'datid', name: 'Datid (past tense)', t: s => /\b(\w{3,}ede|boede|arbejdede|laeste|spiste|koebte|hoerte|glemte|underviste|koerte|kom|faldt|var|havde|gik|fik|fandt|tog|loeb|blev|sang|sagde|skrev|hjalp|laa|sad|saa)\b/.test(s.replace(/^\w+ /, m => /^(kom|gaa|tag|se|loeb) $/.test(m) ? '' : m)),
+    en: 'Past tense: regular verbs take -ede (arbejdede, boede) or -te (læste, spiste). Many common verbs are irregular: kom, faldt, var, havde, gik, fandt.',
+    ex: ['Før jeg kom hertil, boede jeg ved havet.'] },
+  { id: 'modal', name: 'kan · vil · skal · må + infinitiv', t: s => /\b(kan|vil|skal|maa|kunne|ville|skulle)\b \w+/.test(s),
+    en: 'After kan, vil, skal, må (and kunne, ville, skulle) the next verb is in the infinitive, without at.',
+    ex: ['Jeg vil gerne hjem.', 'Du må løbe.'] },
+  { id: 'ipaa', name: 'i eller på', t: s => /\b(bor|boede|laeste|studerede|studerer|arbejdede|arbejder)\b/.test(s) && /\b(i|paa) \w+/.test(s),
+    en: 'i is used for cities, countries and inside rooms (i København). på is used for many institutions and workplaces (på universitetet, på et hospital) and for islands (på Fyn).',
+    ex: ['Jeg læste medicin på universitetet.'] },
+];

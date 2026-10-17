@@ -119,6 +119,27 @@ function hud() {
     <div class="h-r"><span>${G.sk} skæl</span><span class="insp">✦ ${G.insp}</span><button class="ib" id="bJ" aria-label="Dagbog">☰</button></div>`;
   $('#bJ').onclick = journal;
 }
+/* ---------------- why is it right? grammar notes behind every sentence the player says ---------------- */
+function noteRules(sentence) {
+  const rs = rulesFor(sentence); META.rules = META.rules || {};
+  rs.forEach(r => { if (!META.rules[r.id]) META.rules[r.id] = sentence; }); saveMeta();
+  return rs;
+}
+function youSaid(sentence) {
+  const d = logAdd(`<div class="you-da">“${daHTML(sentence)}”</div>`, 'you');
+  const rs = noteRules(sentence);
+  if (rs.length) { const b = document.createElement('button'); b.className = 'why'; b.textContent = 'Hvorfor?'; b.onclick = () => ruleSheet(rs, sentence); d.appendChild(b); }
+  return d;
+}
+function ruleSheet(rs, sentence) {
+  const ov = document.createElement('div'); ov.className = 'prep-ov rule-ov'; document.body.appendChild(ov);
+  ov.innerHTML = `<div class="prep rules"><div class="p-head"><small>${sentence ? 'Hvorfor er det rigtigt?' : 'Tip · the rule behind this sentence'}</small>${sentence ? `<h2 class="rs-s">“${daHTML(sentence)}”</h2>` : '<h2>Tip</h2>'}</div>
+    ${rs.map(r => `<div class="rule"><b>${esc(r.name)}</b><p>${esc(r.en)}</p>${r.ex.map(e => `<div class="rex">${daHTML(e)}</div>`).join('')}</div>`).join('')}
+    <button class="btn gold big" id="close">Forstået</button></div>`;
+  wireWords(ov); AUDIO.sting('page');
+  ov.querySelector('#close').onclick = () => ov.remove();
+}
+
 function toast(m, c = '') { const t = document.createElement('div'); t.className = 'toast ' + c; t.textContent = m; $('#toasts').appendChild(t); setTimeout(() => t.classList.add('out'), FAST ? 30 : 2600); setTimeout(() => t.remove(), FAST ? 60 : 3200); }
 
 /* a newer version is online: offer a reload (the open page keeps running old code otherwise) */
@@ -244,6 +265,7 @@ function logAdd(html, cls = '') {
   const d = document.createElement('div'); d.className = 'e ' + cls; d.innerHTML = html;
   $('#log').appendChild(d); wireWords(d);
   requestAnimationFrame(() => d.classList.add('in'));
+  return d;
   const L = $('#log'); setTimeout(() => L.scrollTop = L.scrollHeight, 30);
   return d;
 }
@@ -357,7 +379,9 @@ function builder(b) {
       let at = 0, bestLen = -1;
       for (const a of [...b.answers, ...(b.best || [])]) { let k = 0; while (k < line.length && a[k] && norm(line[k].t) === norm(a[k])) k++; if (k > bestLen) { bestLen = k; at = k; } }
       AUDIO.sting('lose');
-      render(mistakes <= 1 ? `Not quite. The first problem is word ${at + 1}.` : 'Still not right. Look at the highlighted word, or show the answer.', { at });
+      const hint = rulesFor(b.answers[0].join(' '))[0];
+      render((mistakes <= 1 ? `Not quite. The first problem is word ${at + 1}.` : 'Still not right. Look at the highlighted word, or show the answer.') + (hint ? ` <button class="why" id="bWhy">Tip: ${esc(hint.name)}</button>` : ''), { at });
+      const bw = ov.querySelector('#bWhy'); if (bw) bw.onclick = () => ruleSheet([hint]);
     };
     render();
   });
@@ -458,7 +482,7 @@ async function runOption(node, o, idx) {
     await steps(o.ok); return o.next;
   }
   if (o.kind === 'reply') {
-    logAdd(`<div class="you-da">“${daHTML(o.da)}”</div>`, 'you'); TTS.say(o.da, false, true);
+    youSaid(o.da); TTS.say(o.da, false, true);
     statGain(o.stat, 1); await TTS.waitYou();
     await steps(o.ok); return o.next;
   }
@@ -468,10 +492,10 @@ async function runOption(node, o, idx) {
   if ((o.kind === 'say' || o.kind === 'lie') && o.build) {
     const r = await builder(o.build);
     built = true; G.log.built++;
-    logAdd(`<div class="you-da">“${daHTML(r.sentence)}”</div>`, 'you');
+    youSaid(r.sentence);
     if (r.how === 'perfect') { mode = 'adv'; G.log.perfect++; }
     else if (r.how === 'shown' || r.mistakes >= 2) mode = 'dis';
-    if (r.best) mods.push({ t: 'Før-inversion', v: 1 });
+    if (r.best) mods.push({ t: 'Inversion', v: 1 });
     if (o.build.origin) { G.origin[o.build.origin] = r.sentence; if (o.build.origin === 'job') { const m = r.sentence.match(/som ([^\s.]+)/); if (m) G.origin.jobWord = m[1]; } }
   }
   statGain(o.stat, 1);
@@ -958,9 +982,11 @@ function endScreen() {
     <h3>Færdigheder</h3><div class="stats">${Object.keys(STATS).map(k => `<div class="st"><b>${STATS[k].name}</b><span class="sv">${lvl(k)}</span></div>`).join('')}</div>
     ${S().next ? `<p class="next">Next: ${S().next}</p>` : ''}
     ${nx ? `<button class="btn gold big" id="onward">Fortsæt: ${esc(nx.short)} · ${esc(nx.en)}</button>` : ''}
-    <button class="btn ${nx ? 'ghost' : 'gold'} big" id="again">Play the lesson again</button></div>`;
+    <button class="btn ${nx ? 'ghost' : 'gold'} big" id="again">Play the lesson again</button>
+    <button class="btn ghost big" id="toMenu">Til menuen · back to the start page</button></div>`;
   wireWords(ov);
   $('#again').onclick = () => { ov.remove(); newGame(G.sess); goNode(S().start); };
+  ov.querySelector('#toMenu').onclick = () => { ov.remove(); title(); AUDIO.play('title'); };
   const on = $('#onward'); if (on) on.onclick = () => { const from = META.carry[G.sess]; ov.remove(); newGame(S().nextSession, from); goNode(S().start); };
 }
 
@@ -975,9 +1001,10 @@ function journal() {
     o: () => Object.entries(VOCAB_SETS).map(([set, name]) => { const ks = Object.keys(VOCAB).filter(k => VOCAB[k].set === set && META.vocab[k]); return `<h3>${esc(name)} <small>${ks.length}/${Object.keys(VOCAB).filter(k => VOCAB[k].set === set).length}</small></h3><div class="ordbog">${ks.map(k => `<button class="ob ${META.vocab[k].box ? '' : 'faint'}" data-say="${esc(VOCAB[k].da)}">${ART.icon(VOCAB[k].icon)}<b>${esc(VOCAB[k].da)}</b><i>${esc(VOCAB[k].en)}</i><span class="dots">${[0, 1, 2, 3].map(n => `<i class="${n < META.vocab[k].box ? 'on' : ''}"></i>`).join('')}</span></button>`).join('') || '<p class="dim">None yet.</p>'}</div>`; }).join('') + '<p class="dim">Faint marks have not settled yet. Sleep on them.</p>',
     g: () => G.glimpses.length ? G.glimpses.map(g => `<div class="gl small"><b>${esc(S().glimpses[g].name)}</b><p>${esc(S().glimpses[g].text)}</p></div>`).join('') : '<p class="dim">Nothing yet. Hertil gives nothing away on purpose.</p>',
     a: () => `<div class="atlas"><button class="plate me" id="me">${ART.self(G, marksCount(), true)}<b>Dig</b><i>?</i></button>${G.met.map(id => `<div class="plate">${ART.creature(NPCS[id].art, gazeOf(id), true)}<b>${esc(NPCS[id].name)}</b><i>${esc(NPCS[id].role)}</i></div>`).join('')}</div>`,
+    r: () => { const got = RULES.filter(r => (META.rules || {})[r.id]); return got.length ? got.map(r => `<div class="rule"><b>${esc(r.name)}</b><p>${esc(r.en)}</p><div class="rex mine">${daHTML(META.rules[r.id])}</div>${r.ex.map(e => `<div class="rex">${daHTML(e)}</div>`).join('')}</div>`).join('') + `<p class="dim">${got.length} / ${RULES.length} rules used. The yellow line is your own sentence.</p>` : '<p class="dim">Say something in Danish first. Every rule you use lands here.</p>'; },
     s: () => settingsHTML() + `<button class="btn ghost big" id="restart">Start forfra (new game)</button>`,
   };
-  const names = { k: 'Kontrakter', f: 'Færdigheder', o: 'Aftryk', g: 'Spor', a: 'Atlas', s: 'Indstillinger' };
+  const names = { k: 'Kontrakter', f: 'Færdigheder', o: 'Aftryk', r: 'Regler', g: 'Spor', a: 'Atlas', s: 'Indstillinger' };
   ov.innerHTML = `<div class="prep"><div class="p-head"><small>Dagbog</small><h2>Dag ${G.day} · ${PHASES[G.phase]}</h2></div>
     <div class="jt">${Object.keys(tabs).map((k, i) => `<button data-t="${k}" class="${i ? '' : 'on'}">${names[k]}</button>`).join('')}</div><div class="jb"></div>
     <button class="btn gold big" id="close">Luk</button></div>`;
@@ -1033,7 +1060,7 @@ function title() {
   if (sv) $('#cont').onclick = () => { AUDIO.resume(); G = sv; G.sess = G.sess || 'k1l1'; G.prev = G.prev || {}; G.met = G.met || []; G.node && G.node !== 'map' && S().nodes[G.node] ? goNode(G.node) : showMap(); };
   $('#new').onclick = () => { AUDIO.resume(); lessonSheet(); };
   const q = (location.search.match(/[?&]lesson=(\w+)/) || [])[1];
-  if (q && SESSIONS[q]) { newGame(q, (META.carry || {})[SESSIONS[q].prevSession] || null); goNode(S().start); }
+  if (q && SESSIONS[q] && !title.done) { title.done = true; newGame(q, (META.carry || {})[SESSIONS[q].prevSession] || null); goNode(S().start); }
 }
 function lessonSheet() {
   const list = Object.values(SESSIONS).sort((a, b) => a.order - b.order);
