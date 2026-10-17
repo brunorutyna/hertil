@@ -220,7 +220,7 @@ SESSIONS.k1l2 = {
         { kind: 'go', label: 'Leave.', next: 'map' },
       ] },
     c2_doors: { bg: 'doere', npc: 'hvornaar', title: 'Dørene', hub: true,
-      steps: [{ n: G => G.flags.Cda ? 'DA is shut for good. NÅR swings open and closed, open and closed. HVORNÅR hums to itself.' : 'Three doors: DA, NÅR, HVORNÅR. The last one has an eye where the keyhole should be.' }],
+      steps: [{ n: G => G.flags.Cda ? 'DA is shut for good. NÅR swings open and closed, open and closed. HVORNÅR hums to itself.' : 'Three doors: DA, NÅR and, in the middle, HVORNÅR. That one has an eye where the keyhole should be.' }],
       opts: [
         { kind: 'go', label: 'Knock on HVORNÅR.', req: G => !G.flags.Cq, next: 'c2_hvornaar' },
         { kind: 'act', special: 'boxes:doere', label: 'Sort time so the doors open.', req: G => G.flags.Cq && !G.flags.doereDone },

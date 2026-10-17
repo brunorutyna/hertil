@@ -298,7 +298,7 @@ const ART = (() => {
         <g class="mis"><rect x="86" y="40" width="128" height="310" fill="${VIO}" ${M}/></g>
         <rect x="86" y="40" width="128" height="310" fill="url(#lnB)" stroke="${INK}" stroke-width="4"/>
         <rect x="104" y="64" width="92" height="110" fill="none" stroke="${INK}" stroke-width="3"/><rect x="104" y="196" width="92" height="130" fill="none" stroke="${INK}" stroke-width="3"/>
-        <text x="150" y="128" text-anchor="middle" font-family="Rubik Mono One, monospace" font-size="15" fill="${YEL}" stroke="${INK}" stroke-width="1">HVOR</text><text x="150" y="150" text-anchor="middle" font-family="Rubik Mono One, monospace" font-size="15" fill="${YEL}" stroke="${INK}" stroke-width="1">NÅR?</text>
+        <text x="150" y="126" text-anchor="middle" font-family="Rubik Mono One, monospace" font-size="13" fill="${YEL}" stroke="${INK}" stroke-width="2" paint-order="stroke">HVORNÅR?</text>
         <circle cx="184" cy="250" r="10" fill="${YEL}" stroke="${INK}" stroke-width="3"/>
         <g transform="rotate(90 150 262)">${slit(150, 262, 20, g, -30)}</g>
       </g>`;
@@ -443,7 +443,7 @@ const ART = (() => {
         <text x="${x + 48}" y="172" text-anchor="middle" font-family="Rubik Mono One, monospace" font-size="${lab.length > 4 ? 12 : 16}" fill="${INK}">${lab}</text></g>`;
       return `${paper()}<g class="mis2"><rect width="393" height="560" fill="url(#dY)" opacity=".5" ${M}/></g>
         <path d="M0 440 L393 440 L393 560 L0 560Z" fill="url(#check)" ${M}/><path d="M0 440 H393" stroke="${INK}" stroke-width="4"/>
-        ${door(20, PINK, 'DA', 0)}${door(148, GRN, 'NÅR', 1)}${door(276, VIO, 'HVORNÅR', 2)}
+        ${door(20, PINK, 'DA', 0)}${door(276, GRN, 'NÅR', 1)}<!-- the middle door is the creature HVORNÅR itself -->
         <line x1="196" y1="0" x2="196" y2="70" stroke="${INK}" stroke-width="3"/>${sun(196, 96, 20, ORA)}${confetti(16, 0, 140, 14)}`;
     },
     forgaars() {
