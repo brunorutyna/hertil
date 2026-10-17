@@ -28,11 +28,15 @@ Hertil is what its creatures call "here". It is loud, bright and printed in thre
 
 **Lektion 2 · Hvor længe skal du være her?** About 1½ hours. Something has gone wrong with time. Continue with your character from Lektion 1 (your choices there change what you meet), or start fresh. Three contracts, several endings, six side games including a clock, a timeline, three doors and the weather. Grammar: for … siden / i / om, hvornår / da / når, inversion after a time clause, adverbs in subordinate clauses, savne, glad for.
 
+**Lektion 3 · Hvor ligger den henne?** About 1½ hours, and the end of Kapitel 1. Hertil grew a neighbourhood overnight, and nothing in it stays where it is. Continue from Lektion 2 or start fresh. Three contracts, several endings, five side games, including a street you have to pin down with place words. Grammar: ved siden af / overfor / i nærheden af / tæt på / på hjørnet af, i / på with streets, en bager or bageren, den / det / de / der, short answers (det er jeg, det gør jeg, jo), mange / meget, glad for / træt af / kan godt lide.
+
+**Kapitel 2 · Arbejde & uddannelse** comes next, in a new place with new creatures.
+
 ## Files
 
 - `js/data.js`: skills, attention tiers, gifts, creatures, vocabulary, glossary.
-- `js/k1l1.js`, `js/k1l2.js`: one file per lesson (locations, quests, nodes, travel encounters, mini-game data, lesson-only actions). Copy it for the next lesson and add its `<script>` to `index.html`.
-- `js/engine.js`: everything else, including reusable mini-games (`hunt`, `jobs`, `corr`, `boxes`, `fixEntry`, `clock`, `weather`, `guess`) and the self-plate.
+- `js/k1l1.js`, `js/k1l2.js`, `js/k1l3.js`: one file per lesson (locations, quests, nodes, travel encounters, mini-game data, lesson-only actions). Copy it for the next lesson and add its `<script>` to `index.html`.
+- `js/engine.js`: everything else, including reusable mini-games (`hunt`, `jobs`, `corr`, `boxes`, `fixEntry`, `clock`, `weather`, `guess`, `findPlace`) and the self-plate.
 - `js/art.js`: creatures (`ART.creature(name, gaze)`), the player's plate (`ART.self`), scenes, icons.
 - `js/audio.js`: ambience and music per place, effects.
 - Built on the engine of *Det var ikke noget*.

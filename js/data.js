@@ -101,7 +101,7 @@ Object.assign(VOCAB, {
   taage: { da: 'tåge', en: 'fog', icon: 'taage', set: 'vejr' }, sky: { da: 'en sky', en: 'a cloud', icon: 'sky', set: 'vejr' },
   torden: { da: 'torden', en: 'thunder', icon: 'torden', set: 'vejr' }, regnbue: { da: 'en regnbue', en: 'a rainbow', icon: 'regnbue', set: 'vejr' },
 });
-const VOCAB_SETS = { ting: 'Ting, der falder · Things that fall', job: 'Job · What creatures do', tid: 'Tid · Time', vejr: 'Vejret · Weather' };
+const VOCAB_SETS = { ting: 'Ting, der falder · Things that fall', job: 'Job · What creatures do', tid: 'Tid · Time', vejr: 'Vejret · Weather', sted: 'Steder · Places in Bydelen' };
 
 /* ---------- Glossary: tap any Danish word ---------- */
 const DICT = {
@@ -159,6 +159,64 @@ const DICT = {
 /* numbers as words (for the glyph dice and prices said aloud) */
 const NUMS = ['nul', 'en', 'to', 'tre', 'fire', 'fem', 'seks', 'syv', 'otte', 'ni', 'ti', 'elleve', 'tolv', 'tretten', 'fjorten', 'femten', 'seksten', 'sytten', 'atten', 'nitten', 'tyve', 'enogtyve', 'toogtyve', 'treogtyve', 'fireogtyve', 'femogtyve', 'seksogtyve', 'syvogtyve'];
 
+
+/* ================= Lektion 3 · Bydelen ================= */
+Object.assign(BOONS, {
+  gadekort: { name: 'Gadekortet', en: 'A street map that knows where it is', fx: '+1 on Indsigt. Streets tell you where they are.' },
+  vandregade: { name: 'Vandregaden', en: 'A street that follows you around', fx: '+1 on Handel. The shops come to you.' },
+  hjoerne: { name: 'Dit hjørne', en: 'A corner of Bydelen named after you', fx: '+1 on Sprog. Everybody knows where to find you.' },
+  stilhed: { name: 'Stilheden', en: 'A pocket of quiet', fx: '+1 on Snige. You can hear the floor think.' },
+  band: { name: 'Bandet', en: 'Larmen plays for you', fx: '+1 on Løgn. Everything sounds true over a good beat.' },
+  glas: { name: 'Larm på glas', en: 'Noise in a jar', fx: '+1 on Handel. Noise sells.' },
+  artikel: { name: 'En artikel', en: 'You came out of the wash with an en or an et', fx: '+1 on Sprog. You have a gender now. Words treat you as one of their own.' },
+});
+Object.assign(NPCS, {
+  bydel: { name: 'Bydelen', role: 'a neighbourhood, asleep on its stomach', art: 'bydel', big: true },
+  bager: { name: 'Bageren', role: 'a bakery that drifts', art: 'bager' },
+  kirke: { name: 'Kirken', role: 'rings when it is pleased', art: 'kirke' },
+  larm: { name: 'Larmen', role: 'the noise of Torvet', art: 'larm' },
+  larme: { name: 'Larmene', role: 'little noises, counted wrong', art: 'larme', small: true },
+  vaskeri: { name: 'Vaskeriet', role: 'washes anything, also words', art: 'vaskeri' },
+  nabo: { name: 'Naboen', role: 'lives right across from you', art: 'nabo' },
+});
+Object.assign(VOCAB, {
+  // steder · places that grew in Bydelen ("Et sted, hvor man …")
+  bager: { da: 'en bager', en: 'a bakery / a baker', icon: 'kringle', set: 'sted', def: 'Et sted, hvor man kan købe brød og kager.' },
+  slagter: { da: 'en slagter', en: 'a butcher', icon: 'poelse', set: 'sted', def: 'Et sted, hvor man kan købe kød.' },
+  apotek: { da: 'et apotek', en: 'a pharmacy', icon: 'medicin', set: 'sted', def: 'Et sted, hvor man kan købe medicin.' },
+  kirke: { da: 'en kirke', en: 'a church', icon: 'kirke', set: 'sted', def: 'Et sted, hvor man kan høre klokker og synge.' },
+  park: { da: 'en park', en: 'a park', icon: 'trae', set: 'sted', def: 'Et sted, hvor man kan gå en tur mellem træer.' },
+  bibliotek: { da: 'et bibliotek', en: 'a library', icon: 'bog', set: 'sted', def: 'Et sted, hvor man kan låne bøger.' },
+  svoemmehal: { da: 'en svømmehal', en: 'a swimming pool', icon: 'boelge', set: 'sted', def: 'Et sted, hvor man kan svømme, også om vinteren.' },
+  station: { da: 'en station', en: 'a station', icon: 'tog', set: 'sted', def: 'Et sted, hvor man kan tage toget.' },
+  posthus: { da: 'et posthus', en: 'a post office', icon: 'brev', set: 'sted', def: 'Et sted, hvor man kan sende et brev.' },
+  vaskeri: { da: 'et vaskeri', en: 'a launderette', icon: 'vaskemaskine', set: 'sted', def: 'Et sted, hvor man kan vaske sit tøj.' },
+  cafe: { da: 'en café', en: 'a café', icon: 'kop', set: 'sted', def: 'Et sted, hvor man kan drikke en kop kaffe.' },
+  blomsterhandler: { da: 'en blomsterhandler', en: 'a florist', icon: 'blomst', set: 'sted', def: 'Et sted, hvor man kan købe blomster.' },
+  skobutik: { da: 'en skobutik', en: 'a shoe shop', icon: 'sko', set: 'sted', def: 'Et sted, hvor man kan købe sko.' },
+  supermarked: { da: 'et supermarked', en: 'a supermarket', icon: 'kurv', set: 'sted', def: 'Et sted, hvor man kan købe næsten alt.' },
+  raadhus: { da: 'et rådhus', en: 'a town hall', icon: 'raadhus', set: 'sted', def: 'Et sted, hvor borgmesteren arbejder.' },
+});
+
+Object.assign(DICT, {
+  'ubestemt': 'indefinite (en bager)', 'bestemt': 'definite (bageren)', 'bager': 'baker, bakery', 'bageren': 'the bakery', 'nærheden': 'the vicinity (her i nærheden: around here)',
+  'kirke': 'church', 'kirken': 'the church', 'hjørnet': 'the corner', 'apoteket': 'the pharmacy', 'posthus': 'post office', 'posthuset': 'the post office',
+  'hotellet': 'the hotel', 'svømmehal': 'swimming pool (building)', 'svømmehallen': 'the swimming pool', 'biler': 'cars', 'larm': 'noise', 'trafik': 'traffic',
+  'caféer': 'cafés', 'grønne': 'green (plural)', 'områder': 'areas', 'væsner': 'creatures', 'luft': 'air', 'vaskeriet': 'the launderette', 'slagter': 'butcher',
+  'café': 'café', 'vaskeri': 'launderette', 'caféen': 'the café', 'tur': 'trip, walk (gå en tur: go for a walk)', 'kiosk': 'kiosk', 'nummer': 'number',
+  'gør': 'does (det gør jeg: I do)', 'jo': 'yes (answering a negative question)', 'trompet': 'trumpet', 'stedet': 'the place', 'hoved': 'head', 'tæt': 'close (tæt på: close to)',
+  'arme': 'arms', 'skilte': 'signs', 'overfor': 'opposite, across from', 'kardemomme': 'cardamom', 'ovn': 'oven', 'rundt': 'round (rundt og rundt: round and round)',
+  'vindue': 'window', 'ringer': 'rings', 'rede': 'nest', 'høj': 'tall', 'tynd': 'thin', 'lyser': 'shines, gives light', 'vasker': 'washes', 'godmorgen': 'good morning',
+  'bydel': 'neighbourhood, district', 'flyder': 'floats, drifts', 'dumt': 'stupid (hvor dumt: how annoying)', 'mm': 'mm', 'hør': 'listen', 'liggende': 'lying (bliver liggende: stays put)',
+  'aftryk': 'marks, imprints', 'vaske': 'wash', 'hjælp': 'help', 'busk': 'bush', 'timerne': 'the hours', 'yndlingsbager': 'favourite bakery', 'butikker': 'shops',
+  'kapitlet': 'the chapter', 'slut': 'over, finished', 'brød': 'bread', 'kager': 'cakes', 'kød': 'meat', 'klokker': 'bells', 'synge': 'sing', 'park': 'park',
+  'mellem': 'between', 'træer': 'trees', 'svømme': 'swim', 'vinteren': 'the winter (om vinteren: in winter)', 'station': 'station', 'toget': 'the train', 'sende': 'send',
+  'brev': 'letter', 'tøj': 'clothes', 'drikke': 'drink', 'kop': 'cup', 'kaffe': 'coffee', 'blomsterhandler': 'florist', 'blomster': 'flowers', 'skobutik': 'shoe shop',
+  'yndlingscafé': 'favourite café', 'lager': 'storeroom', 'fætter': 'cousin', 'tit': 'often', 'egne': 'own (mine egne: my own)', 'ro': 'calm, quiet (når der er ro: when it is calm)',
+  'adresse': 'address', 'øjeblik': 'moment (for et øjeblik siden: a moment ago)', 'sokker': 'socks', 'klager': 'complain(s)',
+  'sko': 'shoes', 'supermarked': 'supermarket', 'rådhus': 'town hall', 'borgmesteren': 'the mayor',
+});
+
 /* ---------------- grammar notes: why a sentence is right ----------------
    Shown behind the small "Hvorfor?" button under every sentence the player says, and collected in
    the journal (Regler). Found from the sentence itself, so new lessons get them for free.
@@ -167,7 +225,7 @@ const ruleText = t => t.toLowerCase().replace(/[.,!?“”"]/g, '').replace(/\s+
   .replace(/æ/g, 'ae').replace(/ø/g, 'oe').replace(/å/g, 'aa'); // JS \b does not know æøå, so the tests are written in ae/oe/aa
 const rulesFor = t => { const s = ruleText(t); return RULES.filter(r => { try { return r.t(s); } catch (e) { return false; } }); };
 const RULES = [
-  { id: 'v2', name: 'Verbet står på plads 2', t: s => /^(naar|da|foer|hvis|om \w+ \w+|for \w+ \w+ siden|i min fritid|i dag|i gaar|i morgen|nogle gange|nu|saa)\b/.test(s) && !/\?$/.test(s),
+  { id: 'v2', name: 'Verbet står på plads 2', t: s => /^(naar|da|foer|hvis|om \w+ \w+|for \w+ \w+ siden|i min fritid|i dag|i gaar|i morgen|nogle gange|nu|saa|ved siden af \w+|(lige )?overfor \w+|paa hjoernet af|det (kan|er|goer|ved) (jeg|du))\b/.test(s) && !/\?$/.test(s),
     en: 'A Danish main clause always has the verb in second place. If the sentence starts with something other than the subject (a time, or a whole når/da/før-clause), the verb comes right after it, and the subject after the verb.',
     ex: ['Om en time rejser jeg hjem.', 'Når jeg har fundet mit navn, rejser jeg hjem.'] },
   { id: 'bis', name: 'ikke · gerne · altid i en bisætning', t: s => /\b(fordi|naar|da|hvis|foer|at|selvom|som) (jeg|du|han|hun|den|det|vi|i|de|man|nogen) (ikke|gerne|altid|aldrig|ogsaa|tit|nogle gange)\b/.test(s),
@@ -206,13 +264,28 @@ const RULES = [
   { id: 'som', name: 'som + job, uden en/et', t: s => /\b(arbejder|arbejdede|er|var) som \w+/.test(s),
     en: 'After som (as), a job has no en/et.',
     ex: ['Jeg arbejdede som musiker.'] },
+  { id: 'sted', name: 'Hvor ligger den? Steder', t: s => /\b(overfor|ved siden af|i naerheden|taet paa|ikke saa langt fra|paa hjoernet af|paa en sidevej til)\b/.test(s),
+    en: 'Place words: ved siden af (next to), overfor (opposite), i nærheden af (near), tæt på (close to), ikke så langt fra (not far from), på hjørnet af X og Y (on the corner of). After them usually comes the known landmark, in the definite form: overfor kirken. lige makes it exact: lige overfor.',
+    ex: ['Bageren ligger lige overfor kirken.', 'Den ligger på hjørnet af Fjergade og Tandvej.'] },
+  { id: 'gade', name: 'i eller på + gade, vej, torv', t: s => /\b(i|paa) \w*(gade|vej|straede|alle|plads|torvet|torv)\b/.test(s) || /\bpaa (torvet|tandvej)\b/.test(s),
+    en: 'i + most streets in -gade and -stræde (i Fjergade). på + -vej, allé, plads, torv and boulevard (på Tandvej, på Torvet), and on a big, long gade. Districts and towns usually take i, some districts på.',
+    ex: ['Jeg bor i Fjergade.', 'Bageren ligger på Tandvej.'] },
+  { id: 'dendet', name: 'den · det · de · der', t: s => /\b(den|det|de|der)\b/.test(s) && /\b(ligger|er der|der er|der ligger|hvor ligger)\b/.test(s),
+    en: 'den points back to an en-word (en kirke → den), det to an et-word (et apotek → det) or to a whole sentence (Ja, det er jeg), de to a plural. der is a place (there), and der er / der ligger says that something exists. If something else stands first, der comes after the verb: Ved siden af bageren ligger der en slagter.',
+    ex: ['Hvor ligger den? (en kirke)', 'Der er meget larm.', 'Ja, det er der.'] },
+  { id: 'kort', name: 'Korte svar', t: s => /^(ja|nej|jo|naa|nae) det (er|gor|goer|kan|vil|har|skal) (jeg|du|vi|der|den|det|de|han|hun)\b/.test(s) || /^det (er|goer|kan) (jeg|der)\b/.test(s),
+    en: 'A short answer repeats det and the verb from the question: Er du glad? – Ja, det er jeg. With other verbs, use gør: Bor du her? – Ja, det gør jeg. After a negative question, yes is jo: Bor du ikke her? – Jo, det gør jeg.',
+    ex: ['Ja, det er jeg.', 'Jo, det gør jeg.', 'Nej, det er der ikke.'] },
+  { id: 'mange', name: 'mange · meget', t: s => /\b(mange|meget)\b/.test(s),
+    en: 'mange is for things you can count (mange biler, mange caféer). meget is for things you cannot count (meget larm, meget trafik, meget lys). Grade them: rigtig, alt for, ikke så.',
+    ex: ['Der er alt for mange biler.', 'Der er ikke så meget larm.'] },
   { id: 'datid', name: 'Datid (past tense)', t: s => /\b(\w{3,}ede|boede|arbejdede|laeste|spiste|koebte|hoerte|glemte|underviste|koerte|kom|faldt|var|havde|gik|fik|fandt|tog|loeb|blev|sang|sagde|skrev|hjalp|laa|sad|saa)\b/.test(s.replace(/^\w+ /, m => /^(kom|gaa|tag|se|loeb) $/.test(m) ? '' : m)),
     en: 'Past tense: regular verbs take -ede (arbejdede, boede) or -te (læste, spiste). Many common verbs are irregular: kom, faldt, var, havde, gik, fandt.',
     ex: ['Før jeg kom hertil, boede jeg ved havet.'] },
   { id: 'modal', name: 'kan · vil · skal · må + infinitiv', t: s => /\b(kan|vil|skal|maa|kunne|ville|skulle)\b \w+/.test(s),
     en: 'After kan, vil, skal, må (and kunne, ville, skulle) the next verb is in the infinitive, without at.',
     ex: ['Jeg vil gerne hjem.', 'Du må løbe.'] },
-  { id: 'ipaa', name: 'i eller på', t: s => /\b(bor|boede|laeste|studerede|studerer|arbejdede|arbejder)\b/.test(s) && /\b(i|paa) \w+/.test(s),
+  { id: 'ipaa', name: 'i eller på', t: s => /\b(bor|boede|laeste|studerede|studerer|arbejdede|arbejder)\b/.test(s) && /\b(i|paa) \w+/.test(s) && !/\b(i|paa) \w*(gade|vej|straede|alle|plads|torv|torvet)\b/.test(s),
     en: 'i is used for cities, countries and inside rooms (i København). på is used for many institutions and workplaces (på universitetet, på et hospital) and for islands (på Fyn).',
     ex: ['Jeg læste medicin på universitetet.'] },
 ];

@@ -14,7 +14,7 @@ const sleep = ms => new Promise(r => setTimeout(r, FAST ? 0 : ms));
 const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 const pick = a => a[Math.floor(Math.random() * a.length)];
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-const NAMES = ['Hertil', 'Tælleren', 'Samleren', 'Grundvæversken', 'Ikket', 'Bagvendte', 'Husfolket', 'Spejlet', 'Sluget', 'Mølen', 'Ungen', 'Bunden', 'Trappen', 'Reden', 'Vævehallen', 'Støvsletten', 'Dammene', 'Markedet', 'I'];
+const NAMES = ['Hertil', 'Tælleren', 'Samleren', 'Grundvæversken', 'Ikket', 'Bagvendte', 'Husfolket', 'Spejlet', 'Sluget', 'Mølen', 'Ungen', 'Bunden', 'Trappen', 'Reden', 'Vævehallen', 'Støvsletten', 'Dammene', 'Markedet', 'I', 'Uret', 'Savnet', 'Engen', 'Fjergade', 'Tandvej', 'Torvet', 'Bydelen', 'Kirken', 'Bageren', 'Larmen', 'Vaskeriet', 'Naboen', 'Støvstræde', 'Ekko', 'Allé', 'Lilla', 'Plads', 'Klokkegade'];
 const PHASES = ['Gult lys', 'Lyserødt lys', 'Blåt lys', 'Lilla nat'];
 const MOD_CAP = 4; // skill + all bonuses never exceed +4: the roll itself always matters (Bruno: bonuses made success too easy)
 const S = () => SESSIONS[(G && G.sess) || 'k1l1'];
@@ -373,7 +373,10 @@ function builder(b) {
     };
     const check = () => {
       const s = line.map(x => norm(x.t)).join(' ');
-      if (all.includes(s)) return finish(line.map(x => x.t), mistakes === 0 ? 'perfect' : 'ok');
+      if (all.includes(s)) { // say it back with the punctuation that belongs to the order the player chose
+        const match = [...b.answers, ...(b.best || [])].find(a => low(a) === s);
+        return finish(match ? match.slice() : line.map(x => x.t), mistakes === 0 ? 'perfect' : 'ok');
+      }
       if (hasBoon('spejl') && !spejlUsed) { spejlUsed = true; toast('Spejlets gunst: this one does not count', 'gold'); }
       else mistakes++;
       let at = 0, bestLen = -1;
@@ -461,6 +464,13 @@ function modsFor(o) {
   if (o.stat === 'INDSIGT' && hasBoon('ballon')) mods.push({ t: 'Lille Savn', v: 1 });
   if (o.stat === 'LOEGN' && hasBoon('knald')) mods.push({ t: 'Knaldet', v: 1 });
   if (o.stat === 'SPROG' && hasBoon('indeni')) mods.push({ t: 'Indefra', v: 1 });
+  if (o.stat === 'INDSIGT' && hasBoon('gadekort')) mods.push({ t: 'Gadekortet', v: 1 });
+  if (o.stat === 'HANDEL' && hasBoon('vandregade')) mods.push({ t: 'Vandregaden', v: 1 });
+  if (o.stat === 'SPROG' && hasBoon('hjoerne')) mods.push({ t: 'Dit hjørne', v: 1 });
+  if (o.stat === 'SNIGE' && hasBoon('stilhed')) mods.push({ t: 'Stilheden', v: 1 });
+  if (o.stat === 'LOEGN' && hasBoon('band')) mods.push({ t: 'Bandet', v: 1 });
+  if (o.stat === 'HANDEL' && hasBoon('glas')) mods.push({ t: 'Larm på glas', v: 1 });
+  if (o.stat === 'SPROG' && hasBoon('artikel')) mods.push({ t: 'En artikel', v: 1 });
   if (o.bonus) { const b = o.bonus(G); if (b) mods.push({ t: o.bonusWhy || 'Bonus', v: b }); }
   if ((o.kind === 'say' || o.kind === 'lie') && G.resp >= 5) mods.push({ t: 'Vægt', v: 1 });
   return mods;
@@ -756,18 +766,18 @@ const SPECIAL = {
     });
   },
   /* Gæt jobbet: a definition, three jobs */
-  jobs() {
+  jobs(id) {
     return new Promise(resolve => {
-      const J = S().jobs, keys = shuffle(J.keys).slice(0, 6); let i = 0, right = 0;
+      const J = (id && S().jobs[id]) || S().jobs, keys = shuffle(J.keys).slice(0, 6); let i = 0, right = 0;
       const ov = vocabSheet('');
       const round = () => {
         if (i >= keys.length) {
-          G.flags.jobsDone = true; G.sk += right * (J.pay || 2); hud();
+          G.flags[J.flag || 'jobsDone'] = true; G.sk += right * (J.pay || 2); hud();
           ov.querySelector('.voc').innerHTML = `<div class="v-h"><small>${esc(J.title)}</small><h2>${right} / ${keys.length}</h2><p>${esc(J.end(right))}</p></div><button class="btn gold big" id="vDone">Færdig</button>`;
           $('#vDone').onclick = () => { ov.remove(); resolve(); }; return;
         }
         const k = keys[i]; const opts = shuffle([k, ...shuffle(J.keys.filter(x => x !== k)).slice(0, 2)]);
-        ov.querySelector('.voc').innerHTML = `<div class="v-h"><small>${esc(J.title)} · ${i + 1}/${keys.length}</small><h2>Gæt jobbet</h2><div class="notice">${daHTML(J.prefix + VOCAB[k].def.charAt(0).toLowerCase() + VOCAB[k].def.slice(1))}</div><p>Hvad var den?</p></div>
+        ov.querySelector('.voc').innerHTML = `<div class="v-h"><small>${esc(J.title)} · ${i + 1}/${keys.length}</small><h2>${esc(J.h2 || 'Gæt jobbet')}</h2><div class="notice">${daHTML(J.prefix ? J.prefix + VOCAB[k].def.charAt(0).toLowerCase() + VOCAB[k].def.slice(1) : VOCAB[k].def)}</div><p>${esc(J.ask || 'Hvad var den?')}</p></div>
           <div class="rv-opts">${opts.map(x => `<button class="rv-o" data-k="${x}">${esc(VOCAB[x].da)}</button>`).join('')}</div>`;
         wireWords(ov);
         ov.querySelectorAll('.rv-o').forEach(b => b.onclick = async () => {
@@ -775,6 +785,46 @@ const SPECIAL = {
           if (ok) { right++; b.classList.add('ok'); AUDIO.sting('coin'); statGain('INDSIGT', 1); } else { b.classList.add('no'); ov.querySelector(`.rv-o[data-k="${k}"]`).classList.add('ok'); AUDIO.sting('lose'); }
           TTS.say(VOCAB[k].da); await sleep(ok ? 800 : 1600); i++; round();
         });
+      };
+      round();
+    });
+  },
+  /* Hvor ligger den? Two rows of buildings across a street, a side street at the end.
+     A clue says where a drifting building lies; tap the spot, and it is pinned. */
+  findPlace(id) {
+    return new Promise(resolve => {
+      const P = S().places[id]; let i = 0, miss = 0, clean = 0;
+      const placed = Object.assign({}, P.start);
+      const ov = vocabSheet('');
+      const cell = n => { const k = placed[n]; return `<button class="fp-cell ${k ? 'on' : ''}" data-n="${n}" ${k ? 'disabled' : ''}>${k ? ART.icon(VOCAB[k].icon) + `<b>${esc(P.names[k])}</b>` : '<span>?</span>'}</button>`; };
+      const board = () => `<div class="fp"><div class="fp-row">${[0, 1, 2, 3].map(cell).join('')}</div><div class="fp-street">${esc(P.street)}</div><div class="fp-row">${[4, 5, 6, 7].map(cell).join('')}</div><div class="fp-cross"><span>${esc(P.cross)}</span></div></div>`;
+      const round = () => {
+        if (i >= P.rounds.length) {
+          G.flags[P.flag] = true; G.flags[P.flag + 'Score'] = clean;
+          ov.querySelector('.voc').innerHTML = `<div class="v-h"><small>${esc(P.title)}</small><h2>${clean} / ${P.rounds.length}</h2><p>${esc(clean >= P.rounds.length - 2 ? P.good : P.meh)}</p></div>${board()}<button class="btn gold big" id="vDone">Færdig</button>`;
+          ov.querySelector('#vDone').onclick = () => { ov.remove(); resolve(clean); }; return;
+        }
+        const r = P.rounds[i];
+        ov.querySelector('.voc').innerHTML = `<div class="v-h"><small>${esc(P.title)} · ${i + 1}/${P.rounds.length}</small><h2>${esc(P.q)}</h2>
+          <div class="fp-clue">${ART.icon(VOCAB[r.k].icon)}<div>${daHTML(r.clue)} <button class="tb" id="fpSay">♪</button></div></div></div>${board()}`;
+        wireWords(ov); TTS.say(r.clue);
+        ov.querySelector('#fpSay').onclick = () => TTS.say(r.clue, true);
+        if (miss >= 2) { const h = ov.querySelector(`.fp-cell[data-n="${r.at}"]`); if (h) h.classList.add('hint'); }
+        ov.querySelectorAll('.fp-cell:not([disabled])').forEach(b => b.onclick = async () => {
+          const n = +b.dataset.n;
+          if (n === r.at) {
+            ov.querySelectorAll('.fp-cell').forEach(x => x.disabled = true);
+            placed[n] = r.k; if (!miss) clean++; miss = 0; addWord(r.k); statGain('INDSIGT', 1); AUDIO.sting('win');
+            b.outerHTML = cell(n); const nb = ov.querySelector(`.fp-cell[data-n="${n}"]`); if (nb) nb.classList.add('pop');
+            const cap = document.createElement('div'); cap.className = 'rv-cap'; cap.innerHTML = `<i>${esc(r.why)}</i>`; ov.querySelector('.voc').appendChild(cap);
+            await sleep(FAST ? 0 : 1500); i++; round();
+          } else {
+            miss++; AUDIO.sting('lose'); b.classList.add('nope'); setTimeout(() => b.classList.remove('nope'), 600);
+            toast(miss >= 2 ? 'Look again. The right spot is glowing.' : 'Not there. Read the clue again.', 'bad');
+            if (miss >= 2) { const h = ov.querySelector(`.fp-cell[data-n="${r.at}"]`); if (h) h.classList.add('hint'); }
+          }
+        });
+        __dev.fp = () => r.at;
       };
       round();
     });
@@ -957,7 +1007,7 @@ const SPECIAL = {
     await new Promise(r => ov.querySelector('#close').onclick = () => { ov.remove(); r(); });
   },
 };
-const selfLines = () => [G.origin.reason, G.origin.job, G.origin.place, G.origin.fritid, G.origin.came, G.origin.stay, G.origin.happy].filter(Boolean);
+const selfLines = () => [G.origin.reason, G.origin.job, G.origin.place, G.origin.fritid, G.origin.came, G.origin.stay, G.origin.happy, G.origin.addr, G.origin.hood].filter(Boolean);
 
 /* ---------------- end of lesson ---------------- */
 function endScreen() {
@@ -983,6 +1033,7 @@ function endScreen() {
       <div><span>Spor</span><b>${G.glimpses.length}/${Object.keys(S().glimpses).length}</b><small>traces of what you were</small></div>
     </div>
     <h3>Færdigheder</h3><div class="stats">${Object.keys(STATS).map(k => `<div class="st"><b>${STATS[k].name}</b><span class="sv">${lvl(k)}</span></div>`).join('')}</div>
+    ${S().chapterEnd ? `<div class="chap-end"><small>${esc(S().chapterEnd[0])}</small><b>${esc(S().chapterEnd[1])}</b><p>${esc(S().chapterEnd[2])}</p></div>` : ''}
     ${S().next ? `<p class="next">Next: ${S().next}</p>` : ''}
     ${nx ? `<button class="btn gold big" id="onward">Fortsæt: ${esc(nx.short)} · ${esc(nx.en)}</button>` : ''}
     <button class="btn ${nx ? 'ghost' : 'gold'} big" id="again">Play the lesson again</button>

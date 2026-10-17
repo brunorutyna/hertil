@@ -22,7 +22,7 @@ const fixed = G => ['fix_taeller', 'fix_moel', 'fix_unge'].filter(k => G.flags[k
 const valves = G => ['v_samler', 'v_spejl', 'v_moel'].filter(k => G.flags[k]).length;
 
 SESSIONS.k1l2 = {
-  id: 'k1l2', order: 2, short: 'Lektion 2', prevSession: 'k1l1', chapter: 'Kapitel 1 · Baggrund', title: 'Lektion 2 · Hvor længe skal du være her?', en: 'How long are you staying here?',
+  id: 'k1l2', order: 2, short: 'Lektion 2', prevSession: 'k1l1', nextSession: 'k1l3', chapter: 'Kapitel 1 · Baggrund', title: 'Lektion 2 · Hvor længe skal du være her?', en: 'How long are you staying here?',
   blurb: 'Somebody let the hours out. Now everything in Hertil happens at the wrong time.',
   start: 'p2_wake', home: 'rede', travelAfter: 'p2seen', cluesFlag: 'clues2', cluesNeed: 3, dcMod: 2,
   // a ready-made character for those who start here

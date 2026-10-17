@@ -303,6 +303,107 @@ const ART = (() => {
         <g transform="rotate(90 150 262)">${slit(150, 262, 20, g, -30)}</g>
       </g>`;
     },
+
+    /* ===== Lektion 3 · Bydelen ===== */
+    /* Bageren: a bakery that is also a kringle, drifting on stubby legs. Its eye is the slit in its oven door */
+    bager(g) {
+      // a kringle: one fat rope tied in a knot, two round holes, and an oven door in the middle of the knot
+      const rope = 'M150 300 C70 300 40 244 58 196 C74 150 128 140 150 196 C172 140 226 150 242 196 C260 244 230 300 150 300Z M104 186 C82 190 76 236 100 252 C118 264 138 246 132 222 C128 202 118 184 104 186Z M196 186 C182 184 172 202 168 222 C162 246 182 264 200 252 C224 236 218 190 196 186Z';
+      return `${shadow(150, 352, 100)}
+      <g class="flt">
+        <g stroke="${INK}" stroke-width="6" stroke-linecap="round"><path d="M112 296 L104 346"/><path d="M188 296 L196 346"/></g>
+        <g class="mis"><path d="${rope}" fill="${ORA}" fill-rule="evenodd" ${M}/></g>
+        <g class="mis2"><path d="${rope}" fill="url(#dY)" fill-rule="evenodd" ${M} transform="translate(4 -4)"/></g>
+        <path d="${rope}" fill="none" stroke="${INK}" stroke-width="4"/>
+        <path d="M150 196 C140 230 120 262 92 286 M150 196 C160 230 180 262 208 286" fill="none" stroke="${INK}" stroke-width="3.5"/>
+        <g fill="#fff" opacity=".85">${[[80, 214], [92, 268], [118, 284], [210, 206], [226, 248], [182, 282], [150, 170]].map(([x, y]) => `<ellipse cx="${x}" cy="${y}" rx="4" ry="2.4"/>`).join('')}</g>
+        <g class="chew"><rect x="126" y="236" width="48" height="40" rx="8" fill="${INK}"/><rect x="131" y="241" width="38" height="30" rx="5" fill="${PINK}"/></g>
+        ${slit(150, 256, 13, g, g >= 2 ? 0 : 20)}
+        <g class="flt" fill="#fff" stroke="${INK}" stroke-width="2" opacity=".85"><circle cx="198" cy="120" r="10"/><circle cx="212" cy="92" r="14"/><circle cx="232" cy="58" r="18"/></g>
+      </g>`;
+    },
+    /* Kirken: a tower on a hundred small feet. Its eye is a rose window; the bell is its tongue */
+    kirke(g) {
+      const pc = [[22, -10], [12, -4], [4, 0], [0, 4]][g];
+      return `${shadow(150, 352, 70)}
+      <g class="sway">
+        <g fill="${INK}">${Array.from({ length: 9 }, (_, i) => `<circle cx="${104 + i * 11.5}" cy="${344 + (i % 2) * 3}" r="5"/>`).join('')}</g>
+        <g class="mis"><path d="M100 340 L100 140 L150 50 L200 140 L200 340Z" fill="${BLUE}" ${M}/></g>
+        <path d="M100 340 L100 140 L150 50 L200 140 L200 340Z" fill="url(#lnP)" stroke="${INK}" stroke-width="4"/>
+        <path d="M150 50 L150 6 M138 20 H162" stroke="${INK}" stroke-width="5" stroke-linecap="round"/>
+        <g class="spin" style="transform-origin:150px 166px"><circle cx="150" cy="166" r="34" fill="${YEL}" stroke="${INK}" stroke-width="4"/>
+          ${Array.from({ length: 8 }, (_, i) => `<path d="M150 166 L${(150 + Math.cos(i * Math.PI / 4) * 34).toFixed(1)} ${(166 + Math.sin(i * Math.PI / 4) * 34).toFixed(1)}" stroke="${INK}" stroke-width="2.5"/>`).join('')}</g>
+        <circle cx="${150 + pc[0]}" cy="${166 + pc[1]}" r="${g >= 3 ? 14 : 11}" fill="${PINK}" stroke="${INK}" stroke-width="3"/><circle cx="${150 + pc[0]}" cy="${166 + pc[1]}" r="4" fill="${INK}"/>
+        <path d="M122 340 L122 262 Q150 230 178 262 L178 340Z" fill="${INK}"/>
+        <g class="swing" style="transform-origin:150px 250px"><path d="M138 262 Q150 238 162 262 L166 284 H134Z" fill="${YEL}" stroke="${INK}" stroke-width="3"/><circle cx="150" cy="290" r="5" fill="${PINK}" stroke="${INK}" stroke-width="2"/></g>
+      </g>`;
+    },
+    /* Larmen: the noise of Torvet. Uncountable. A scribble with mouths, no eyes at all */
+    larm(g) {
+      const mouths = [[110, 150, 18], [184, 132, 12], [150, 214, 24], [96, 236, 10], [206, 224, 15], [140, 108, 8]];
+      const jag = Array.from({ length: 28 }, (_, i) => { const a = i / 28 * Math.PI * 2, r = (i % 2 ? 118 : 96) + (i % 5) * 4; return `${(150 + Math.cos(a) * r).toFixed(0)} ${(186 + Math.sin(a) * r * .86).toFixed(0)}`; }).join(' L');
+      return `${shadow(150, 352, 110)}
+      <g class="wob">
+        <g class="mis"><path d="M${jag}Z" fill="${PINK}" ${M}/></g>
+        <g class="mis2"><path d="M${jag}Z" fill="url(#dY)" ${M} transform="translate(6 -4)"/></g>
+        <path d="M${jag}Z" fill="none" stroke="${INK}" stroke-width="3.5" stroke-linejoin="round"/>
+        <g fill="none" stroke="${INK}" stroke-width="2.5" class="spin2" style="transform-origin:150px 186px">${[60, 80, 100].map(r => `<path d="M${150 - r} 186 q${r * .2} -${r * .3} ${r * .4} 0 t${r * .4} 0"/>`).join('')}</g>
+        ${mouths.map(([x, y, r], i) => `<g class="${i % 2 ? 'honk' : 'chew'}"><ellipse cx="${x}" cy="${y}" rx="${r}" ry="${r * .7}" fill="${INK}"/><ellipse cx="${x}" cy="${y + r * .2}" rx="${r * .55}" ry="${r * .3}" fill="${ORA}"/></g>`).join('')}
+        <g stroke="${INK}" stroke-width="4" stroke-linecap="round" class="flap"><path d="M40 120 l-24 -14 M30 180 h-26 M44 246 l-24 14 M262 116 l24 -14 M272 190 h26 M258 252 l24 16"/></g>
+      </g>`;
+    },
+    /* Larmene: the same noise, counted wrong: many small ones */
+    larme(g) {
+      const one = C.larm(g);
+      return [[-90, -110, .32], [80, -90, .3], [0, -40, .42], [-60, -10, .26], [100, -190, .24], [-100, -210, .22]].map(([dx, dy, sc]) => `<g transform="translate(${150 + dx - 150 * sc} ${dy + 360 - 360 * sc}) scale(${sc})">${one}</g>`).join('');
+    },
+    /* Vaskeriet: a washing machine on four feet. The spinning drum is its eye */
+    vaskeri(g) {
+      const px = [26, 16, 6, 0][g], py = [-8, -4, 2, 4][g];
+      return `${shadow(150, 352, 96)}
+      <g class="hop">
+        <g fill="${INK}"><rect x="78" y="334" width="16" height="14" rx="3"/><rect x="206" y="334" width="16" height="14" rx="3"/><rect x="112" y="338" width="12" height="10" rx="3"/><rect x="176" y="338" width="12" height="10" rx="3"/></g>
+        <g class="mis"><rect x="66" y="90" width="168" height="248" rx="18" fill="${GRN}" ${M}/></g>
+        <rect x="66" y="90" width="168" height="248" rx="18" fill="url(#dB)" stroke="${INK}" stroke-width="4"/>
+        <path d="M66 140 H234" stroke="${INK}" stroke-width="3"/><circle cx="96" cy="115" r="9" fill="${YEL}" stroke="${INK}" stroke-width="2.5"/><circle cx="124" cy="115" r="9" fill="${PINK}" stroke="${INK}" stroke-width="2.5"/><rect x="160" y="106" width="56" height="18" fill="#fff" stroke="${INK}" stroke-width="2.5"/>
+        <circle cx="150" cy="238" r="70" fill="#fff" stroke="${INK}" stroke-width="5"/>
+        <g class="spin" style="transform-origin:150px 238px"><path d="M150 238 m-50 0 a50 50 0 1 1 50 50 a36 36 0 1 1 -36 -36 a22 22 0 1 1 22 22" fill="none" stroke="${BLUE}" stroke-width="5"/>
+          <path d="M118 200 q10 -14 22 -2 q-10 10 -22 2z" fill="${PINK}" stroke="${INK}" stroke-width="2"/><path d="M176 270 l14 -6 l4 10 l-14 6z" fill="${YEL}" stroke="${INK}" stroke-width="2"/></g>
+        <circle cx="${150 + px}" cy="${238 + py}" r="${g >= 3 ? 16 : 12}" fill="${INK}"/><circle cx="${146 + px}" cy="${234 + py}" r="4" fill="#fff"/>
+        <g class="sway2"><path d="M234 160 q30 10 26 46" fill="none" stroke="${INK}" stroke-width="3"/><path d="M252 204 l14 4 l-4 20 l-12 -2z" fill="${ORA}" stroke="${INK}" stroke-width="2.5"/></g>
+      </g>`;
+    },
+    /* Naboen: a lamppost with a lampshade head. It looks with its light, and the light is mostly elsewhere */
+    nabo(g) {
+      const rot = [58, 36, 14, 0][g];
+      return `${shadow(150, 352, 60)}
+      <g class="sway">
+        <path d="M150 350 L150 120" stroke="${INK}" stroke-width="9" stroke-linecap="round"/><path d="M150 350 L150 120" stroke="${VIO}" stroke-width="4"/>
+        <path d="M126 350 Q150 330 174 350" fill="${INK}"/>
+        <path d="M150 190 Q110 178 96 150 M150 210 Q192 200 204 170" fill="none" stroke="${INK}" stroke-width="4" stroke-linecap="round"/>
+        <g transform="rotate(${rot} 150 112)">
+          <path d="M150 112 L76 300 L224 300Z" fill="${YEL}" opacity=".35" ${M}/>
+          <g class="mis"><path d="M112 112 L188 112 L170 64 L130 64Z" fill="${PINK}" ${M}/></g>
+          <path d="M112 112 L188 112 L170 64 L130 64Z" fill="url(#lnB)" stroke="${INK}" stroke-width="4"/>
+          <g class="glow"><ellipse cx="150" cy="118" rx="16" ry="10" fill="${YEL}" stroke="${INK}" stroke-width="3"/></g>
+        </g>
+      </g>`;
+    },
+    /* Bydelen: a whole neighbourhood, asleep on its stomach. Rooftops along the spine, windows for eyes */
+    bydel(g) {
+      const lit = [2, 5, 9, 14][g];
+      const houses = Array.from({ length: 7 }, (_, i) => { const x = 40 + i * 32, h = 30 + (i * 13) % 26, c = [PINK, YEL, ORA, GRN, BLUE][i % 5]; return `<g class="${i % 2 ? 'sway' : 'sway2'}" style="transform-origin:${x + 14}px ${190 - h * .2}px"><path d="M${x} 196 L${x} ${196 - h} L${x + 14} ${182 - h} L${x + 28} ${196 - h} L${x + 28} 196Z" fill="${c}" stroke="${INK}" stroke-width="2.5"/>${[0, 1].map(j => `<rect x="${x + 8}" y="${190 - h + j * 12}" width="10" height="8" fill="${i * 2 + j < lit ? YEL : INK}" stroke="${INK}" stroke-width="1.5"/>`).join('')}</g>`; }).join('');
+      return `${shadow(150, 350, 140)}
+      <g class="wob">
+        <g class="mis"><path d="M12 340 C10 250 40 190 120 186 C200 182 270 196 288 260 C296 300 290 340 280 340Z" fill="${VIO}" ${M}/></g>
+        <path d="M12 340 C10 250 40 190 120 186 C200 182 270 196 288 260 C296 300 290 340 280 340Z" fill="url(#check)" stroke="${INK}" stroke-width="4"/>
+        <path d="M30 300 C90 280 200 280 270 306" stroke="${YEL}" stroke-width="10" stroke-dasharray="14 10" fill="none"/>
+        ${houses}
+        ${slit(250, 268, 16, g, 10)}
+        <path d="M282 312 q14 6 10 20" stroke="${INK}" stroke-width="3" fill="none"/>
+        <g class="flt" font-family="Rubik Mono One, monospace" font-size="14" fill="${INK}"><text x="40" y="150">z</text><text x="56" y="126" font-size="18">z</text></g>
+      </g>`;
+    },
   };
   function creature(name, g = 0, plate = false) {
     const body = (C[name] || C.ikket)(g);
@@ -446,6 +547,47 @@ const ART = (() => {
         ${door(20, PINK, 'DA', 0)}${door(276, GRN, 'NÅR', 1)}<!-- the middle door is the creature HVORNÅR itself -->
         <line x1="196" y1="0" x2="196" y2="70" stroke="${INK}" stroke-width="3"/>${sun(196, 96, 20, ORA)}${confetti(16, 0, 140, 14)}`;
     },
+
+    /* ===== Lektion 3 ===== */
+    gade() {
+      const fac = (x, w, h, c, i, top) => `<g class="${i % 2 ? 'flt' : 'sway2'}" style="animation-delay:-${i * .7}s"><g class="mis"><rect x="${x}" y="${top - h}" width="${w}" height="${h}" fill="${c}" ${M}/></g><rect x="${x}" y="${top - h}" width="${w}" height="${h}" fill="none" stroke="${INK}" stroke-width="3"/>
+        <path d="M${x - 4} ${top - h} L${x + w / 2} ${top - h - 26} L${x + w + 4} ${top - h}Z" fill="${INK}"/>${[0, 1, 2].map(j => `<rect x="${x + 8 + j * (w - 22) / 2}" y="${top - h + 14}" width="12" height="14" fill="${YEL}" stroke="${INK}" stroke-width="2"/>`).join('')}</g>`;
+      return `${paper()}<g class="mis2"><rect width="393" height="300" fill="url(#dY)" opacity=".5" ${M}/></g>${sun(320, 70, 26, PINK)}
+        ${fac(-10, 80, 150, PINK, 0, 330)}${fac(78, 70, 110, BLUE, 1, 330)}${fac(156, 90, 170, GRN, 2, 330)}${fac(254, 70, 120, ORA, 3, 330)}${fac(332, 80, 160, VIO, 4, 330)}
+        <path d="M0 330 L393 330 L393 560 L0 560Z" fill="${INK}" opacity=".85"/><path d="M0 440 H393" stroke="${YEL}" stroke-width="8" stroke-dasharray="30 22"/>
+        <g class="mis"><path d="M0 330 L393 330 L393 352 L0 352Z" fill="${YEL}" ${M}/></g>
+        <g transform="rotate(-4 90 380)"><rect x="30" y="364" width="120" height="30" fill="#fff" stroke="${INK}" stroke-width="3"/><text x="90" y="385" text-anchor="middle" font-family="Rubik Mono One, monospace" font-size="13" fill="${INK}">FJERGADE</text></g>
+        ${confetti(18, 40, 300, 21)}`;
+    },
+    torv() {
+      const goo = (x, y, r, c) => `<g class="rip"><ellipse cx="${x}" cy="${y}" rx="${r}" ry="${r * .32}" fill="${c}" stroke="${INK}" stroke-width="2.5" ${M}/></g>`;
+      return `${paper(YEL)}<g class="mis2"><rect width="393" height="560" fill="url(#dP)" opacity=".35" ${M}/></g>
+        <g stroke="${INK}" stroke-width="2">${Array.from({ length: 10 }, (_, i) => `<path class="sway2" d="M${i * 40} 34 l20 28 l20 -28z" fill="${[PINK, BLUE, GRN, ORA][i % 4]}"/>`).join('')}</g>
+        <path d="M0 34 Q196 54 393 34" fill="none" stroke="${INK}" stroke-width="2"/>
+        ${towers(330)}
+        <path d="M0 330 L393 330 L393 560 L0 560Z" fill="url(#check)"/><path d="M0 330 H393" stroke="${INK}" stroke-width="4"/>
+        ${goo(90, 420, 60, ORA)}${goo(290, 470, 70, BLUE)}${goo(200, 520, 40, PINK)}
+        <g class="spin2" style="transform-origin:196px 200px" fill="none" stroke="${INK}" stroke-width="2" opacity=".5">${[50, 80, 110].map(r => `<circle cx="196" cy="200" r="${r}" stroke-dasharray="3 9"/>`).join('')}</g>
+        ${confetti(30, 60, 540, 22)}`;
+    },
+    vaskeri() {
+      const mach = (x, i) => `<g><rect x="${x}" y="300" width="80" height="110" rx="8" fill="#fff" stroke="${INK}" stroke-width="3"/><circle cx="${x + 40}" cy="362" r="28" fill="${BLUE}" stroke="${INK}" stroke-width="3"/>
+        <g class="spin" style="transform-origin:${x + 40}px 362px;animation-delay:-${i}s"><path d="M${x + 40} 362 m-18 0 a18 18 0 1 1 18 18 a10 10 0 1 1 -10 -10" fill="none" stroke="#fff" stroke-width="3"/></g></g>`;
+      const socks = Array.from({ length: 7 }, (_, i) => `<path class="sway" style="animation-delay:-${i * .5}s" d="M${30 + i * 52} 94 l0 30 l14 6 l2 -8 l-8 -2 l0 -26z" fill="${[PINK, YEL, GRN, ORA][i % 4]}" stroke="${INK}" stroke-width="2"/>`).join('');
+      return `${paper('#d6f0ff')}<g class="mis2"><rect width="393" height="560" fill="url(#dB)" opacity=".3" ${M}/></g>
+        <path d="M0 90 Q196 104 393 90" fill="none" stroke="${INK}" stroke-width="2"/>${socks}
+        ${mach(14, 0)}${mach(110, 1)}${mach(206, 2)}${mach(302, 3)}
+        <path d="M0 410 L393 410 L393 560 L0 560Z" fill="url(#check)" ${M}/><path d="M0 410 H393" stroke="${INK}" stroke-width="4"/>
+        <g class="flt" fill="#fff" stroke="${INK}" stroke-width="2">${[[60, 220, 10], [190, 180, 14], [330, 230, 8], [260, 150, 11]].map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}"/>`).join('')}</g>`;
+    },
+    bageri() {
+      const kr = (x, y) => `<path d="M${x} ${y + 16} C${x - 12} ${y + 16} ${x - 16} ${y + 6} ${x - 12} ${y} C${x - 8} ${y - 8} ${x} ${y - 6} ${x} ${y + 2} C${x} ${y - 6} ${x + 8} ${y - 8} ${x + 12} ${y} C${x + 16} ${y + 6} ${x + 12} ${y + 16} ${x} ${y + 16}Z" fill="${ORA}" stroke="${INK}" stroke-width="2"/>`;
+      return `${paper(ORA)}<g class="mis2"><rect width="393" height="560" fill="url(#dY)" opacity=".6" ${M}/></g>
+        ${[150, 240].map(y => `<path d="M20 ${y} H373" stroke="${INK}" stroke-width="5"/>${[50, 110, 170, 230, 290, 350].map(x => kr(x, y - 22)).join('')}`).join('')}
+        <path d="M0 420 L393 420 L393 560 L0 560Z" fill="${PINK}" stroke="${INK}" stroke-width="4" ${M}/>
+        <rect x="120" y="300" width="160" height="120" fill="${INK}"/><rect x="134" y="314" width="132" height="92" fill="${YEL}" class="glow"/>
+        <g class="flt" fill="#fff" opacity=".8">${[[170, 280, 12], [200, 254, 16], [230, 224, 20]].map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}"/>`).join('')}</g>${confetti(14, 0, 400, 23)}`;
+    },
     forgaars() {
       // yesterday-before-yesterday: the same Hertil, upside down and in the wrong inks
       return `${paper('#d9f5e4')}<g transform="rotate(180 196 280)"><g class="mis"><path d="M0 340 Q100 300 200 336 T393 324 V560 H0Z" fill="${VIO}" ${M}/></g>
@@ -464,7 +606,7 @@ const ART = (() => {
 
   // the light of Hertil: Gult (as printed), Lyserødt (pink wash), Blåt (blue wash), Lilla nat (violet night, inks glow)
   const FIXED = { void: 1, map: 0, title: 0 };
-  const INDOOR = ['nest', 'hall', 'hall_torn', 'stair', 'doere'];
+  const INDOOR = ['nest', 'hall', 'hall_torn', 'stair', 'doere', 'vaskeri', 'bageri'];
   const GRADE = [
     '',
     `<rect width="393" height="560" fill="${PINK}" opacity=".22" ${M}/>`,
@@ -546,6 +688,20 @@ const ART = (() => {
     blad: '<path d="M10 38 C10 20 22 10 40 8 C38 26 28 38 10 38Z"/><path d="M10 38 L30 18"/>',
     skael: '<path d="M10 30 Q24 6 38 30 Q24 40 10 30Z"/><path d="M16 28 Q24 14 32 28"/>',
     trappe: '<path d="M6 40 V34 H14 V28 H22 V22 H30 V16 H38 V10 Q44 10 40 18"/>',
+    // Lektion 3 · steder
+    kringle: '<path d="M24 40 C12 40 6 30 10 22 C14 12 26 12 24 24 C22 12 34 12 38 22 C42 30 36 40 24 40Z"/><path d="M14 34 L32 22 M34 34 L16 22"/>',
+    poelse: '<path d="M8 28 Q22 8 40 18 Q44 24 38 26 Q24 18 12 32 Q6 34 8 28Z"/><path d="M40 20 l4 -3 M9 31 l-4 3"/>',
+    kirke: '<path d="M14 44 V22 L24 12 L34 22 V44Z"/><path d="M24 2 V12 M19 6 H29"/><path d="M20 44 V34 Q24 29 28 34 V44"/><circle cx="24" cy="24" r="3"/>',
+    trae: '<circle cx="24" cy="18" r="12"/><path d="M24 30 V44 M16 44 H32 M24 36 L18 30"/>',
+    boelge: '<path d="M4 32 Q10 26 16 32 T28 32 T40 32 T50 32"/><path d="M4 40 Q10 34 16 40 T28 40 T40 40"/><circle cx="31" cy="14" r="4"/><path d="M18 24 L26 20 L36 24"/>',
+    tog: '<rect x="12" y="6" width="24" height="30" rx="6"/><path d="M12 21 H36"/><circle cx="18" cy="29" r="2.5"/><circle cx="30" cy="29" r="2.5"/><path d="M17 36 L12 44 M31 36 L36 44"/>',
+    brev: '<rect x="6" y="12" width="36" height="24"/><path d="M6 12 L24 27 L42 12"/>',
+    vaskemaskine: '<rect x="10" y="6" width="28" height="36" rx="3"/><circle cx="24" cy="27" r="9"/><path d="M14 12 H22"/><path d="M19 28 Q24 23 29 28"/>',
+    kop: '<path d="M10 18 H34 V28 Q34 38 22 38 Q10 38 10 28Z"/><path d="M34 21 Q42 21 42 26 Q42 32 34 30"/><path d="M18 12 Q20 8 18 4 M26 12 Q28 8 26 4"/>',
+    blomst: '<circle cx="24" cy="15" r="4"/><path d="M24 11 Q24 3 28 6 Q30 10 24 11 M28 15 Q36 15 33 19 Q29 21 28 15 M24 19 Q24 27 20 24 Q18 20 24 19 M20 15 Q12 15 15 11 Q19 9 20 15"/><path d="M24 22 V44 M24 34 Q31 30 34 33"/>',
+    sko: '<path d="M6 36 V24 Q6 20 12 22 L22 26 Q30 30 40 30 Q44 30 44 34 V38 H6Z"/><path d="M6 34 H44 M16 24 l2 -4 M21 26 l2 -4"/>',
+    kurv: '<path d="M4 10 H10 L16 32 H38 L42 16 H12"/><circle cx="18" cy="40" r="3"/><circle cx="34" cy="40" r="3"/><path d="M20 20 H38 M22 26 H36"/>',
+    raadhus: '<path d="M6 44 V22 H42 V44Z"/><path d="M18 22 V12 H30 V22"/><circle cx="24" cy="17" r="3"/><path d="M24 4 V12"/><path d="M12 44 V30 M20 44 V30 M28 44 V30 M36 44 V30"/>',
     gren: '<path d="M24 44 V20 M24 30 L14 18 M24 24 L34 12 M14 18 L10 10 M14 18 L20 10 M34 12 L38 6"/>',
   };
   function icon(name, cls = '') {

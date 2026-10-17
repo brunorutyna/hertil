@@ -96,8 +96,14 @@ const AUDIO = (() => {
     doere(o, b) { every(2.5, 6, () => { tone(o, 140, now(), .6, 'sawtooth', .02, { to: 90, lp: 700 }); }, b); },
     forgaars(o, b) { every(.4, 1.4, () => { const f = 300 + Math.random() * 900; tone(o, f * .3, now(), .5, 'sine', .02, { to: f }); }, b); },
     map(o, b) { every(2, 5, () => squeak(o, now(), .01), b); },
+    // Lektion 3: houses creak as they drift, bells, a square full of noise, drums turning, an oven ticking
+    gade(o, b) { every(1.5, 4, () => { const f = 90 + Math.random() * 60; tone(o, f, now(), .7, 'sawtooth', .02, { to: f * 1.3, lp: 600, q: 4 }); }, b); every(5, 10, () => { [784, 659, 523].forEach((f, i) => tone(o, f, now() + i * .35, 1.2, 'sine', .025)); }, b); every(1.4, 3, () => squeak(o, now(), .01), b); },
+    torv(o, b) { every(.08, .3, () => { const f = 200 + Math.random() * 1600; tone(o, f, now(), .08, Math.random() < .5 ? 'square' : 'sawtooth', .012, { to: f * (Math.random() < .5 ? .5 : 2), lp: 2600 }); }, b); every(2, 4, () => tone(o, 330, now(), .3, 'square', .025, { to: 440, lp: 1800 }), b); },
+    vaskeri(o, b) { const w = ctx.createBufferSource(); w.buffer = noiseBuf('brown', 2); w.loop = true; const fl = ctx.createBiquadFilter(); fl.type = 'lowpass'; fl.frequency.value = 400; const g = ctx.createGain(); g.gain.value = .07; w.connect(fl); fl.connect(g); g.connect(o); w.start(); b.stops.push(() => w.stop());
+      every(.7, .7, () => tone(o, 110, now(), .3, 'sine', .03, { to: 80 }), b); every(2, 5, () => { const f = 500 + Math.random() * 500; tone(o, f, now(), .12, 'sine', .03, { to: f * 2.2, toT: .1 }); }, b); },
+    bageri(o, b) { every(.5, .5, () => hit(o, now(), 2600, .03, .03, 8), b); every(3, 6, () => tone(o, 196, now(), 1.4, 'sine', .03, { vib: 4 }), b); },
   };
-  const INDOOR = ['nest', 'hall', 'hall_torn', 'stair', 'doere'];
+  const INDOOR = ['nest', 'hall', 'hall_torn', 'stair', 'doere', 'vaskeri', 'bageri'];
   function playAmb(name, ph = 0) {
     const key = name + ':' + ph;
     if (key === ambName) return; ambName = key;
@@ -140,6 +146,10 @@ const AUDIO = (() => {
     himmel: { bpm: 100, root: 57, mode: LYD, prog: [0, 1, 3, 4], drums: 'half', bass: 'x.......x.......', arp: 'box', lead: 'tri', dens: .35, pad: true },
     doere:  { bpm: 112, root: 50, mode: DOR, prog: [0, 6, 5, 6], drums: 'four', bass: 'x...x.x.x...x.x.', arp: 'tri', lead: 'square', dens: .3 },
     forgaars: { bpm: 96, root: 53, mode: WHOLE, prog: [3, 2, 1, 0], drums: 'half', bass: 'x.......x.......', arp: 'square', lead: 'saw', dens: .3, fall: true },
+    gade:   { bpm: 122, root: 53, mode: MIX, prog: [0, 3, 4, 3], drums: 'bounce', bass: 'x..x.xx.x..x.xx.', arp: 'square', lead: 'reed', dens: .45, oct: true },
+    torv:   { bpm: 136, root: 50, mode: DOR, prog: [0, 0, 6, 4], drums: 'run', bass: 'xx.xx.xxxx.xx.xx', arp: 'square', lead: 'saw', dens: .6 },
+    vaskeri:{ bpm: 110, root: 55, mode: LYD, prog: [0, 1, 0, 4], drums: 'four', bass: 'x.x.x.x.x.x.x.x.', arp: 'box', lead: 'tri', dens: .35, oct: true },
+    bageri: { bpm: 94, root: 57, mode: ION, prog: [0, 5, 3, 4], drums: 'soft', bass: 'x.......x...x...', arp: 'box', lead: 'tri', dens: .3, pad: true },
     map:    { bpm: 108, root: 55, mode: ION, prog: [0, 4, 3, 4], drums: 'soft', bass: 'x...x.x.x...x.x.', arp: 'tri', lead: null, dens: 0 },
   };
   function deg(T, d, oct = 0) { const n = T.mode.length, o = Math.floor(d / n), i = ((d % n) + n) % n; return T.root + T.mode[i] + 12 * (o + oct); }

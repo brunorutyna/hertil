@@ -424,3 +424,25 @@ body.still *, body.still *::before, body.still *::after { animation-duration: .0
 .done-stamp { display: block; width: fit-content; margin: 0 0 8px; background: var(--grn); color: #fff; font: 700 12.5px 'Chivo Mono', monospace; letter-spacing: .04em; padding: 3px 10px; border: 2px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); transform: rotate(-2deg); }
 
 .prep p.warn { background: var(--yel); border: 2px solid var(--ink); padding: 6px 10px; font-size: 14px; color: var(--ink); width: fit-content; }
+
+/* Hvor ligger den? the street board */
+.fp { display: grid; grid-template-columns: repeat(4, 1fr) 30px; grid-template-rows: auto 30px auto; gap: 4px; margin: 10px 0; }
+.fp-row { display: contents; }
+.fp-cell { aspect-ratio: .85; border: 2.5px solid var(--ink); background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 4px 2px; font: 700 10.5px Chivo, sans-serif; color: var(--ink); box-shadow: 2px 2px 0 var(--blue); min-height: 64px; }
+.fp-cell span { font: 400 22px 'Rubik Mono One', monospace; color: var(--pink); }
+.fp-cell .ico { width: 30px; height: 30px; }
+.fp-cell.on { background: var(--yel); box-shadow: 2px 2px 0 var(--pink); }
+.fp-cell.pop { animation: stick .4s cubic-bezier(.3, 1.8, .5, 1); }
+.fp-cell.hint { outline: 4px dashed var(--grn); outline-offset: 2px; }
+.fp-cell.nope { animation: shake .35s; }
+.fp-street { grid-column: 1 / 5; background: var(--ink); color: var(--yel); font: 400 11px 'Rubik Mono One', monospace; display: flex; align-items: center; justify-content: center; letter-spacing: .1em; }
+.fp-cross { grid-column: 5; grid-row: 1 / 4; background: var(--ink); color: var(--yel); display: flex; align-items: center; justify-content: center; }
+.fp-cross span { writing-mode: vertical-rl; font: 400 10px 'Rubik Mono One', monospace; letter-spacing: .1em; }
+.fp-clue { display: flex; gap: 10px; align-items: center; background: #fff; border: 2.5px solid var(--ink); padding: 8px 10px; box-shadow: 3px 3px 0 var(--pink); font-size: 17px; font-weight: 700; color: var(--blue); }
+.fp-clue .ico { width: 40px; height: 40px; flex: none; color: var(--ink); }
+/* end of a chapter */
+.chap-end { margin: 14px 0; padding: 14px; background: var(--pink); color: #fff; border: 3px solid var(--ink); box-shadow: 5px 5px 0 var(--yel); transform: rotate(-1deg); text-align: center; }
+.chap-end small { display: block; font: 700 12px 'Chivo Mono', monospace; letter-spacing: .1em; }
+.chap-end b { display: block; font: 400 24px 'Rubik Mono One', monospace; margin: 4px 0; }
+.chap-end p { margin: 0; font-size: 15px; }
+.fp-cell:disabled { opacity: 1; cursor: default; }

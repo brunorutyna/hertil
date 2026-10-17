@@ -47,7 +47,7 @@ async function play(srv, lesson, chainOn) {
     }
     if (await p.$('.voc-ov')) {
       if (await click('#vDone')) continue;
-      const sel = ['.coin:not([disabled])', '.sign:not([disabled])', '.rv-o:not([disabled])'];
+      const sel = ['.coin:not([disabled])', '.sign:not([disabled])', '.rv-o:not([disabled])', '.fp-cell:not([disabled])'];
       let hit = false; for (const s of sel) { const els = await p.$$(s); if (els.length) { hit = true; await shot('voc_' + s.slice(1, 4)); await els[Math.floor(Math.random() * els.length)].click({ force: true }); break; } }
       if (!hit) await click('.voc-ov .btn');
       await p.waitForTimeout(shots ? 300 : 15); continue;
