@@ -39,6 +39,7 @@ for (const [sid, S] of Object.entries(C.SESSIONS)) {
     if (o.kind === 'reply' && !o.da) err(sid, `reply without Danish (${where})`);
     build(o.build, where);
     if (o.once && o.group) warn(sid, `option has both once and group (${where})`);
+    if (!isTravel && o.kind === 'reply' && !o.once && !o.group && !o.next && N[w] && N[w].hub) err(sid, `reply in hub ${w} can be repeated forever (give it once or group) (${where})`);
   });
   for (const [id, n] of Object.entries(N)) {
     if (n.npc && typeof n.npc !== 'function' && !C.NPCS[n.npc]) err(sid, `unknown npc "${n.npc}" in ${id}`);
