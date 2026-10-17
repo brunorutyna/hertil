@@ -279,7 +279,7 @@ const RULES = [
   { id: 'mange', name: 'mange · meget', t: s => /\b(mange|meget)\b/.test(s),
     en: 'mange is for things you can count (mange biler, mange caféer). meget is for things you cannot count (meget larm, meget trafik, meget lys). Grade them: rigtig, alt for, ikke så.',
     ex: ['Der er alt for mange biler.', 'Der er ikke så meget larm.'] },
-  { id: 'datid', name: 'Datid (past tense)', t: s => /\b(\w{3,}ede|boede|arbejdede|laeste|spiste|koebte|hoerte|glemte|underviste|koerte|kom|faldt|var|havde|gik|fik|fandt|tog|loeb|blev|sang|sagde|skrev|hjalp|laa|sad|saa)\b/.test(s.replace(/^\w+ /, m => /^(kom|gaa|tag|se|loeb) $/.test(m) ? '' : m)),
+  { id: 'datid', name: 'Datid (past tense)', t: s => /\b(\w{3,}ede|boede|arbejdede|laeste|spiste|koebte|hoerte|glemte|underviste|koerte|kom|faldt|var|havde|gik|fik|fandt|tog|loeb|blev|sang|sagde|skrev|hjalp|laa|sad)\b/.test(s.replace(/^\w+ /, m => /^(kom|gaa|tag|se|loeb) $/.test(m) ? '' : m)),
     en: 'Past tense: regular verbs take -ede (arbejdede, boede) or -te (læste, spiste). Many common verbs are irregular: kom, faldt, var, havde, gik, fandt.',
     ex: ['Før jeg kom hertil, boede jeg ved havet.'] },
   { id: 'modal', name: 'kan · vil · skal · må + infinitiv', t: s => /\b(kan|vil|skal|maa|kunne|ville|skulle)\b \w+/.test(s),
