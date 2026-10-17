@@ -352,7 +352,9 @@ function builder(b) {
     const all = [...b.answers, ...(b.best || [])].map(low);
     let src = b.tiles || [...b.answers[0], ...(b.extra || [])];
     if (hasBoon('ikket')) src = [...src, 'ikke']; // Ikket slips an extra ikke into your sentences
-    const tiles = shuffle(src.map((t, i) => ({ t: /^[A-ZÆØÅ]/.test(t) && !NAMES.includes(t.replace(/[.,?!]/g, '')) ? t.toLowerCase() : t, i })));
+    // tiles carry no punctuation: a full stop or comma from one accepted word order would mislead in another ("træt af." mid-sentence).
+    // The sentence is said back with the punctuation of the order the player built.
+    const tiles = shuffle(src.map((t0, i) => { const t = t0.replace(/[.,?!]/g, ''); return { t: /^[A-ZÆØÅ]/.test(t) && !NAMES.includes(t) ? t.toLowerCase() : t, i }; }));
     let line = [], mistakes = 0, first = true;
     const ov = document.createElement('div'); ov.className = 'sheet-ov'; document.body.appendChild(ov);
     const render = (msg, bad) => {
