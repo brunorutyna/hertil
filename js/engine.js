@@ -737,6 +737,8 @@ function review() {
 }
 
 /* ---------------- vocabulary games (reusable; lessons give the data) ---------------- */
+const promptSpeech = t => t.replace(/\([^)]*\)/g, '').replace(/_{2,}/g, ', ').replace(/\s+/g, ' ').trim();
+function sayPrompt(ov, text) { const sp = promptSpeech(text); TTS.say(sp); const b = ov.querySelector('#qSay'); if (b) b.onclick = e => { e.stopPropagation(); TTS.say(sp, true); }; }
 function vocabSheet(html) { const ov = document.createElement('div'); ov.className = 'voc-ov'; ov.innerHTML = `<div class="voc">${html}</div>`; document.body.appendChild(ov); wireWords(ov); return ov; }
 const SPECIAL = {
   /* hidden-object search in the scene */
@@ -789,9 +791,9 @@ const SPECIAL = {
           $('#vDone').onclick = () => { ov.remove(); resolve(); }; return;
         }
         const k = keys[i]; const opts = shuffle([k, ...shuffle(J.keys.filter(x => x !== k)).slice(0, 2)]);
-        ov.querySelector('.voc').innerHTML = `<div class="v-h"><small>${esc(J.title)} · ${i + 1}/${keys.length}</small><h2>${esc(J.h2 || 'Gæt jobbet')}</h2><div class="notice">${daHTML(J.prefix ? J.prefix + VOCAB[k].def.charAt(0).toLowerCase() + VOCAB[k].def.slice(1) : VOCAB[k].def)}</div><p>${esc(J.ask || 'Hvad var den?')}</p></div>
+        ov.querySelector('.voc').innerHTML = `<div class="v-h"><small>${esc(J.title)} · ${i + 1}/${keys.length}</small><h2>${esc(J.h2 || 'Gæt jobbet')}</h2><div class="notice">${daHTML(J.prefix ? J.prefix + VOCAB[k].def.charAt(0).toLowerCase() + VOCAB[k].def.slice(1) : VOCAB[k].def)} <button class="tb" id="qSay">♪</button></div><p>${esc(J.ask || 'Hvad var den?')}</p></div>
           <div class="rv-opts">${opts.map(x => `<button class="rv-o" data-k="${x}">${esc(VOCAB[x].da)}</button>`).join('')}</div>`;
-        wireWords(ov);
+        wireWords(ov); sayPrompt(ov, J.prefix ? J.prefix + VOCAB[k].def : VOCAB[k].def);
         ov.querySelectorAll('.rv-o').forEach(b => b.onclick = async () => {
           const ok = b.dataset.k === k; addWord(k); ov.querySelectorAll('.rv-o').forEach(x => x.disabled = true);
           if (ok) { right++; b.classList.add('ok'); AUDIO.sting('coin'); statGain('INDSIGT', 1); } else { b.classList.add('no'); ov.querySelector(`.rv-o[data-k="${k}"]`).classList.add('ok'); AUDIO.sting('lose'); }
@@ -872,9 +874,9 @@ const SPECIAL = {
         const it = Q.items[i];
         const raw = it.opts || Q.boxes, order = it.opts ? shuffle(raw.map((_, k) => k)) : raw.map((_, k) => k);
         const opts = order.map(k => raw[k]), A = order.indexOf(it.a);
-        ov.querySelector('.voc').innerHTML = `<div class="v-h"><small>${esc(Q.title)} · ${i + 1}/${Q.items.length}</small><h2>${esc(it.q || Q.q)}</h2><div class="v-def">${daHTML(it.t)}</div></div>
+        ov.querySelector('.voc').innerHTML = `<div class="v-h"><small>${esc(Q.title)} · ${i + 1}/${Q.items.length}</small><h2>${esc(it.q || Q.q)}</h2><div class="v-def">${daHTML(it.t)} <button class="tb" id="qSay">♪</button></div></div>
           <div class="rv-opts ${Q.boxes.length === 3 ? 'ponds' : ''}">${opts.map((o, k) => `<button class="rv-o" data-k="${k}"><span class="lab">${daHTML(o)}</span></button>`).join('')}</div>`;
-        wireWords(ov, true);
+        wireWords(ov, true); sayPrompt(ov, it.t);
         ov.querySelectorAll('.rv-o').forEach(b => b.onclick = async () => {
           const ok = +b.dataset.k === A;
           ov.querySelectorAll('.rv-o').forEach(x => x.disabled = true);
@@ -993,9 +995,9 @@ const SPECIAL = {
         const r0 = Q.rounds[i], r = r0.alt && r0.alt.req(G) ? { ...r0, ...r0.alt } : r0; // a round can follow the story (e.g. a creature still in its cocoon)
         const opts = shuffle([r.npc, ...shuffle(Q.pool.filter(n => n !== r.npc && !(r.not || []).includes(n))).slice(0, 2)]);
         (r.words || []).forEach(addWord);
-        ov.querySelector('.voc').innerHTML = `<div class="v-h"><small>${esc(Q.title)} · ${i + 1}/${Q.rounds.length}</small><h2>Hvem er det?</h2><div class="notice">${r.lines.map(l => daHTML(l)).join(' ')}</div></div>
+        ov.querySelector('.voc').innerHTML = `<div class="v-h"><small>${esc(Q.title)} · ${i + 1}/${Q.rounds.length}</small><h2>Hvem er det?</h2><div class="notice">${r.lines.map(l => daHTML(l)).join(' ')} <button class="tb" id="qSay">♪</button></div></div>
           <div class="faces">${opts.map(n => `<button class="rv-o face" data-n="${n}">${ART.creature(NPCS[n].art, 0, true)}</button>`).join('')}</div>`;
-        wireWords(ov);
+        wireWords(ov); sayPrompt(ov, r.lines.join(' '));
         ov.querySelectorAll('.rv-o').forEach(b => b.onclick = async () => {
           const ok = b.dataset.n === r.npc;
           ov.querySelectorAll('.rv-o').forEach(x => x.disabled = true);
