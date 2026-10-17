@@ -422,3 +422,5 @@ body.still *, body.still *::before, body.still *::after { animation-duration: .0
 .lesson { position: relative; }
 .lesson.done { background: #e6fbe9; }
 .done-stamp { display: block; width: fit-content; margin: 0 0 8px; background: var(--grn); color: #fff; font: 700 12.5px 'Chivo Mono', monospace; letter-spacing: .04em; padding: 3px 10px; border: 2px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); transform: rotate(-2deg); }
+
+.prep p.warn { background: var(--yel); border: 2px solid var(--ink); padding: 6px 10px; font-size: 14px; color: var(--ink); width: fit-content; }

@@ -1055,7 +1055,7 @@ function title() {
     <div class="title"><p class="k">en feberdrøm på dansk</p><h1>Hertil</h1>
     <p class="tag">You fell in. Everybody is busy. Somebody asks why you came.</p>
     ${sv ? `<button class="btn gold big" id="cont">Fortsæt <small>· ${esc(svS.short)}, dag ${sv.day}</small></button>` : ''}
-    <button class="btn ${sv ? 'ghost' : 'gold'} big" id="new">${sv ? 'Fald igen' : 'Fald'}</button>
+    <button class="btn ${sv ? 'ghost' : 'gold'} big" id="new">${sv ? 'Vælg lektion <small>· choose a lesson</small>' : 'Fald'}</button>
     <button class="btn ghost big" id="sets">⚙ Indstillinger · lyd</button>
     <button class="tapsound" id="tapsound">♪ tryk for lyd</button>
     <p class="sound">Sound and the Danish voice are on. Headphones recommended.</p></div>`;
@@ -1068,11 +1068,12 @@ function title() {
   if (q && SESSIONS[q] && !title.done) { title.done = true; newGame(q, (META.carry || {})[SESSIONS[q].prevSession] || null); goNode(S().start); }
 }
 function lessonSheet() {
+  let sv = null; try { sv = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { }
   const list = Object.values(SESSIONS).sort((a, b) => a.order - b.order);
   if (list.length === 1) { newGame(list[0].id); goNode(S().start); return; }
   const carry = META.carry || {};
   const ov = document.createElement('div'); ov.className = 'prep-ov'; document.body.appendChild(ov);
-  ov.innerHTML = `<div class="prep"><div class="p-head"><small>Kapitel 1</small><h2>Vælg lektion</h2><p>Each lesson follows one session of the book and takes about an hour and a half.</p></div>
+  ov.innerHTML = `<div class="prep"><div class="p-head"><small>Kapitel 1</small><h2>Vælg lektion</h2><p>Each lesson follows one session of the book and takes about an hour and a half.</p>${sv ? `<p class="warn">Starting a lesson replaces your saved game (${esc((SESSIONS[sv.sess || 'k1l1'] || {}).short || '')}, dag ${sv.day}).</p>` : ''}</div>
     <div class="lessons">${list.map(L => { const from = L.prevSession && carry[L.prevSession];
       const dn = (META.done || {})[L.id] || (carry[L.id] ? { n: 1, endings: [] } : null);
       return `<div class="lesson ${dn ? 'done' : ''}">${dn ? `<span class="done-stamp">✓ Gennemført${dn.n > 1 ? ' ×' + dn.n : ''}${dn.endings.length ? ` · ${dn.endings.length} ${dn.endings.length > 1 ? 'slutninger' : 'slutning'}` : ''}</span>` : ''}<b>${esc(L.short)} · ${esc(L.title.replace(/^Lektion \d+ · /, ''))}</b><i>${esc(L.en)}</i><p>${esc(L.blurb || '')}</p>
