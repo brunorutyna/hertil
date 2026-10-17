@@ -1010,7 +1010,9 @@ function journal() {
   const names = { k: 'Kontrakter', f: 'Færdigheder', o: 'Aftryk', r: 'Regler', g: 'Spor', a: 'Atlas', s: 'Indstillinger' };
   ov.innerHTML = `<div class="prep"><div class="p-head"><small>Dagbog</small><h2>Dag ${G.day} · ${PHASES[G.phase]}</h2></div>
     <div class="jt">${Object.keys(tabs).map((k, i) => `<button data-t="${k}" class="${i ? '' : 'on'}">${names[k]}</button>`).join('')}</div><div class="jb"></div>
-    <button class="btn gold big" id="close">Luk</button></div>`;
+    <button class="btn gold big" id="close">Luk</button>
+    <button class="btn ghost big" id="jMenu">Til menuen <small>· your game is saved</small></button></div>`;
+  ov.querySelector('#jMenu').onclick = () => { save(); ov.remove(); document.querySelectorAll('.prep-ov, .sheet-ov, .roll-ov, .voc-ov, .rule-ov').forEach(x => x.remove()); title(); AUDIO.play('title'); };
   const show = k => {
     ov.querySelector('.jb').innerHTML = tabs[k]();
     ov.querySelectorAll('.jt button').forEach(b => b.classList.toggle('on', b.dataset.t === k));
