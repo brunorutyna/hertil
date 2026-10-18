@@ -740,6 +740,7 @@ function review() {
 }
 
 /* ---------------- vocabulary games (reusable; lessons give the data) ---------------- */
+const fillGap = (t, w) => /_{2,}/.test(t) ? t.replace(/_{2,}/, w) : /(…|\.\.\.)/.test(t) ? t.replace(/\s*(…|\.\.\.)/, ' ' + w + (/[.?!]$/.test(w) ? '' : '.')).replace(/ +/g, ' ') : t;
 const promptSpeech = t => t.replace(/\([^)]*\)/g, '').replace(/_{2,}/g, ', ').replace(/\s+/g, ' ').trim();
 function sayPrompt(ov, text) { const sp = promptSpeech(text); TTS.say(sp); const b = ov.querySelector('#qSay'); if (b) b.onclick = e => { e.stopPropagation(); TTS.say(sp, true); }; }
 function vocabSheet(html) { const ov = document.createElement('div'); ov.className = 'voc-ov'; ov.innerHTML = `<div class="voc">${html}</div>`; document.body.appendChild(ov); wireWords(ov); return ov; }
@@ -885,7 +886,7 @@ const SPECIAL = {
           ov.querySelectorAll('.rv-o').forEach(x => x.disabled = true);
           b.classList.add(ok ? 'ok' : 'no'); if (!ok) ov.querySelectorAll('.rv-o')[A].classList.add('ok');
           if (ok) { right++; AUDIO.sting(id === 'dam' ? (it.a === 0 ? 'soft' : it.a === 1 ? 'hard' : 'win') : 'win'); statGain('SPROG', 1); } else AUDIO.sting('lose');
-          const full = it.say || it.t.replace('___', raw[it.a]); TTS.say(full.charAt(0).toUpperCase() + full.slice(1));
+          const full = it.say || fillGap(it.t, raw[it.a]); TTS.say(full.charAt(0).toUpperCase() + full.slice(1));
           const cap = document.createElement('div'); cap.className = 'rv-cap'; cap.innerHTML = `${it.say ? `<b>${esc(it.t)} → ${esc(it.say)}</b><br>` : ''}<i>${esc(it.why)}</i>`; ov.querySelector('.voc').appendChild(cap);
           await sleep(ok ? 1300 : 2600); i++; round();
         });
