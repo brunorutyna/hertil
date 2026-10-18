@@ -47,7 +47,7 @@ SESSIONS.k2l2 = Object.assign({}, D2, {
 
   glimpses: {
     navneskilt: { name: 'Navneskiltet', en: 'The name tag', text: 'One chair at the back has a name tag that does not slide off. It is blank. The chair is exactly your shape, and the seat is still warm.' },
-    noter: { name: 'Noterne', en: 'The notes', text: 'Among Vejlederen’s notes, one page in different handwriting. Yours. A date that has been crossed out and moved, crossed out and moved. At the bottom: øverste etage.' },
+    noter: { name: 'Noterne', en: 'The notes', text: 'Among Vejlederen’s notes, one page in different handwriting. Yours. A date that has been crossed out and moved, again and again. At the bottom: øverste etage.' },
     snor: { name: 'Snoren', en: 'The lanyard', text: 'At the bottom of Knagen’s pile: a lanyard with an empty card holder. It fits round your neck the way a key fits a lock.' },
     karakter: { name: 'Karakteren', en: 'The grade', text: 'The guest hands back an exam paper from years ago. A good grade, in red. The name has rubbed off. The handwriting has not.' },
   },
