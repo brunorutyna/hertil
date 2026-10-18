@@ -165,7 +165,7 @@
         <g font-family="Rubik Mono One, monospace" font-size="10" fill="${INK}" text-anchor="middle"><text x="150" y="56">N</text><text x="150" y="146">S</text><text x="104" y="100">V</text><text x="196" y="100">Ø</text></g>
         <g class="${g >= 3 ? '' : 'spin2'}" style="transform-origin:150px 96px"><g transform="rotate(${a} 150 96)"><path d="M150 96 L142 96 L150 52 L158 96Z" fill="${RED}" stroke="${INK}" stroke-width="2"/><path d="M150 96 L142 96 L150 140 L158 96Z" fill="${INK}"/></g></g>
         <circle cx="150" cy="96" r="5" fill="${MUS}" stroke="${INK}" stroke-width="2"/>
-        <g class="swing" style="transform-origin:226px 200px"><path d="M210 200 l40 30" stroke="${INK}" stroke-width="3"/><circle cx="256" cy="240" r="16" fill="${MUS}" stroke="${INK}" stroke-width="3"/><path d="M256 240 V230 M256 240 L264 244" stroke="${INK}" stroke-width="2.5"/></g>
+        <g class="swing" style="transform-origin:174px 196px"><path d="M172 194 L240 230" stroke="${INK}" stroke-width="13" stroke-linecap="round"/><path d="M172 194 L240 230" stroke="${TEAL}" stroke-width="7" stroke-linecap="round"/><path d="M234 222 l-6 12" stroke="${INK}" stroke-width="2.5"/><circle cx="256" cy="240" r="16" fill="${MUS}" stroke="${INK}" stroke-width="3"/><path d="M256 240 V230 M256 240 L264 244" stroke="${INK}" stroke-width="2.5"/></g>
       </g>`);
     },
     /* Knagen: a coat stand with a magpie's head, wearing everything it has taken. A buttonhole for an eye */
