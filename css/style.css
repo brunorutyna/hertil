@@ -79,7 +79,7 @@ button:focus-visible { outline: 3px solid var(--pink); outline-offset: 2px; }
 
 .cont { align-self: center; width: 72px; height: 46px; border: 2.5px solid var(--ink); background: var(--pink); color: #fff; font-size: 20px; box-shadow: 4px 4px 0 var(--ink); animation: nudge 1s ease-in-out infinite; }
 @keyframes nudge { 50% { transform: translateX(4px) rotate(3deg); } }
-.opt { display: flex; gap: 8px; text-align: left; padding: 10px 12px; background: #fff; border: 2.5px solid var(--ink); font-size: 16px; line-height: 1.28; min-height: 48px; align-items: flex-start; box-shadow: 4px 4px 0 var(--pink); transition: transform .12s, box-shadow .12s; animation: optin .45s cubic-bezier(.3, 1.7, .5, 1) both; }
+.opt { display: flex; flex-shrink: 0; gap: 8px; text-align: left; padding: 10px 12px; background: #fff; border: 2.5px solid var(--ink); font-size: 16px; line-height: 1.28; min-height: 48px; align-items: flex-start; box-shadow: 4px 4px 0 var(--pink); transition: transform .12s, box-shadow .12s; animation: optin .45s cubic-bezier(.3, 1.7, .5, 1) both; }
 .opt:nth-child(2) { animation-delay: .05s; } .opt:nth-child(3) { animation-delay: .1s; } .opt:nth-child(4) { animation-delay: .15s; } .opt:nth-child(5) { animation-delay: .2s; }
 @keyframes optin { from { opacity: 0; transform: translateX(30px) rotate(3deg); } }
 .opt:nth-child(odd) { transform: rotate(-.6deg); } .opt:nth-child(even) { transform: rotate(.5deg); }
