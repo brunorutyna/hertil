@@ -370,10 +370,10 @@
     if (b('hat')) x += `<path d="M118 66 L124 36 Q150 26 176 36 L182 66Z" fill="${RED}" stroke="${INK}" stroke-width="3"/>`;
     if (b('bakke')) x += `<ellipse cx="236" cy="210" rx="34" ry="8" fill="${LIL}" stroke="${INK}" stroke-width="3"/><path d="M210 206 h10 v-12 h-10z M232 204 h8 v-16 h-8z" fill="#fff" stroke="${INK}" stroke-width="2"/>`;
     if (b('kode')) x += `<g font-family="Chivo Mono, monospace" font-size="10" fill="${TEAL}"><text x="118" y="226">{ ; }</text><text x="160" y="250">01</text></g>`;
-    if (b('kompas')) x += `<circle cx="64" cy="210" r="18" fill="${PAPER}" stroke="${INK}" stroke-width="3"/><path d="M64 196 L68 210 L64 224 L60 210Z" fill="${RED}"/>`;
+    if (b('kompas')) x += `<path d="M99 196 Q84 214 78 204" fill="none" stroke="${MUS}" stroke-width="2.5" stroke-dasharray="3 2"/><circle cx="64" cy="210" r="18" fill="${PAPER}" stroke="${INK}" stroke-width="3"/><path d="M64 196 L68 210 L64 224 L60 210Z" fill="${RED}"/>`;
     if (b('stillads')) x += `<g stroke="${TEAL}" stroke-width="3"><path d="M30 320 V150 M60 320 V150 M30 200 H60 M30 260 H60 M30 200 L60 260"/></g>`;
-    if (b('froe') || b('soed')) x += `<g transform="translate(240 120)">${[0, 1, 2, 3, 4].map(k => `<ellipse cx="0" cy="-8" rx="5" ry="9" fill="${RED}" stroke="${INK}" stroke-width="1.5" transform="rotate(${k * 72})"/>`).join('')}<circle r="5" fill="${MUS}" stroke="${INK}" stroke-width="2"/></g>`;
-    if (b('kalenderblad')) x += `<rect x="226" y="250" width="40" height="46" fill="#fff" stroke="${INK}" stroke-width="2.5" transform="rotate(8 246 273)"/><circle cx="246" cy="276" r="9" fill="none" stroke="${RED}" stroke-width="3"/>`;
+    if (b('froe') || b('soed')) x += `<path d="M196 150 Q206 136 204 122" fill="none" stroke="${TEAL}" stroke-width="3"/><g transform="translate(204 118) scale(.8)">${[0, 1, 2, 3, 4].map(k => `<ellipse cx="0" cy="-8" rx="5" ry="9" fill="${RED}" stroke="${INK}" stroke-width="1.5" transform="rotate(${k * 72})"/>`).join('')}<circle r="5" fill="${MUS}" stroke="${INK}" stroke-width="2"/></g>`;
+    if (b('kalenderblad')) x += `<rect x="176" y="248" width="40" height="46" fill="#fff" stroke="${INK}" stroke-width="2.5" transform="rotate(8 196 271)"/><circle cx="196" cy="274" r="9" fill="none" stroke="${RED}" stroke-width="3"/>`;
     return x ? self0(G, marks, mini).replace(/<\/svg>$/, x + '</svg>') : self0(G, marks, mini);
   };
 
