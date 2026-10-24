@@ -45,10 +45,10 @@ Object.assign(NPCS, {
   kasse:    { name: 'Kassen', role: 'rings up everything, also you', art: 'kasse' },
   boette:   { name: 'Farvebøtten', role: 'spilled all the colours', art: 'boette' },
   dukke:    { name: 'Dukken', role: 'wears what it is told', art: 'dukke' },
-  dukke1:   { name: 'Dukken i vinduet', role: 'the window on the left', art: 'dukke1' },
-  dukke2:   { name: 'Dukken i døren', role: 'stands in the doorway', art: 'dukke2' },
-  dukke3:   { name: 'Dukken på trappen', role: 'sits on the step', art: 'dukke3' },
-  dukke4:   { name: 'Dukken på taget', role: 'waves from the roof', art: 'dukke4' },
+  dukke1:   { name: 'Den første dukke', role: 'in Retro’s window, on the left', art: 'dukke1' },
+  dukke2:   { name: 'Den anden dukke', role: 'in Retro’s window, second', art: 'dukke2' },
+  dukke3:   { name: 'Den tredje dukke', role: 'in Retro’s window, third', art: 'dukke3' },
+  dukke4:   { name: 'Den fjerde dukke', role: 'in Retro’s window, on the right', art: 'dukke4' },
   maerke:   { name: 'Prismærket', role: 'fell off something', art: 'maerke', small: true },
   // Lektion 3 · the attic
   lampe:    { name: 'Lampen', role: 'the white one', art: 'lampe' },
@@ -305,6 +305,6 @@ Object.assign(DICT, {
   'lamper': 'lamps', 'bedst': 'best (kan bedst lide: like best)', 'lysegrøn': 'light green', 'nøglehul': 'keyhole', 'sorteres': 'be sorted', 'tungt': 'heavy (et-word)', 'kommet': 'come (er kommet)',
   'rydde': 'tidy (rydde op: tidy up)', 'åbnet': 'opened (har åbnet)', 'smide': 'throw (smide ud: throw out)', 'ske': 'happen', 'sommerhuset': 'the summer house', 'nederste': 'bottom (den nederste skuffe)',
   'skuffe': 'drawer', 'slet': 'at all (slet ikke: not at all)', 'sidst': 'last (til sidst: in the end)', 'tilpas': 'just right (lige tilpas)', 'hellere': 'rather (vil hellere)', 'genbrug': 'recycling, second-hand use',
-  'beholde': 'keep', 'synker': 'sink(s)', 'samme': 'same', 'grønne': 'green (plural, definite)', 'stort': 'big (et-word)', 'store': 'big (plural, definite)', 'små': 'small (plural)', 'lille': 'small, little',
+  'beholde': 'keep', 'heroppe': 'up here', 'sortere': 'sort', 'nøglehullet': 'the keyhole', 'passede': 'looked after (past)', 'sendte': 'sent (past)', 'synker': 'sink(s)', 'samme': 'same', 'grønne': 'green (plural, definite)', 'stort': 'big (et-word)', 'store': 'big (plural, definite)', 'små': 'small (plural)', 'lille': 'small, little',
   'gammel': 'old', 'lang': 'long', 'langt': 'long (et-word)', 'lange': 'long (plural, definite)', 'kort': 'short · card · map', 'anden': 'other, another (en anden: somebody else)', 'perfekt': 'perfect',
 });

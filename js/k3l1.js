@@ -95,7 +95,7 @@ SESSIONS.k3l1 = Object.assign({}, D3, {
         { t: 'Mine briller? Jeg skal ikke bruge ___ i dag.', a: 3, why: 'The object, plural: dem.' },
         { t: 'Har du set mit kamera? Jeg tror, ___ ligger oppe på loftet.', a: 1, why: 'et kamera → det.' },
         { t: 'Dine støvler? Jeg tror, ___ står nede i kælderen.', a: 2, why: 'The subject, plural: de.' },
-        { t: 'Mine nøgler? Jeg har glemt ___ i køkkenet.', a: 3, why: 'The object, plural: dem.' },
+        { t: 'Mine sokker? Jeg har glemt ___ i køkkenet.', a: 3, why: 'The object, plural: dem.' },
       ] },
     tagmed: { title: 'Tasken pakker', q: 'Hvad tager du med?', boxes: ['a', 'b', 'c'],
       good: 'Tasken zips itself shut, packed for six different days at once. It is very heavy and very pleased.', meh: 'Tasken is packed. It has a toothbrush in it for a birthday. Nobody will mind.',
@@ -125,11 +125,11 @@ SESSIONS.k3l1 = Object.assign({}, D3, {
   },
 
   hunts: {
-    stue: { title: 'Bunken', en: 'Find the lost things in the pile', find: ['noegler', 'pung', 'briller', 'hoeretlf', 'ur3', 'mobil'], decoys: ['tandb', 'haandkl', 'baelte', 'dankort', 'hjelm', 'pas'] },
+    stue: { title: 'Bunken', en: 'Find the lost things in the pile', find: ['pung', 'briller', 'hoeretlf', 'mobil', 'kamera', 'handsker'], decoys: ['tandb', 'haandkl', 'baelte', 'dankort', 'hjelm', 'pas'] },
   },
 
   travel: [
-    { id: 'boejl7', bg: 'gang3', npc: 'boejler', steps: [{ n: 'A flock of coat hangers comes clacking down the stairwell in a V, heading south, which in this house means the basement.' }],
+    { id: 'boejl7', bg: 'gang3', npc: 'boejler', req: G => !G.flags.minmitDone, steps: [{ n: 'A flock of coat hangers comes clacking down the stairwell in a V, heading south, which in this house means the basement.' }],
       opts: [{ kind: 'reply', group: 'b', da: 'Hvor skal I hen?', ok: [{ say: 'boejler', da: 'Ned i kælderen! Der er varmt!', en: 'Down to the basement! It is warm there!' }], next: 'map' }, { kind: 'go', group: 'b', label: 'Duck.', next: 'map' }] },
     { id: 'sok7', bg: 'gang3', steps: [{ n: 'A single sock is climbing the stairs one step at a time, stopping at every step to ask it something.' }],
       opts: [{ kind: 'act', stat: 'SNIGE', dc: 9, label: 'Catch it and look inside.', ok: [{ n: 'Inside the sock: a second, smaller sock. It does not help anybody.' }, { fx: { insp: 1 } }], fail: [{ n: 'It slips through the banister and keeps climbing, asking.' }], next: 'map' }, { kind: 'go', label: 'Let it climb.', next: 'map' }] },
@@ -239,8 +239,8 @@ SESSIONS.k3l1 = Object.assign({}, D3, {
         { say: 'skab', da: 'Endelig! Nu kan du låne noget, hvis du vil.', en: 'Finally! Now you can borrow something, if you like.' },
       ],
       opts: [
-        { kind: 'say', stat: 'SPROG', dc: 10, group: 'end', label: 'Say you can’t find your own clothes.', build: { en: 'I can’t find my own clothes.', origin: 'egne', answers: [['Jeg', 'kan', 'ikke', 'finde', 'mit', 'eget', 'tøj.']], tiles: ['Jeg', 'kan', 'ikke', 'finde', 'mit', 'eget', 'tøj.', 'min', 'egen', 'mine'] },
-          ok: [{ n: 'Skabet goes quiet, and digs.' }], fail: [{ n: 'A sleeve gets in your mouth halfway through. Skabet hears “eget” and starts digging anyway.' }], next: 'a7_egen' },
+        { kind: 'say', stat: 'SPROG', dc: 10, group: 'end', label: 'Say you can’t find your own clothes.', build: { en: 'I can’t find my own clothes.', origin: 'egne', answers: [['Jeg', 'kan', 'ikke', 'finde', 'mit', 'eget', 'tøj.']], best: [['Mit', 'eget', 'tøj', 'kan', 'jeg', 'ikke', 'finde.']], tiles: ['Jeg', 'kan', 'ikke', 'finde', 'mit', 'eget', 'tøj.', 'min', 'egen', 'mine'] },
+          ok: [{ n: 'Skabet goes quiet, and digs.' }], fail: [{ n: 'Skabet is half inside itself, rummaging, and only catches the end of it. Good enough. It keeps digging.' }], next: 'a7_egen' },
         { kind: 'say', stat: 'SPROG', dc: 10, group: 'end', label: 'Ask if it needs its hat today.', build: { en: 'Do you need your hat today?', answers: [['Skal', 'du', 'bruge', 'din', 'hue', 'i', 'dag?']], tiles: ['Skal', 'du', 'bruge', 'din', 'hue', 'i', 'dag?', 'dit', 'bruger'] },
           ok: [{ say: 'skab', da: 'Nej, det tror jeg ikke. Så bare tag min.', en: 'No, I don’t think so. Then just take mine.' }], fail: [{ n: 'A loose umbrella opens between you mid-question. Skabet answers anyway.' }, { say: 'skab', da: 'Min hue? Nej. Så bare tag den.', en: 'My hat? No. Then just take it.' }], next: 'a7_laan' },
       ] },
@@ -290,7 +290,7 @@ SESSIONS.k3l1 = Object.assign({}, D3, {
         { say: 'vask', da: 'Skal du bruge din frakke i aften? Den lugter af gammelt.', en: 'Do you need your coat tonight? It smells of old.' },
       ],
       opts: [
-        { kind: 'say', stat: 'SPROG', dc: 10, group: 'v', label: 'Say no: she can just take it.', build: { en: 'No, you can just take it.', answers: [['Nej,', 'du', 'kan', 'bare', 'tage', 'den.']], tiles: ['Nej,', 'du', 'kan', 'bare', 'tage', 'den.', 'det', 'tag', 'dem'] },
+        { kind: 'say', stat: 'SPROG', dc: 10, group: 'v', label: 'Say no: she can just take it.', build: { en: 'No, you can just take it.', answers: [['Nej,', 'du', 'kan', 'bare', 'tage', 'den.'], ['Nej,', 'tag', 'den', 'bare.'], ['Nej,', 'bare', 'tag', 'den.']], tiles: ['Nej,', 'du', 'kan', 'bare', 'tage', 'den.', 'det', 'tag', 'dem'] },
           ok: [{ n: 'You take the coat off. It is the first time since the parcel.' }], fail: [{ n: 'The sentence comes out in pieces. She takes the coat anyway, gently, the way you take a blanket off somebody asleep.' }], next: 'b7_vask' },
         { kind: 'say', stat: 'SPROG', dc: 10, group: 'v', label: 'Say yes, you need it. It is yours.', build: { en: 'Yes, I do. It is mine.', answers: [['Ja,', 'det', 'skal', 'jeg.', 'Den', 'er', 'min.']], tiles: ['Ja,', 'det', 'skal', 'jeg.', 'Den', 'er', 'min.', 'mit', 'gør'] },
           ok: [{ say: 'vask', da: 'Nå, men så behold den.', en: 'Well, then keep it.' }], fail: [{ say: 'vask', da: 'Din? Nå. Så behold den.', en: 'Yours? Huh. Then keep it.' }], next: 'b7_behold' },
@@ -337,14 +337,14 @@ SESSIONS.k3l1 = Object.assign({}, D3, {
       ],
       opts: [
         { kind: 'say', stat: 'SPROG', dc: 10, group: 's', label: 'Tell it where it is.', build: { en: 'You are in the living room.', answers: [['Du', 'er', 'inde', 'i', 'stuen.'], ['Du', 'er', 'i', 'stuen.']], tiles: ['Du', 'er', 'inde', 'i', 'stuen.', 'ind', 'på'] },
-          ok: [{ n: 'It stops dead. The roar winds down like a record.' }], fail: [{ n: 'You trip over the hose in the middle of it. It hears “i stuen”, looks round, and brakes so hard its bag pops open.' }], next: 'c7_stop' },
+          ok: [{ n: 'It stops dead. The roar winds down like a record.' }], fail: [{ n: 'You trip over the hose in the middle of it and land on the off switch. That works too. Its bag pops open.' }], next: 'c7_stop' },
         { kind: 'go', group: 's', label: 'Get out of its way.', next: 'map' },
       ] },
     stue_hub: { bg: 'stue3', npc: G => G.flags.Cfind ? null : 'stoev', title: 'Stuen', hub: true,
       steps: [{ special: 'stueLine' }],
       opts: [
         { kind: 'say', stat: 'SPROG', dc: 10, label: 'Tell it where it is.', req: G => !G.flags.Cstop, build: { en: 'You are in the living room.', answers: [['Du', 'er', 'inde', 'i', 'stuen.'], ['Du', 'er', 'i', 'stuen.']], tiles: ['Du', 'er', 'inde', 'i', 'stuen.', 'ind', 'på'] },
-          ok: [{ n: 'It stops dead. The roar winds down like a record.' }], fail: [{ n: 'A cushion flies between you. It hears “stuen”, looks round, and brakes.' }], next: 'c7_stop', mark: true },
+          ok: [{ n: 'It stops dead. The roar winds down like a record.' }], fail: [{ n: 'It roars over half your sentence, then runs out of cable at the exact spot you pointed at. It looks round. Oh. Here.' }], next: 'c7_stop', mark: true },
         { kind: 'act', special: 'hunt:stue', label: 'Find the house’s lost things in the pile.', req: G => G.flags.Cstop && !G.flags.huntDone7, next: 'c7_found', mark: true },
         { kind: 'reply', once: true, req: G => G.flags.Cro, da: 'Er du glad for at bo her?', ok: [{ say: 'stoev', da: 'Ja, det er jeg. Nu er jeg her jo.', en: 'Yes, I am. I am here now, after all.' }] },
         { kind: 'go', label: 'Leave.', next: 'map' },
@@ -358,15 +358,15 @@ SESSIONS.k3l1 = Object.assign({}, D3, {
       opts: [{ kind: 'act', special: 'hunt:stue', label: 'Find the house’s lost things in the pile.', next: 'c7_found' }] },
     c7_found: { bg: 'stue3', npc: 'stoev', title: 'Stuen',
       steps: [
-        { n: 'You sort the pile into little heaps: keys, a wallet, glasses, headphones, a watch, a phone. Each heap shivers when you name it.' },
+        { n: 'You sort the pile into little heaps: a wallet, glasses, headphones, a phone, a camera, gloves. Each heap shivers when you name it.' },
         { fx: { flag: 'huntDone7', sk: 3 } },
         { say: 'stoev', da: 'Hvad skal jeg nu lave? Jeg er ikke på vej nogen steder.', en: 'What am I supposed to do now? I am not on my way anywhere.' },
       ],
       opts: [
         { kind: 'say', stat: 'SPROG', dc: 10, group: 'c', label: 'Tell it it can stay in the living room.', build: { en: 'You can stay in the living room.', answers: [['Du', 'kan', 'blive', 'inde', 'i', 'stuen.'], ['Du', 'kan', 'blive', 'i', 'stuen.']], tiles: ['Du', 'kan', 'blive', 'inde', 'i', 'stuen.', 'ind', 'bliver'] },
-          ok: [{ n: 'It parks by the coffee table and folds its hose.' }], fail: [{ n: 'A loose sock flies into your mouth halfway. Støvsugeren hears “blive” and settles down anyway.' }], next: 'c7_ro' },
+          ok: [{ n: 'It parks by the coffee table and folds its hose.' }], fail: [{ n: 'Støvsugeren is too tired to listen properly. It settles down anyway. It had been hoping somebody would suggest it.' }], next: 'c7_ro' },
         { kind: 'say', stat: 'SPROG', dc: 11, group: 'c', label: 'Tell it it can help you find things.', build: { en: 'You can help me find things.', answers: [['Du', 'kan', 'hjælpe', 'mig', 'med', 'at', 'finde', 'ting.']], tiles: ['Du', 'kan', 'hjælpe', 'mig', 'med', 'at', 'finde', 'ting.', 'til', 'finder'] },
-          ok: [{ n: 'Its nozzle swings up, sniffing.' }], fail: [{ n: 'The sentence gets tangled in the hose. Støvsugeren hears “finde” and that is all it needs.' }], next: 'c7_find' },
+          ok: [{ n: 'Its nozzle swings up, sniffing.' }], fail: [{ n: 'The sentence gets tangled in the hose, but Støvsugeren has already smelled a coin under the rug and is off.' }], next: 'c7_find' },
       ] },
     c7_ro: { bg: 'stue3', npc: 'stoev', title: 'Stuen',
       steps: [
@@ -438,9 +438,9 @@ SESSIONS.k3l1 = Object.assign({}, D3, {
         { say: 'skab', da: 'Nu skriver jeg dig ind i huset. Hvad har du på?', en: 'Now I will write you into the house. What are you wearing?' },
       ],
       opts: [
-        { kind: 'say', stat: 'SPROG', dc: 10, group: 'w', label: 'Say you are wearing a coat, but it isn’t yours.', build: { en: 'I am wearing a coat, but it isn’t mine.', origin: 'wear3', answers: [['Jeg', 'har', 'en', 'frakke', 'på,', 'men', 'den', 'er', 'ikke', 'min.']], tiles: ['Jeg', 'har', 'en', 'frakke', 'på,', 'men', 'den', 'er', 'ikke', 'min.', 'mit', 'det', 'mine'] },
+        { kind: 'say', stat: 'SPROG', dc: 10, group: 'w', label: 'Say you are wearing a coat, but it isn’t yours.', build: { en: 'I am wearing a coat, but it isn’t mine.', origin: 'wear3', answers: [['Jeg', 'har', 'en', 'frakke', 'på,', 'men', 'den', 'er', 'ikke', 'min.']], tiles: ['Jeg', 'har', 'en', 'frakke', 'på,', 'men', 'den', 'er', 'ikke', 'min.', 'mit', 'dem', 'mine'] },
           ok: [{ say: 'skab', da: 'Ikke din? Den passer heller ikke.', en: 'Not yours? It doesn’t fit either.' }], fail: [{ n: 'Skabet’s pencil squeaks over half your words. It writes the rest by itself.' }, { say: 'skab', da: 'En frakke. Ikke din.', en: 'A coat. Not yours.' }], next: 'f7_2' },
-        { kind: 'reply', group: 'w', da: 'Det ved jeg ikke.', ok: [{ say: 'skab', da: 'Så skriver jeg: en grå frakke, alt for stor.', en: 'Then I will write: a grey coat, far too big.' }], next: 'f7_2' },
+        { kind: 'reply', group: 'w', da: 'Det ved jeg ikke.', ok: [{ say: 'skab', da: 'Så skriver jeg: en grå frakke, for stor.', en: 'Then I will write: a grey coat, too big.' }], next: 'f7_2' },
       ] },
     f7_2: { bg: 'gang3', npc: 'skab', title: 'Gangen',
       steps: [{ say: 'skab', da: 'Og hvor er dine egne ting?', en: 'And where are your own things?' }],
@@ -453,13 +453,13 @@ SESSIONS.k3l1 = Object.assign({}, D3, {
       steps: [{ say: 'skab', da: 'Vil du ikke passe på huset i nat? Jeg skal sove.', en: 'Won’t you look after the house tonight? I need to sleep.' }],
       opts: [
         { kind: 'reply', group: 'l', da: 'Jo, det skal jeg nok.', ok: [{ fx: { origin: { promise3: 'Jo, det skal jeg nok.' } } }, { n: 'A knot ties itself round your finger. This one is for the whole house.' }, { fx: { resp: 1 } }], next: 'f7_end' },
-        { kind: 'reply', group: 'l', da: 'Det kan jeg desværre ikke.', ok: [{ say: 'skab', da: 'Så passer huset på sig selv. Det er det ikke så god til.', en: 'Then the house looks after itself. It isn’t very good at that.' }], next: 'f7_end' },
+        { kind: 'reply', group: 'l', da: 'Det kan jeg desværre ikke.', ok: [{ say: 'skab', da: 'Så passer huset på sig selv. Det er det ikke så godt til.', en: 'Then the house looks after itself. It isn’t very good at that.' }], next: 'f7_end' },
       ] },
     f7_end: { bg: 'gang3', npc: 'skab', title: 'Gangen',
       steps: [
         { special: 'registerEcho' },
         { n: 'Skabet writes you on the inside of its door, in pencil, between a sock and an umbrella.' },
-        { say: 'skab', da: 'Så. Nu bor du deroppe. Godnat.', en: 'There. Now you live up here. Good night.' },
+        { say: 'skab', da: 'Så. Nu bor du heroppe. Godnat.', en: 'There. Now you live up here. Good night.' },
         { fx: { flag: 'Fdone', resp: 1 } },
       ],
       opts: [{ kind: 'go', label: 'Go up to bed.', next: 'f7_night' }] },

@@ -76,7 +76,7 @@ SESSIONS.k3l3 = Object.assign({}, D3, {
         { t: 'Den ___ lænestol vil ned i stuen. (grøn)', opts: ['grønne', 'grøn', 'grønt'], a: 0, why: 'After den: -e. Den grønne lænestol.' },
         { t: 'Jeg er træt af det ___ tæppe. (ternet)', opts: ['ternede', 'ternet'], a: 0, why: '-et becomes -ede in the definite form: det ternede tæppe.' },
         { t: 'Kan du ikke lide de ___ gardiner? (orange)', opts: ['orange', 'orangt'], a: 0, why: 'orange never changes: de orange gardiner.' },
-        { t: 'Hun elsker sit ___ bord. (lækker)', opts: ['lækre', 'lækker', 'lækkert'], a: 0, why: 'After a possessive: -e, and lækker loses its last e: sit lækre bord.' },
+        { t: 'Jeg elsker mit ___ bord. (lækker)', opts: ['lækre', 'lækker', 'lækkert'], a: 0, why: 'After a possessive: -e, and lækker loses its last e: mit lækre bord.' },
       ] },
     reakt: { title: 'Loftet svarer', q: 'Hvad svarer du?', boxes: ['a', 'b', 'c'],
       good: 'The attic goes quiet, satisfied. Every opinion got an answer the right size.', meh: 'The attic mostly agrees with you. A rug is still muttering.',
@@ -88,7 +88,7 @@ SESSIONS.k3l3 = Object.assign({}, D3, {
         { t: 'Jeg er vild med den grønne lænestol. (Du er enig.)', opts: ['Det er jeg også.', 'Det kan jeg også.', 'Det er jeg heller ikke.'], a: 0, why: 'Agreeing with something positive: også. er → Det er jeg også.' },
         { t: 'Jeg synes ikke, sofaen er så pæn. (Du er enig.)', opts: ['Det synes jeg heller ikke.', 'Det synes jeg også.', 'Det kan jeg heller ikke.'], a: 0, why: 'Negative, with synes: Det synes jeg heller ikke.' },
         { t: 'Jeg kan godt lide de stribede gardiner. (Du er enig.)', opts: ['Det kan jeg også.', 'Det kan jeg heller ikke.', 'Det er jeg også.'], a: 0, why: 'Positive, with kan: Det kan jeg også.' },
-        { t: 'Jeg er ikke så vild med den prikkede sofa. (Du er overrasket.)', opts: ['Er du ikke?!', 'Er du det?!', 'Kan du ikke?!'], a: 0, why: 'Negative statement with er: Er du ikke?!' },
+        { t: 'Jeg kan ikke så godt lide den prikkede sofa. (Du er overrasket.)', opts: ['Kan du ikke?!', 'Er du ikke?!', 'Kan du det?!'], a: 0, why: 'A negative statement with kan: Kan du ikke?!' },
       ] },
     forstor: { title: 'Køleskabet måler', q: 'Hvilken form?', boxes: ['a', 'b', 'c'],
       good: 'Køleskabet measures everything in the house and writes it on its door with a magnet. Too big, too small, just right.', meh: 'Køleskabet measures most things. It is still unsure about itself.',
@@ -112,7 +112,7 @@ SESSIONS.k3l3 = Object.assign({}, D3, {
         { npc: 'lampe', lines: ['Den er hvid.', 'Den kan bedst lide lys.', 'Den er træt af, at ingen kan lide den.'], words: ['lampe', 'f_hvid'] },
         { npc: 'kommode', lines: ['Den er rød og har tre skuffer.', 'Den er ikke så vild med den hvide lampe.', 'Den kan godt lide at passe på ting.'], words: ['kommode', 'f_roed'] },
         { npc: 'sofa', lines: ['Den står nede i stuen.', 'Den synes altid det samme som den sidste, der sad i den.', 'Den er lysegrøn.'], words: ['sofa', 'pude'] },
-        { npc: 'skab', lines: ['Det står ude i gangen.', 'Det kan godt lide sokker.', 'Det har en nøgle i sit nøglehul.'], words: ['skab3'] },
+        { npc: 'skab', lines: ['Det står ude i gangen.', 'Det kan godt lide sokker.', 'Det har en nøgle i nøglehullet.'], words: ['skab3'] },
       ] },
   },
 
@@ -122,7 +122,7 @@ SESSIONS.k3l3 = Object.assign({}, D3, {
     { id: 'reol9', bg: 'gang3', steps: [{ n: 'A bookcase is coming down the stairs on its own, one step at a time, with its shelves held tight like a skirt.' }],
       opts: [{ kind: 'act', stat: 'SNIGE', dc: 9, label: 'Squeeze past.', ok: [{ n: 'You slip past. A book falls out of it into your pocket, by way of apology.' }, { fx: { insp: 1 } }], fail: [{ n: 'You wait. It takes eleven minutes. It apologises at every step.' }], next: 'map' }, { kind: 'go', label: 'Go another way.', next: 'map' }] },
     { id: 'boejl9', bg: 'gang3', npc: 'boejler', steps: [{ n: 'The hangers come clacking up the stairwell, carrying a lampshade between them like a stretcher.' }],
-      opts: [{ kind: 'reply', group: 'b', da: 'Hvor skal I hen med den?', ok: [{ say: 'boejler', da: 'Op på loftet! Den skal sorteres!', en: 'Up to the attic! It has to be sorted!' }], next: 'map' }, { kind: 'go', group: 'b', label: 'Hold the door.', next: 'map' }] },
+      opts: [{ kind: 'reply', group: 'b', da: 'Hvor skal I hen med den?', ok: [{ say: 'boejler', da: 'Op på loftet! Vi skal sortere den!', en: 'Up to the attic! We have to sort it!' }], next: 'map' }, { kind: 'go', group: 'b', label: 'Hold the door.', next: 'map' }] },
     { id: 'post9', bg: 'gang3', req: G => G.prev.Chjem || G.prev.Cfri, steps: [{ n: G => G.prev.Cfri ? 'Your coat’s price tag flips over in a draught. IKKE TIL SALG, it says, to the whole stairwell.' : 'A paper bag comes up from Retro with nothing in it but a thank-you, written on a price tag.' }],
       opts: [{ kind: 'go', label: 'Walk on.', fx: { resp: 1 }, next: 'map' }] },
     { id: 'ikket9', bg: 'gang3', req: G => hasBoon('ikket'), steps: [{ n: 'Ikket wriggles in your mouth. The attic is full of opinions, and an ikke can turn any of them upside down. It is tempted.' }],
@@ -197,7 +197,7 @@ SESSIONS.k3l3 = Object.assign({}, D3, {
       opts: [{ kind: 'go', label: 'Back.', next: 'loft_hub' }] },
     a9_named: { bg: 'loft3', npc: 'kommode', title: 'Loftet',
       steps: [
-        { n: 'The things you named float up an inch and turn toward you. The house groans and rises a little out of the street.' },
+        { n: 'The things you named float up and turn toward you. The house groans and lifts a little out of the street.' },
         { say: 'kommode', da: 'Og mig? Jeg er ikke “en kommode”. Jeg er den røde kommode.', en: 'And me? I am not “a chest of drawers”. I am THE red chest of drawers.' },
         { fx: { resp: 1 } },
       ],
@@ -206,17 +206,17 @@ SESSIONS.k3l3 = Object.assign({}, D3, {
       steps: [
         { n: 'Kommoden opens its top drawer for you, slowly. Inside, folded twice, a piece of paper.' },
         { glimpse: 'seddel' },
-        { say: 'kommode', da: 'Jeg har passet på den frakke i lang tid. Men huset er for tungt. Hvad skal der ske med mig?', en: 'I have looked after that coat for a long time. But the house is too heavy. What should happen to me?' },
+        { say: 'kommode', da: 'Jeg passede på den frakke i lang tid. Til sidst sendte vi den til dig.', en: 'I looked after that coat for a long time. In the end we sent it to you.' }, { say: 'kommode', da: 'Men huset er for tungt. Hvad skal der ske med mig?', en: 'But the house is too heavy. What should happen to me?' },
       ],
       opts: [
         { kind: 'say', stat: 'SPROG', dc: 10, group: 'k', label: 'Say you like the red chest of drawers. It stays.', build: { en: 'I like the red chest of drawers.', origin: 'like', answers: [['Jeg', 'kan', 'godt', 'lide', 'den', 'røde', 'kommode.']], best: [['Den', 'røde', 'kommode', 'kan', 'jeg', 'godt', 'lide.']], tiles: ['Jeg', 'kan', 'godt', 'lide', 'den', 'røde', 'kommode.', 'rød', 'det'] },
-          ok: [{ n: 'Every drawer in Kommoden shuts at once, a sound like applause.' }], fail: [{ n: 'The floor creaks over half of it, but Kommoden heard “den røde”, and that was all it needed.' }], next: 'a9_behold' },
+          ok: [{ n: 'Every drawer in Kommoden shuts at once, a sound like applause.' }], fail: [{ n: 'The floor creaks over half of it. Kommoden does not need the rest. It has wanted to stay for a hundred years.' }], next: 'a9_behold' },
         { kind: 'say', stat: 'SPROG', dc: 11, group: 'k', label: 'Say the red chest of drawers is going to the summer house.', build: { en: 'The red chest of drawers is going to the summer house.', answers: [['Den', 'røde', 'kommode', 'skal', 'i', 'sommerhuset.']], tiles: ['Den', 'røde', 'kommode', 'skal', 'i', 'sommerhuset.', 'rød', 'på'] },
           ok: [{ n: 'Kommoden thinks about it, drawer by drawer, and nods with all three.' }], fail: [{ n: 'You stumble on it. Kommoden finishes the sentence for you, in a voice like a drawer sliding shut.' }], next: 'a9_sommer' },
       ] },
     a9_behold: { bg: 'loft3', npc: 'kommode', title: 'Loftet',
       steps: [
-        { n: 'Kommoden stays. Instead, the attic rearranges itself round it: the pile shrinks, the floor stops sloping, and the house lifts another inch out of the street.' },
+        { n: 'Kommoden stays. Instead, the attic rearranges itself round it: the pile shrinks and the floor stops sloping.' },
         { say: 'kommode', da: 'Den nederste skuffe er din. Til det, du ikke vil smide ud.', en: 'The bottom drawer is yours. For what you don’t want to throw out.' },
         { fx: { boon: 'gemt', flag: 'Abehold', resp: 2 } }, { fx: { flag: 'Adone' } },
       ],
@@ -256,7 +256,7 @@ SESSIONS.k3l3 = Object.assign({}, D3, {
     b9_lampe: { bg: 'loft3', npc: 'lampe', title: 'Tagvinduet',
       steps: [{ th: 'Its light points at you and waits.' }, { n: 'On the wall behind you, your shadow comes up, big and dark.' }, { glimpse: 'skygge' }],
       opts: [
-        { kind: 'say', stat: 'SPROG', dc: 10, group: 'l', label: 'Say you are crazy about the white lamp.', build: { en: 'I am crazy about the white lamp.', answers: [['Jeg', 'er', 'vild', 'med', 'den', 'hvide', 'lampe.']], tiles: ['Jeg', 'er', 'vild', 'med', 'den', 'hvide', 'lampe.', 'hvid', 'kan'] },
+        { kind: 'say', stat: 'SPROG', dc: 10, group: 'l', label: 'Say you are crazy about the white lamp.', build: { en: 'I am crazy about the white lamp.', answers: [['Jeg', 'er', 'vild', 'med', 'den', 'hvide', 'lampe.']], best: [['Den', 'hvide', 'lampe', 'er', 'jeg', 'vild', 'med.']], tiles: ['Jeg', 'er', 'vild', 'med', 'den', 'hvide', 'lampe.', 'hvid', 'kan'] },
           ok: [{ n: 'Lampen switches on so hard the dust in the air lights up like confetti.' }], fail: [{ n: 'Your voice cracks on “vild”. Lampen does not mind. It heard the rest.' }], next: 'b9_lys' },
         { kind: 'say', stat: 'SPROG', dc: 10, group: 'l', label: 'Say honestly: it is just a bit too big.', build: { en: 'It is just a bit too big.', answers: [['Den', 'er', 'bare', 'lidt', 'for', 'stor.']], tiles: ['Den', 'er', 'bare', 'lidt', 'for', 'stor.', 'stort', 'meget'] },
           ok: [{ n: 'Lampen flickers. Then, slowly, it starts to fold itself.' }], fail: [{ n: 'It comes out blunter than you meant. Lampen takes it well. Lamps can see.' }], next: 'b9_lille' },
@@ -264,7 +264,7 @@ SESSIONS.k3l3 = Object.assign({}, D3, {
     b9_lys: { bg: 'loft3', npc: 'lampe', title: 'Tagvinduet',
       steps: [
         { n: 'Lampen stays by the roof window, lighter than air, shining. The whole attic looks better in its light. Even the rug.' },
-        { say: 'lampe', da: 'Tak. Det synes jeg også.', en: 'Thank you. I think so too.' },
+        { say: 'lampe', da: 'Tak. Det er jeg også.', en: 'Thank you. So am I.' },
         { fx: { boon: 'lys', flag: 'Blys', resp: 2 } }, { fx: { flag: 'Bdone' } },
       ],
       opts: [{ kind: 'go', label: 'Back.', next: 'lampe_hub' }] },
@@ -281,7 +281,7 @@ SESSIONS.k3l3 = Object.assign({}, D3, {
       steps: [
         { n: 'A green armchair pushes its way to the front, buttons gleaming.' },
         { say: 'laenestol', da: 'Jeg skal ned i stuen. Jeg passer perfekt til den grønne sofa!', en: 'I am going down to the living room. I go perfectly with the green sofa!' },
-        { say: 'kommode', da: 'Den er slet ikke den samme grønne.', en: 'It is not the same green at all.' },
+        { say: 'kommode', da: 'Den er slet ikke den samme grønne farve.', en: 'It is not the same green at all.' },
         { say: 'laenestol', da: 'Synes du det?!', en: 'You think so?!' },
         { th: 'Somebody is going to have to ask the sofa.' },
         { fx: { flag: 'Cstart' } },
@@ -311,7 +311,7 @@ SESSIONS.k3l3 = Object.assign({}, D3, {
       opts: [
         { kind: 'say', stat: 'SPROG', dc: 11, group: 'v', label: 'Say yes: the green armchair goes with the green sofa.', build: { en: 'The green armchair goes with the green sofa.', answers: [['Den', 'grønne', 'lænestol', 'passer', 'til', 'den', 'grønne', 'sofa.']], tiles: ['Den', 'grønne', 'lænestol', 'passer', 'til', 'den', 'grønne', 'sofa.', 'grøn', 'med'] },
           ok: [{ say: 'sofa', da: 'Det synes jeg også!', en: 'I think so too!' }], fail: [{ n: 'You get tangled in all the greens. Sofaen agrees anyway. It always does.' }, { say: 'sofa', da: 'Det synes jeg også.', en: 'I think so too.' }], next: 'c9_saet' },
-        { kind: 'say', stat: 'SPROG', dc: 10, group: 'v', label: 'Disagree: it is not the same green.', build: { en: 'I don’t think so. It isn’t the same green.', answers: [['Det', 'synes', 'jeg', 'ikke.', 'Det', 'er', 'ikke', 'den', 'samme', 'grønne.']], tiles: ['Det', 'synes', 'jeg', 'ikke.', 'Det', 'er', 'ikke', 'den', 'samme', 'grønne.', 'grøn', 'tror'] },
+        { kind: 'say', stat: 'SPROG', dc: 10, group: 'v', label: 'Disagree: it is not the same green.', build: { en: 'I don’t think so. It isn’t the same green colour.', answers: [['Det', 'synes', 'jeg', 'ikke.', 'Det', 'er', 'ikke', 'den', 'samme', 'grønne', 'farve.']], tiles: ['Det', 'synes', 'jeg', 'ikke.', 'Det', 'er', 'ikke', 'den', 'samme', 'grønne', 'farve.', 'grøn', 'kan'] },
           ok: [{ say: 'laenestol', da: 'Synes du ikke?! Nå. Så går jeg op igen.', en: 'You don’t?! Fine. Then I am going back up.' }], fail: [{ n: 'It comes out in a muddle. Lænestolen hears “ikke den samme” and goes very still.' }, { say: 'laenestol', da: 'Nå. Så går jeg op igen.', en: 'Fine. Then I am going back up.' }], next: 'c9_udsigt' },
       ] },
     c9_saet: { bg: 'stue3', npc: 'laenestol', title: 'Stuen',
@@ -362,18 +362,18 @@ SESSIONS.k3l3 = Object.assign({}, D3, {
     /* ===== FINALE: the coat ===== */
     f9_1: { bg: 'loft3', npc: 'frakke', title: 'Loftet', card: ['Loftet', 'the last old thing'],
       steps: [
-        { n: 'You take the coat off, and it does not fall. It stands there on its own, empty, sleeves hanging, its label turned toward you like a face.' },
+        { n: 'Genbrugskassen has climbed the stairs behind you, arrows going round. You take the coat off, and it does not fall. It stands there on its own, empty, sleeves hanging, its label turned toward you like a face.' },
         { say: 'frakke', da: 'Hej. Kan du huske mig?', en: 'Hi. Do you remember me?' },
         { say: 'genbrugsk', da: 'Huset er stadig for tungt. Én ting mere skal væk.', en: 'The house is still too heavy. One more thing has to go.' },
         { say: 'frakke', da: 'Kan du ikke lide den gamle frakke mere?', en: 'Don’t you like the old coat any more?' },
       ],
       opts: [
-        { kind: 'say', stat: 'SPROG', dc: 11, group: 'f', label: 'Say yes: you are really fond of your old coat.', build: { en: 'Yes, I am really fond of my old coat.', origin: 'coat', answers: [['Jo,', 'jeg', 'er', 'rigtig', 'glad', 'for', 'min', 'gamle', 'frakke.']], tiles: ['Jo,', 'jeg', 'er', 'rigtig', 'glad', 'for', 'min', 'gamle', 'frakke.', 'Ja,', 'gammel', 'mit'] },
+        { kind: 'say', stat: 'SPROG', dc: 11, group: 'f', label: 'Say yes: you are really fond of your old coat.', build: { en: 'Yes, I am really fond of my old coat.', origin: 'coat', answers: [['Jo,', 'jeg', 'er', 'rigtig', 'glad', 'for', 'min', 'gamle', 'frakke.']], best: [['Jo,', 'min', 'gamle', 'frakke', 'er', 'jeg', 'rigtig', 'glad', 'for.']], tiles: ['Jo,', 'jeg', 'er', 'rigtig', 'glad', 'for', 'min', 'gamle', 'frakke.', 'Ja,', 'gammel', 'mit'] },
           ok: [{ n: 'The coat holds out its sleeves.' }], fail: [{ n: 'The words come out crooked, but “min gamle frakke” is enough. The coat holds out its sleeves.' }], next: 'f9_gammel' },
         { kind: 'say', stat: 'SPROG', dc: 11, group: 'f', label: 'Say it is far too big. You would rather have something new.', build: { en: 'It is far too big. I would rather have something new.', origin: 'coat', answers: [['Den', 'er', 'alt', 'for', 'stor.', 'Jeg', 'vil', 'hellere', 'have', 'noget', 'nyt.']], tiles: ['Den', 'er', 'alt', 'for', 'stor.', 'Jeg', 'vil', 'hellere', 'have', 'noget', 'nyt.', 'stort', 'ny'] },
           ok: [{ n: 'The coat nods its collar, slowly.' }], fail: [{ n: 'You fumble it. The coat understands anyway. It has known for a while.' }], next: 'f9_ny' },
         { kind: 'say', stat: 'SPROG', dc: 11, group: 'f', label: 'Say it should go to recycling, so somebody else can use it.', build: { en: 'It should go to recycling. Then somebody else can use it.', origin: 'coat', answers: [['Den', 'skal', 'til', 'genbrug.', 'Så', 'kan', 'en', 'anden', 'bruge', 'den.']], tiles: ['Den', 'skal', 'til', 'genbrug.', 'Så', 'kan', 'en', 'anden', 'bruge', 'den.', 'andet', 'det'] },
-          ok: [{ n: 'Genbrugskassen’s arrows speed up, pleased.' }], fail: [{ n: 'Half of it gets lost in the dust, but Genbrugskassen heard “genbrug”, and so did the coat.' }], next: 'f9_genbrug' },
+          ok: [{ n: 'Genbrugskassen’s arrows speed up, pleased.' }], fail: [{ n: 'Half of it gets lost in the dust. The coat understands anyway. It has been second-hand before.' }], next: 'f9_genbrug' },
       ] },
     f9_gammel: { bg: 'loft3', npc: 'frakke', title: 'Loftet',
       steps: [

@@ -29,9 +29,9 @@ SESSIONS.k3l2 = Object.assign({}, D3, {
     sove:   { name: 'Soveværelset', en: '1. sal · your bed', x: 26, y: 37, bg: 'sove3', icon: 'seng', night: true, entry: G => 'sove8_hub' },
     gangen: { name: 'Gangen', en: 'Skabet and the stairs', x: 50, y: 55, bg: 'gang3', icon: 'knage', entry: G => 'gang8_hub' },
     loppe:  { name: 'Loppemarkedet', en: 'in the garage, only once', x: 74, y: 72, bg: 'loppe3', icon: 'kurv', eph: true, req: G => G.flags.Astart && !G.flags.loppeGone, entry: G => 'loppe8' },
-    butik:  { name: 'Top Tøj', en: 'Kassen rings', x: 18, y: 87, bg: 'butik3', icon: 'jakke', entry: G => !G.flags.Bstart ? 'b8_start' : 'butik_hub' },
-    retro:  { name: 'Retro', en: 'a window with four dummies', x: 50, y: 92, bg: 'vindue3', icon: 'genbrug', entry: G => !G.flags.Cstart ? 'c8_start' : 'retro_hub' },
-    maler:  { name: 'Malerbutikken', en: 'the colours are running', x: 82, y: 87, bg: 'maler3', icon: 'pensel', entry: G => !G.flags.Astart ? 'a8_start' : 'maler_hub' },
+    butik:  { name: 'Top Tøj', en: 'Kassen rings', x: 78, y: 87, bg: 'butik3', icon: 'jakke', entry: G => !G.flags.Bstart ? 'b8_start' : 'butik_hub' },
+    retro:  { name: 'Retro', en: 'a window with four dummies', x: 22, y: 87, bg: 'vindue3', icon: 'genbrug', entry: G => !G.flags.Cstart ? 'c8_start' : 'retro_hub' },
+    maler:  { name: 'Malerbutikken', en: 'the colours are running', x: 40, y: 94, bg: 'maler3', icon: 'pensel', entry: G => !G.flags.Astart ? 'a8_start' : 'maler_hub' },
   },
 
   ending: G => [G.flags.Aroed ? 'Rød frakke' : G.flags.Ablaa ? 'Blå frakke' : G.flags.Astrib ? 'Stribet frakke' : null,
@@ -43,7 +43,7 @@ SESSIONS.k3l2 = Object.assign({}, D3, {
   quests: {
     A: { title: 'Farverne', en: 'The colours', obj: [['Give the colours back their endings (Malerbutikken)', 'endelseDone'], ['Help Farvebøtten up', 'Astand'], ['Choose a colour for your coat', 'Adone']] },
     B: { title: 'Kassen', en: 'The till', obj: [['Find what the customers want (Top Tøj)', 'huntDone8'], ['Give Kassen its numbers back', 'priserDone'], ['Buy something to wear', 'Bdone']] },
-    C: { title: 'Prismærket', en: 'The price tag', obj: [['Find out which dummy in Retro’s window lost a tag', 'dukkerDone'], ['Put the shops on Udsalgsgade back where they belong', 'gadeDone'], ['Answer the label in your coat', 'Cdone']] },
+    C: { title: 'Prismærket', en: 'The price tag', obj: [['Check the dummies in Retro’s window: whose outfit is whose, and whose tag is missing?', 'dukkerDone'], ['Put the shops on Udsalgsgade back where they belong', 'gadeDone'], ['Answer the label in your coat', 'Cdone']] },
     F: { title: 'Vinduet', en: 'The window', obj: [['Stand in Retro’s window for a night (after the colours, Kassen and the tag)', 'Fdone']] },
     S1: { title: 'Loppemarkedet', en: 'The flea market', side: true, obj: [['Haggle with compliments (Loppemarkedet)', 'sikkeDone']] },
     S2: { title: 'Spor', en: 'Traces', side: true, obj: [['Find three traces of what you were', 'clues8']] },
@@ -132,7 +132,7 @@ SESSIONS.k3l2 = Object.assign({}, D3, {
     { id: 'vogn8', bg: 'gade3', steps: [{ n: 'An empty shopping trolley rolls past at speed, steering itself, with one wonky wheel that sings.' }],
       opts: [{ kind: 'go', group: 'v', label: 'Jump in.', fx: { insp: 1 }, next: 'map' }, { kind: 'go', group: 'v', label: 'Let it pass.', next: 'map' }] },
     { id: 'skab8', bg: 'gade3', npc: 'skab', req: G => G.flags.p8seen, steps: [{ n: 'High above the street, Skabet is leaning out of the front door of the house, waving a sock like a flag.' }, { say: 'skab', da: 'Husk at købe mælk!', en: 'Remember to buy milk!' }],
-      opts: [{ kind: 'reply', group: 's', da: 'Det skal jeg nok!', ok: [{ n: 'A tiny knot ties itself round your finger. Milk, then.' }], next: 'map' }, { kind: 'go', group: 's', label: 'Wave back.', next: 'map' }] },
+      opts: [{ kind: 'reply', group: 's', da: 'Det skal jeg nok!', ok: [{ n: 'A tiny knot ties itself round your finger. It unties itself the next time you go through the front door, milk or no milk.' }], next: 'map' }, { kind: 'go', group: 's', label: 'Wave back.', next: 'map' }] },
     { id: 'skilt8', bg: 'gade3', steps: [{ n: 'A sandwich board on the pavement is arguing with itself. One side says ALT SKAL VÆK. The other side says NEJ.' }],
       opts: [{ kind: 'go', label: 'Walk on before it asks you to decide.', next: 'map' }] },
     { id: 'post8', bg: 'gade3', req: G => G.prev.Cro || G.prev.Cfind, steps: [{ n: G => G.prev.Cfind ? 'Støvsugeren comes trundling down the stairs from the house, nose to the pavement, and drops a coin at your feet. Then it goes back up.' : 'From an open window above the street comes the sound of nothing: Støvsugeren, resting. The whole street seems quieter for it.' }],
@@ -219,7 +219,7 @@ SESSIONS.k3l2 = Object.assign({}, D3, {
       ] },
     a8_fixed: { bg: 'maler3', npc: 'boette', title: 'Malerbutikken',
       steps: [
-        { n: G => (G.flags.endelseScore || 0) >= 6 ? 'Each colour flows back up onto its thing and stays there, glossy.' : 'Most colours flow back up onto their things. A blue sits in the gutter, thinking about it.' },
+        { n: G => G.flags.Afix ? 'Farvebøtten is still lying on its side, sighing, in a puddle of its own magenta.' : (G.flags.endelseScore || 0) >= 6 ? 'Each colour flows back up onto its thing and stays there, glossy.' : 'Most colours flow back up onto their things. A blue sits in the gutter, thinking about it.' }, { fx: { flag: 'Afix' } },
         { say: 'boette', da: 'Tak! Men jeg kan ikke rejse mig. Jeg har ligget her i tre dage.', en: 'Thanks! But I can’t get up. I have been lying here for three days.' },
         { th: 'In Deroppe, a compliment works like a hand under the arm.' },
       ],
@@ -232,24 +232,24 @@ SESSIONS.k3l2 = Object.assign({}, D3, {
       steps: [
         { n: 'Farvebøtten stands up straight and blushes a deeper magenta.' },
         { fx: { flag: 'Astand', resp: 1 } },
-        { say: 'boette', da: 'Nu kan jeg male igen. Din frakke er så grå. Hvad for en farve vil du have?', en: 'Now I can paint again. Your coat is so grey. What colour would you like?' },
+        { say: 'boette', da: 'Nu kan jeg male igen. Din frakke er så kedelig. Hvad for en farve vil du have?', en: 'Now I can paint again. Your coat is so boring. What colour would you like?' },
       ],
       opts: [
         { kind: 'say', stat: 'SPROG', dc: 10, group: 'c', label: 'Ask for a red coat.', build: { en: 'I would like a red coat.', answers: [['Jeg', 'vil', 'gerne', 'have', 'en', 'rød', 'frakke.']], tiles: ['Jeg', 'vil', 'gerne', 'have', 'en', 'rød', 'frakke.', 'rødt', 'røde'] },
-          ok: [{ n: 'The brush goes up.' }], fail: [{ n: 'A drip lands on the word “frakke”, but Farvebøtten heard “rød”.' }], next: 'a8_roed' },
+          ok: [{ n: 'The brush goes up.' }], fail: [{ n: 'A drip lands on your tongue halfway through. Farvebøtten has already dipped its brush in the red.' }], next: 'a8_roed' },
         { kind: 'say', stat: 'SPROG', dc: 10, group: 'c', label: 'Ask for a blue coat.', build: { en: 'I would like a blue coat.', answers: [['Jeg', 'vil', 'gerne', 'have', 'en', 'blå', 'frakke.']], tiles: ['Jeg', 'vil', 'gerne', 'have', 'en', 'blå', 'frakke.', 'blåt', 'et'] },
           ok: [{ n: 'The brush goes up.' }], fail: [{ n: 'You stumble, but “blå” is a word paint understands.' }], next: 'a8_blaa' },
         { kind: 'say', stat: 'SPROG', dc: 10, group: 'c', label: 'Ask for a striped coat.', build: { en: 'I would like a striped coat.', answers: [['Jeg', 'vil', 'gerne', 'have', 'en', 'stribet', 'frakke.']], tiles: ['Jeg', 'vil', 'gerne', 'have', 'en', 'stribet', 'frakke.', 'stribede', 'et'] },
           ok: [{ n: 'Two brushes go up.' }], fail: [{ n: 'The sentence comes out crooked. So do the first stripes. The rest are perfect.' }], next: 'a8_strib' },
       ] },
     a8_roed: { bg: 'maler3', npc: 'boette', title: 'Malerbutikken',
-      steps: [{ special: 'recolor:roed' }, { n: 'Three strokes, and your coat is red as a postbox. It holds the colour like it was always meant to.' }, { glimpse: 'farve' }, { fx: { boon: 'roedfrakke', flag: 'Aroed', resp: 2 } }, { fx: { flag: 'Adone' } }],
+      steps: [{ special: 'recolor:roed' }, { n: 'Three strokes, and your coat is red as a postbox. Buses would stop for it.' }, { glimpse: 'farve' }, { fx: { boon: 'roedfrakke', flag: 'Aroed', resp: 2 } }, { fx: { flag: 'Adone' } }],
       opts: [{ kind: 'go', label: 'Walk out red.', next: 'map' }] },
     a8_blaa: { bg: 'maler3', npc: 'boette', title: 'Malerbutikken',
-      steps: [{ special: 'recolor:blaa' }, { n: 'Your coat turns the deep blue of the sky above Deroppe at Natlager. It holds the colour like it was always meant to.' }, { glimpse: 'farve' }, { fx: { boon: 'blaafrakke', flag: 'Ablaa', resp: 2 } }, { fx: { flag: 'Adone' } }],
+      steps: [{ special: 'recolor:blaa' }, { n: 'Your coat turns the deep blue of the sky above Deroppe at Natlager. It looks like it has always been this colour and was only pretending to be grey.' }, { glimpse: 'farve' }, { fx: { boon: 'blaafrakke', flag: 'Ablaa', resp: 2 } }, { fx: { flag: 'Adone' } }],
       opts: [{ kind: 'go', label: 'Walk out blue.', next: 'map' }] },
     a8_strib: { bg: 'maler3', npc: 'boette', title: 'Malerbutikken',
-      steps: [{ special: 'recolor:stribet' }, { n: 'Red and white stripes run round your coat like a lighthouse. It holds them like it was always meant to.' }, { glimpse: 'farve' }, { fx: { boon: 'stribfrakke', flag: 'Astrib', resp: 2 } }, { fx: { flag: 'Adone' } }],
+      steps: [{ special: 'recolor:stribet' }, { n: 'Red and white stripes run round your coat like a lighthouse. You look like a sweet, or a warning.' }, { glimpse: 'farve' }, { fx: { boon: 'stribfrakke', flag: 'Astrib', resp: 2 } }, { fx: { flag: 'Adone' } }],
       opts: [{ kind: 'go', label: 'Walk out striped.', next: 'map' }] },
 
     /* ===== TOP TØJ: contract B ===== */
@@ -324,7 +324,7 @@ SESSIONS.k3l2 = Object.assign({}, D3, {
       opts: [{ kind: 'go', label: 'Back.', next: 'retro_hub' }] },
     c8_dukker: { bg: 'vindue3', npc: 'maerke', title: 'Retro',
       steps: [
-        { n: 'Every dummy in the window still has its own tag, dangling from a wrist.' },
+        { n: 'Each time you name an outfit, its dummy lifts a wrist to show its tag. Four wrists. Four tags. Nobody in the window is missing one.' },
         { say: 'maerke', da: 'Så er jeg ikke fra vinduet. Jeg er fra en butik her på gaden. Men hvilken? Butikkerne flytter sig hele tiden.', en: 'Then I am not from the window. I am from a shop on this street. But which? The shops keep moving.' },
         { th: 'Udsalgsgade has been shuffling its shops like cards since the sale began.' },
         { fx: { resp: 1 } },
@@ -342,13 +342,13 @@ SESSIONS.k3l2 = Object.assign({}, D3, {
       steps: [{ th: 'You know the answer now. The tag knew it all along.' }],
       opts: [
         { kind: 'say', stat: 'SPROG', dc: 10, label: 'Say you bought it in a shop called Retro.', build: { en: 'I bought it in a shop called Retro.', origin: 'shop', answers: [['Jeg', 'har', 'købt', 'den', 'i', 'en', 'butik,', 'der', 'hedder', 'Retro.']], best: [['Den', 'har', 'jeg', 'købt', 'i', 'en', 'butik,', 'der', 'hedder', 'Retro.']], tiles: ['Jeg', 'har', 'købt', 'den', 'i', 'en', 'butik,', 'der', 'hedder', 'Retro.', 'dem', 'hedde'] },
-          ok: [{ n: 'The label in your coat stops rustling. It has its answer.' }], fail: [{ n: 'A trolley clatters past in the middle of it, but “Retro” is all the label wanted to hear.' }], next: 'c8_choice' },
+          ok: [{ n: 'The label in your coat stops rustling. It has its answer.' }], fail: [{ n: 'A trolley clatters past in the middle of it. The label does not mind. It was in the shop when it happened; it remembers.' }], next: 'c8_choice' },
       ] },
     c8_choice: { bg: 'vindue3', npc: 'maerke', title: 'Retro',
       steps: [{ say: 'maerke', da: 'Skal jeg sidde på din frakke igen? Eller skal jeg hjem?', en: 'Shall I sit on your coat again? Or shall I go home?' }],
       opts: [
         { kind: 'say', stat: 'SPROG', dc: 10, group: 'm', label: 'Tell it it can go home to Retro.', build: { en: 'You can go home to Retro.', answers: [['Du', 'kan', 'gå', 'hjem', 'til', 'Retro.']], tiles: ['Du', 'kan', 'gå', 'hjem', 'til', 'Retro.', 'hjemme', 'går'] },
-          ok: [{ n: 'The tag spins once, gratefully.' }], fail: [{ n: 'Your words trip over each other, but “hjem” lands. The tag is already on its way.' }], next: 'c8_hjem' },
+          ok: [{ n: 'The tag spins once, gratefully.' }], fail: [{ n: 'Your words trip over each other. The tag forgives you: a gust of wind is blowing toward Retro anyway.' }], next: 'c8_hjem' },
         { kind: 'say', stat: 'LOEGN', dc: 10, group: 'm', label: 'Say your coat is not for sale.', build: { en: 'My coat is not for sale.', answers: [['Min', 'frakke', 'er', 'ikke', 'til', 'salg.']], tiles: ['Min', 'frakke', 'er', 'ikke', 'til', 'salg.', 'mit', 'på'] },
           ok: [{ n: 'The tag flips itself over and writes on its own back: IKKE TIL SALG.' }], fail: [{ n: 'You say it badly, but the tag likes the idea and writes it down anyway.' }], next: 'c8_fri' },
       ] },
@@ -362,7 +362,7 @@ SESSIONS.k3l2 = Object.assign({}, D3, {
     /* ===== FINALE: the window ===== */
     f8_1: { bg: 'vindue3', npc: 'dukke', title: 'Retro', card: ['Retro', 'the window'],
       steps: [
-        { n: 'A fifth dummy steps down out of Retro’s window to make room, stretches, and looks you up and down.' },
+        { n: 'Dukken, the window dresser, a dummy with no outfit of its own, comes out of the shop and looks you up and down.' },
         { say: 'dukke', da: 'Du skal stå i vinduet i nat. Men først: hvad har du på?', en: 'You are standing in the window tonight. But first: what are you wearing?' },
       ],
       opts: [
@@ -389,9 +389,9 @@ SESSIONS.k3l2 = Object.assign({}, D3, {
       opts: [{ kind: 'go', label: 'End the lesson.', next: 'end' }] },
 
     /* ===== LOPPEMARKEDET (here only once) ===== */
-    loppe8: { bg: 'loppe3', title: 'Loppemarkedet', card: ['Loppemarkedet', 'only once, only this morning'],
+    loppe8: { bg: 'loppe3', title: 'Loppemarkedet', card: ['Loppemarkedet', 'only once, only today'],
       steps: [
-        { n: 'The garage has turned into a flea market for one morning. Tables, boxes, a gramophone, and sellers who are mostly their own wares.' },
+        { n: 'The garage has turned into a flea market for one day. Tables, boxes, a gramophone, and sellers who are mostly their own wares.' },
         { th: 'Every seller lowers the price for a compliment. A correct one.' },
       ],
       opts: [{ kind: 'act', special: 'boxes:sikke', label: 'Haggle with compliments.', next: 'loppe8b' }] },
