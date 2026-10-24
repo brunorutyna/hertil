@@ -115,10 +115,27 @@ const AUDIO = (() => {
     skole(o, b) { every(.7, 2, () => hit(o, now(), 4600, .06, .03, 12), b); every(5, 9, () => { [784, 659].forEach((f, i) => tone(o, f, now() + i * .4, .6, 'sine', .03)); }, b); },
     gang(o, b) { every(.5, .5, () => { hit(o, now(), 900, .05, .04, 4); }, b); every(3, 6, () => squeak(o, now(), .012), b); },
     chef(o, b) { const w = ctx.createBufferSource(); w.buffer = noiseBuf('brown', 2); w.loop = true; const g = ctx.createGain(); g.gain.value = .05; w.connect(g); g.connect(o); w.start(); b.stops.push(() => w.stop()); every(4, 7, () => tone(o, 220, now(), 1.5, 'sine', .02, { to: 223 }), b); },
+    // Kapitel 3 · Deroppe (Udsalg): hangers clacking, a cash register, a washing drum, a vacuum, a fridge hum, the street outside
+    gang3(o, b) { every(1.2, 3, () => { const t = now(); hit(o, t, 5200, .03, .06, 9); hit(o, t + .07, 4600, .03, .05, 9); }, b); every(5, 9, () => SFX.kaching(o, now(), .4), b); },
+    sove3(o, b) { every(.7, .7, () => tone(o, 72, now(), .24, 'sine', .04, { to: 56 }), b); every(6, 11, () => tone(o, 988, now(), .9, 'sine', .014), b); },
+    bad3(o, b) { every(.3, 1.1, () => { const f = 700 + Math.random() * 600; tone(o, f, now(), .09, 'sine', .04, { to: f * 2, toT: .07 }); }, b); every(3, 6, () => hit(o, now(), 2400, .3, .03, 1.5), b); },
+    stue3(o, b) { every(.16, .16, () => hit(o, now(), 700 + Math.random() * 300, .14, .02, 1.2), b); every(3, 6, () => tone(o, 98, now(), 1.1, 'sawtooth', .02, { to: 140, lp: 500, q: 5 }), b); },
+    koekken3(o, b) { const w = ctx.createOscillator(); w.type = 'sawtooth'; w.frequency.value = 50; const fl = ctx.createBiquadFilter(); fl.type = 'lowpass'; fl.frequency.value = 160; const g = ctx.createGain(); g.gain.value = .02; w.connect(fl); fl.connect(g); g.connect(o); w.start(); b.stops.push(() => w.stop());
+      every(2, 5, () => hit(o, now(), 3600, .04, .05, 10), b); },
+    kaelder3(o, b) { every(.42, .42, () => tone(o, 92, now(), .3, 'sine', .04, { to: 70 }), b); every(.9, 1.8, () => { const f = 400 + Math.random() * 400; tone(o, f, now(), .12, 'sine', .03, { to: f * 2.4, toT: .1 }); }, b); },
+    garage3(o, b) { every(1.5, 4, () => { tone(o, 2200, now(), .05, 'square', .015); tone(o, 2200, now() + .1, .05, 'square', .015); }, b); every(5, 9, () => hit(o, now(), 900, .4, .04, .8), b); },
+    loft3(o, b) { every(1.5, 4, () => { const f = 80 + Math.random() * 50; tone(o, f, now(), .8, 'sawtooth', .022, { to: f * 1.4, lp: 600, q: 6 }); }, b); every(4, 8, () => tone(o, 1318, now(), 1.2, 'sine', .015, { vib: 5 }), b); },
+    gade3(o, b) { every(.1, .35, () => { const f = 250 + Math.random() * 1400; tone(o, f, now(), .07, Math.random() < .5 ? 'square' : 'triangle', .01, { to: f * (Math.random() < .5 ? .6 : 1.6), lp: 2400 }); }, b); every(3, 6, () => SFX.kaching(o, now(), .5), b); },
+    butik3(o, b) { every(.8, 2, () => { const t = now(); hit(o, t, 5200, .03, .06, 9); hit(o, t + .06, 4800, .03, .04, 9); }, b); every(4, 8, () => SFX.kaching(o, now(), .5), b); },
+    maler3(o, b) { every(.4, 1.2, () => { const f = 200 + Math.random() * 300; tone(o, f, now(), .25, 'sine', .04, { to: f * .5 }); }, b); },
+    vindue3(o, b) { every(2, 4, () => { [1568, 1318, 1046].forEach((f, i) => tone(o, f, now() + i * .12, .4, 'triangle', .015)); }, b); },
+    loppe3(o, b) { every(.15, .5, () => { const f = 300 + Math.random() * 600; tone(o, f, now(), .12, 'sawtooth', .01, { to: f * 1.3, lp: 1500, q: 5 }); }, b); every(3, 6, () => boing(o, now(), 220, .03), b); },
+    hus3(o, b) { every(2, 5, () => SFX.kaching(o, now(), .25), b); every(1.5, 3, () => hit(o, now(), 5000, .02, .03, 8), b); },
     tarn(o, b) { every(2, 5, () => { tone(o, 1568, now(), .5, 'sine', .015); }, b); every(1.4, 3, () => hit(o, now(), 3800, .02, .03, 7), b); },
   };
-  const SFX = { stamp(o, t, v = 1) { tone(o, 120, t, .18, 'sine', .4 * v, { to: 45 }); hit(o, t, 1200, .09, .2 * v, 1.5); } };
-  const INDOOR = ['nest', 'hall', 'hall_torn', 'stair', 'doere', 'vaskeri', 'bageri', 'port', 'koeje', 'kontor', 'halv', 'tegnestue', 'kantine', 'kopi', 'skole', 'gang', 'chef'];
+  const SFX = { stamp(o, t, v = 1) { tone(o, 120, t, .18, 'sine', .4 * v, { to: 45 }); hit(o, t, 1200, .09, .2 * v, 1.5); },
+    kaching(o, t, v = 1) { hit(o, t, 3000, .05, .12 * v, 3); tone(o, 2637, t + .05, .5, 'triangle', .05 * v); tone(o, 3136, t + .09, .6, 'triangle', .04 * v); } };
+  const INDOOR = ['nest', 'hall', 'hall_torn', 'stair', 'doere', 'vaskeri', 'bageri', 'port', 'koeje', 'kontor', 'halv', 'tegnestue', 'kantine', 'kopi', 'skole', 'gang', 'chef', 'gang3', 'sove3', 'bad3', 'stue3', 'koekken3', 'kaelder3', 'garage3', 'loft3', 'butik3', 'maler3', 'vindue3'];
   function playAmb(name, ph = 0) {
     const key = name + ':' + ph;
     if (key === ambName) return; ambName = key;
@@ -142,6 +159,7 @@ const AUDIO = (() => {
     run: { k: 'x...x...x...x...', s: '....x..o....x.o.', h: 'xxxxxxxxxxxxxxxx' },
     none: { k: '................', s: '................', h: '................' },
     type: { k: 'x..x....x..x....', s: '....x.......x.x.', h: 'xxx.xxx.xxx.xx.x' }, // the typewriter shuffle of Derhenne
+    disco: { k: 'x...x...x...x...', s: '....x.......x...', h: '..x...x...x...x.', o: true }, // Deroppe: four on the floor, open hats on the offbeat
   };
   const THEMES = {
     // the title screen has a real song: a fixed melody (scale degree, length in 16ths), 8 bars, verse then chorus
@@ -179,6 +197,21 @@ const AUDIO = (() => {
     gang:   { bpm: 130, root: 52, mode: MIX, prog: [0, 6, 3, 0], drums: 'type', bass: 'x..xx..xx..xx..x', arp: 'mar', lead: 'square', dens: .35 },
     chef:   { bpm: 98, root: 50, mode: LYD, prog: [0, 1, 3, 4], drums: 'half', bass: 'x.......x.......', arp: 'box', lead: 'tri', dens: .3, pad: true },
     tarn:   { bpm: 120, root: 55, mode: MIX, prog: [0, 4, 3, 4], drums: 'type', bass: 'x...x.x.x...x.x.', arp: 'mar', lead: null, dens: 0, bell: true },
+    // Kapitel 3 · Deroppe (Udsalg): disco-pop, a funky octave bass, a cheap organ
+    gang3:  { bpm: 120, root: 50, mode: MIX, prog: [0, 0, 3, 4], drums: 'disco', bass: 'x.xx..x.x.xx..x.', arp: 'organ', lead: 'square', dens: .35, oct: true },
+    sove3:  { bpm: 96, root: 55, mode: PEN, prog: [0, 3, 1, 4], drums: 'soft', bass: 'x.......x.......', arp: 'organ', lead: null, dens: 0, pad: true },
+    bad3:   { bpm: 112, root: 57, mode: LYD, prog: [0, 1, 4, 0], drums: 'soft', bass: 'x.....x...x.....', arp: 'box', lead: 'tri', dens: .3 },
+    stue3:  { bpm: 118, root: 52, mode: DOR, prog: [0, 3, 0, 6], drums: 'disco', bass: 'x..xx..xx..xx..x', arp: 'organ', lead: 'saw', dens: .35 },
+    koekken3: { bpm: 122, root: 53, mode: ION, prog: [0, 5, 3, 4], drums: 'bounce', bass: 'x.xx.x.xx.x.xx.x', arp: 'organ', lead: 'reed', dens: .4 },
+    kaelder3: { bpm: 126, root: 48, mode: MIX, prog: [0, 6, 0, 4], drums: 'disco', bass: 'xxxxxxxxxxxxxxxx', arp: 'square', lead: 'saw', dens: .4 },
+    garage3: { bpm: 128, root: 55, mode: MIX, prog: [0, 6, 3, 0], drums: 'run', bass: 'x..xx..xx..xx..x', arp: 'organ', lead: 'square', dens: .4 },
+    loft3:  { bpm: 100, root: 50, mode: LYD, prog: [0, 1, 3, 4], drums: 'half', bass: 'x.......x...x...', arp: 'box', lead: 'tri', dens: .3, pad: true },
+    gade3:  { bpm: 124, root: 52, mode: MIX, prog: [0, 4, 6, 4], drums: 'disco', bass: 'x.xx..x.x.xx..x.', arp: 'organ', lead: 'saw', dens: .45, oct: true },
+    butik3: { bpm: 120, root: 55, mode: ION, prog: [0, 4, 5, 3], drums: 'disco', bass: 'x..x.xx.x..x.xx.', arp: 'organ', lead: 'square', dens: .4, oct: true },
+    maler3: { bpm: 116, root: 57, mode: LYD, prog: [0, 1, 0, 4], drums: 'bounce', bass: 'x.x.x.x.x.x.x.x.', arp: 'box', lead: 'tri', dens: .35 },
+    vindue3:{ bpm: 110, root: 53, mode: DOR, prog: [0, 3, 6, 4], drums: 'disco', bass: 'x...x.x.x...x.x.', arp: 'organ', lead: 'reed', dens: .3 },
+    loppe3: { bpm: 132, root: 52, mode: AEO, prog: [0, 0, 5, 4], drums: 'run', bass: 'x.xx.x.xx.x.xx.x', arp: 'organ', lead: 'reed', dens: .55 },
+    hus3:   { bpm: 118, root: 55, mode: MIX, prog: [0, 4, 3, 4], drums: 'disco', bass: 'x...x.x.x...x.x.', arp: 'organ', lead: null, dens: 0 },
     map:    { bpm: 108, root: 55, mode: ION, prog: [0, 4, 3, 4], drums: 'soft', bass: 'x...x.x.x...x.x.', arp: 'tri', lead: null, dens: 0 },
   };
   function deg(T, d, oct = 0) { const n = T.mode.length, o = Math.floor(d / n), i = ((d % n) + n) % n; return T.root + T.mode[i] + 12 * (o + oct); }
@@ -195,6 +228,7 @@ const AUDIO = (() => {
     square: (o, f, t, d) => tone(o, f, t, d, 'square', .035, { lp: 3000, lpTo: 800 }),
     tri: (o, f, t, d) => tone(o, f, t, d, 'triangle', .06),
     box: (o, f, t, d) => { tone(o, f * 2, t, .9, 'sine', .05); tone(o, f * 5.4, t, .3, 'sine', .01); },
+    organ: (o, f, t, d) => { tone(o, f, t, d * .9, 'square', .022, { lp: 2200 }); tone(o, f * 2, t, d * .9, 'square', .012, { lp: 3000 }); }, // a cheap shop organ
     mar: (o, f, t, d) => { tone(o, f, t, .35, 'sine', .07); tone(o, f * 4, t, .06, 'sine', .02); hit(o, t, f * 3, .02, .02, 12); }, // marimba
   };
   // at night outdoors the same tune goes half-speed and dreamy
@@ -216,7 +250,7 @@ const AUDIO = (() => {
         const swing = s % 2 ? x * .12 : 0, t = next + swing;
         if (DR.k[s] === 'x') kick(out, t);
         if (DR.s[s] === 'x') clap(out, t); else if (DR.s[s] === 'o') clap(out, t, .12);
-        if (DR.h[s] === 'x') hat(out, t, s % 4 === 2 ? .1 : .05);
+        if (DR.h[s] === 'x') { if (DR.o) hit(out, t, 7000, .16, .06, .7, 'highpass'); else hat(out, t, s % 4 === 2 ? .1 : .05); }
         if (T.bass && T.bass[s] === 'x') tone(out, mtof(deg(T, ch, -2) + (T.oct && s % 4 === 2 ? 12 : 0)), t, x * 1.6, 'sawtooth', .13, { lp: 500, lpTo: 140, q: 4 });
         if (T.arp && s % 2 === 0) ARP[T.arp](out, mtof(deg(T, ch + [0, 2, 4, 7, 4, 2, 0, 4][(s / 2) % 8], 1) + (T.fall ? 12 - (s % 8) : 0)), t, x * 1.8);
         if (T.bell && s === 0 && bar % 4 === 0) { tone(out, 1318, t, .9, 'triangle', .03); tone(out, 1046, t + x * 2, .9, 'triangle', .025); }
@@ -262,6 +296,8 @@ const AUDIO = (() => {
     if (kind === 'soft') { tone(o, 392, t, .4, 'sine', .1, { to: 330 }); }
     if (kind === 'stamp') SFX.stamp(o, t);
     if (kind === 'lift') { tone(o, 1318, t, .8, 'triangle', .06); tone(o, 1046, t + .25, .9, 'triangle', .05); }
+    if (kind === 'hanger') { hit(o, t, 5200, .03, .12, 9); hit(o, t + .06, 4400, .03, .1, 9); hit(o, t + .13, 6000, .03, .08, 9); }
+    if (kind === 'kaching') SFX.kaching(o, t);
     if (kind === 'hard') { hit(o, t, 3500, .04, .2, 6); tone(o, 1318, t, .12, 'square', .05, { lp: 4000 }); }
   }
   function resume() { init(); if (ctx && ctx.state === 'suspended') ctx.resume(); }

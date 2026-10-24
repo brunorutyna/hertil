@@ -4,7 +4,7 @@
 const fs = require('fs'), path = require('path');
 const { load, ROOT, read } = require('./load');
 const C = load();
-const errors = [], warns = [];
+const errors = [], warns = [], dynamic = []; // dynamic: Danish built at run time (checked against the glossary too)
 const err = (s, m) => errors.push(`[${s}] ${m}`), warn = (s, m) => warns.push(`[${s}] ${m}`);
 const norm = w => w.toLowerCase().replace(/[.,?!]/g, '');
 
@@ -20,8 +20,11 @@ for (const [sid, S] of Object.entries(C.SESSIONS)) {
     if (s.glimpse && !S.glimpses[s.glimpse]) err(sid, `missing glimpse "${s.glimpse}" (${w})`);
     if (s.say && s.da === undefined && s.en === undefined) err(sid, `say without text (${w})`);
   });
+  // a sentence can depend on the state (what you wear): check it for every sample wardrobe the lesson lists
+  const sampleG = wear => ({ flags: {}, glimpses: [], prev: {}, origin: {}, used: {}, phase: 0, boons: [], wear: wear || {} });
   const build = (b, w) => {
     if (!b) return;
+    if (typeof b === 'function') { (S.lintWear || [{}]).forEach((wear, k) => { let r; try { r = b(sampleG(wear)); } catch (e) { return err(sid, `sentence function fails for sample wardrobe ${k}: ${e.message} (${w})`); } build(r, w + ` [wardrobe ${k}]`); (r.answers || []).forEach(a => dynamic.push(a.join(' '))); (r.tiles || []).forEach(t => dynamic.push(t)); }); return; }
     const tiles = b.tiles || [...b.answers[0], ...(b.extra || [])];
     for (const a of [...b.answers, ...(b.best || [])]) { // every accepted answer must be buildable from the tiles
       const need = {}; a.forEach(x => need[norm(x)] = (need[norm(x)] || 0) + 1);
@@ -37,6 +40,7 @@ for (const [sid, S] of Object.entries(C.SESSIONS)) {
     if (o.stat && !C.STATS[o.stat]) err(sid, `unknown skill ${o.stat} (${where})`);
     if (o.dc && !o.stat) err(sid, `difficulty without skill (${where})`);
     if (o.kind === 'reply' && !o.da) err(sid, `reply without Danish (${where})`);
+    if (o.kind === 'reply' && typeof o.da === 'function') (S.lintWear || [{}]).forEach(wear => dynamic.push(o.da(sampleG(wear))));
     build(o.build, where);
     if (o.once && o.group) warn(sid, `option has both once and group (${where})`);
     if (!isTravel && o.kind === 'reply' && !o.once && !o.group && !o.next && N[w] && N[w].hub) err(sid, `reply in hub ${w} can be repeated forever (give it once or group) (${where})`);
@@ -47,7 +51,7 @@ for (const [sid, S] of Object.entries(C.SESSIONS)) {
     steps(n.steps, id); opts(n.opts, id);
     if (n.hub && !(n.opts || []).some(o => o.kind === 'go' && !o.req && !o.once && !o.group)) warn(sid, `hub ${id} has no always-available way out`);
   }
-  for (const [k, l] of Object.entries(S.locations)) { const e = l.entry({ flags: {}, phase: 0, used: {} }); node(e, 'location ' + k); }
+  for (const [k, l] of Object.entries(S.locations)) { const e = l.entry(sampleG()); node(e, 'location ' + k); }
   (S.travel || []).forEach(t => { steps(t.steps, 'travel ' + t.id); opts(t.opts, 'travel ' + t.id, true); });
   // unreachable nodes
   const reach = new Set([S.start]);
@@ -77,6 +81,10 @@ for (const [sid, S] of Object.entries(C.SESSIONS)) Object.entries(S.calendars ||
   if (free !== 1) err(sid, `calendar ${id} has ${free} free slots (needs exactly 1)`);
 });
 Object.values(C.VOCAB).forEach(v => { danish.push(v.da); if (v.def) danish.push(v.def); });
+dynamic.forEach(t => danish.push(t));
+// the wardrobe's words (every colour form and every piece of clothing) must all have a meaning
+if (C.COLOURS) Object.values(C.COLOURS).forEach(c => c.slice(0, 3).forEach(f => danish.push(f)));
+if (C.CLOTHES) Object.values(C.CLOTHES).forEach(c => danish.push(c.n));
 const missing = {};
 danish.forEach(t => (t.match(/[A-Za-zÆØÅæøåáéüöÉÁ]+/g) || []).forEach(w => { if (!C.DICT[w.toLowerCase()] && !C.NAMES.includes(w)) missing[w.toLowerCase()] = (missing[w.toLowerCase()] || 0) + 1; }));
 const miss = Object.keys(missing).filter(w => w.length > 1);

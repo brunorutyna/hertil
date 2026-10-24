@@ -12,7 +12,7 @@
    ========================================================================= */
 
 SESSIONS.k2l3 = Object.assign({}, D2, {
-  id: 'k2l3', order: 6, short: 'K2 · Lektion 3', prevSession: 'k2l2', nextSession: null, title: 'Lektion 3 · Kan vi flytte vores aftale?', en: 'Can we move our appointment?',
+  id: 'k2l3', order: 6, short: 'K2 · Lektion 3', prevSession: 'k2l2', nextSession: 'k3l1', title: 'Lektion 3 · Kan vi flytte vores aftale?', en: 'Can we move our appointment?',
   blurb: 'Every appointment in Derhenne has come loose. Somebody important cannot be found. And you have a cold.',
   start: 'p6_wake', home: 'koeje', travelAfter: 'p6seen', cluesFlag: 'clues6', cluesNeed: 3, dcMod: 4,
   startState: { resp: 6, sk: 12, insp: 1, boons: ['anker', 'hue', 'kompas'], statXP: { SPROG: 20, LOEGN: 6, SNIGE: 8, HANDEL: 6, INDSIGT: 15 },
@@ -34,6 +34,7 @@ SESSIONS.k2l3 = Object.assign({}, D2, {
     G.flags.Fchef ? 'Chefen' : G.flags.Fmove ? 'Om et år' : G.flags.Fcancel ? 'Aflyst' : null].filter(Boolean).join(' · ') || '—',
   carryFlags: ['Crest', 'Chome', 'Fchef', 'Fmove', 'Fcancel'],
   chapterEnd: ['Kapitel 2 · Arbejde & uddannelse', 'Kapitel 2 er slut', 'You have a job, colleagues, and an answer to an old appointment. Next: Kapitel 3, somewhere new.'],
+  next: 'Kapitel 3 · Nyt og gammelt. The parcel has a coat in it that does not fit, and a staircase folded up underneath.',
 
   quests: {
     A: { title: 'Mødet', en: 'The meeting', obj: [['Find a time when everybody can (Kontoret)', 'moedeDone'], ['Put Kalenderen’s dates back', 'datoerDone'], ['Read the page Kalenderen could not eat', 'Adone']] },

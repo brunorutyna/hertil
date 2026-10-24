@@ -14,7 +14,7 @@ const sleep = ms => new Promise(r => setTimeout(r, FAST ? 0 : ms));
 const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 const pick = a => a[Math.floor(Math.random() * a.length)];
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-const NAMES = ['Hertil', 'Tælleren', 'Samleren', 'Grundvæversken', 'Ikket', 'Bagvendte', 'Husfolket', 'Spejlet', 'Sluget', 'Mølen', 'Ungen', 'Bunden', 'Trappen', 'Reden', 'Vævehallen', 'Støvsletten', 'Dammene', 'Markedet', 'I', 'Uret', 'Savnet', 'Engen', 'Fjergade', 'Tandvej', 'Torvet', 'Bydelen', 'Kirken', 'Bageren', 'Larmen', 'Vaskeriet', 'Naboen', 'Støvstræde', 'Ekko', 'Allé', 'Lilla', 'Plads', 'Klokkegade', 'Derhenne', 'Stemplet', 'Kranen', 'Elevatoren', 'Arkivet', 'Halvdelen', 'Haven', 'Kantinen', 'Blyanten', 'Kopimaskinen', 'Porten', 'Taget', 'Køjerne', 'Tegnestuen', 'Kontoret', 'Vejlederen', 'Knagen', 'Holdet', 'Rygtet', 'Kalenderen', 'Telefonen', 'Chefen', 'Skolen', 'Naboen'];
+const NAMES = ['Hertil', 'Tælleren', 'Samleren', 'Grundvæversken', 'Ikket', 'Bagvendte', 'Husfolket', 'Spejlet', 'Sluget', 'Mølen', 'Ungen', 'Bunden', 'Trappen', 'Reden', 'Vævehallen', 'Støvsletten', 'Dammene', 'Markedet', 'I', 'Uret', 'Savnet', 'Engen', 'Fjergade', 'Tandvej', 'Torvet', 'Bydelen', 'Kirken', 'Bageren', 'Larmen', 'Vaskeriet', 'Naboen', 'Støvstræde', 'Ekko', 'Allé', 'Lilla', 'Plads', 'Klokkegade', 'Derhenne', 'Stemplet', 'Kranen', 'Elevatoren', 'Arkivet', 'Halvdelen', 'Haven', 'Kantinen', 'Blyanten', 'Kopimaskinen', 'Porten', 'Taget', 'Køjerne', 'Tegnestuen', 'Kontoret', 'Vejlederen', 'Knagen', 'Holdet', 'Rygtet', 'Kalenderen', 'Telefonen', 'Chefen', 'Skolen', 'Naboen', 'Deroppe', 'Skabet', 'Skabets', 'Bøjlerne', 'Vaskemaskinen', 'Støvsugeren', 'Køleskabet', 'Tasken', 'Kassen', 'Farvebøtten', 'Dukken', 'Dukkerne', 'Prismærket', 'Lampen', 'Kommoden', 'Lænestolen', 'Frakken', 'Udsalget', 'Udsalgsgade', 'Knapgade', 'Prisvej', 'Top', 'Tøj', 'Retro', 'Seje', 'Sko', 'Kolde', 'Hænder', 'Vinterland', 'Genbrugskassen', 'Mølene'];
 const PHASES = ['Gult lys', 'Lyserødt lys', 'Blåt lys', 'Lilla nat'];
 const PH = i => ((typeof SESSIONS !== 'undefined' && G && S().phases) || PHASES)[i]; // a chapter can name its own times of day
 const chapOf = id => (SESSIONS[id] && SESSIONS[id].chap) || 1;
@@ -57,11 +57,11 @@ let META = (() => { try { return Object.assign({ vocab: {}, words: {}, runs: 0 }
 const saveMeta = () => { try { localStorage.setItem(META_KEY, JSON.stringify(META)); } catch (e) { } };
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(G)); } catch (e) { } };
 function newGame(sess = 'k1l1', from = null) {
-  G = { sess, day: 1, phase: 0, sk: 5, resp: 0, insp: 1, glyph: 0, statXP: { SPROG: 0, LOEGN: 0, SNIGE: 0, HANDEL: 0, INDSIGT: 0 }, flags: {}, prev: {}, origin: {}, glimpses: [], boons: [], quests: [], used: {}, met: [],
+  G = { sess, day: 1, phase: 0, sk: 5, resp: 0, insp: 1, glyph: 0, statXP: { SPROG: 0, LOEGN: 0, SNIGE: 0, HANDEL: 0, INDSIGT: 0 }, flags: {}, prev: {}, origin: {}, glimpses: [], boons: [], quests: [], used: {}, met: [], wear: {},
     node: null, loc: SESSIONS[sess].home || 'rede', travelDone: [], today: [], log: { built: 0, perfect: 0, rolls: 0, wins: 0, eng: 0, words: 0, melted: 0 }, bg: null };
   const st = SESSIONS[sess].startState;
   if (from) {
-    ['statXP', 'resp', 'sk', 'boons', 'origin', 'day', 'met'].forEach(k => G[k] = JSON.parse(JSON.stringify(from[k] || G[k])));
+    ['statXP', 'resp', 'sk', 'boons', 'origin', 'day', 'met', 'wear'].forEach(k => G[k] = JSON.parse(JSON.stringify(from[k] || G[k])));
     G.insp = Math.max(1, from.insp); G.prev = Object.assign({}, from.prev, from.carried || {}); G.prevGlimpses = (from.prevGlimpses || 0) + (from.glimpses || []).length;
     if (chapOf(from.sess) !== chapOf(sess)) { G.resp = 0; G.day = 1; G.newPlace = true; } // a new place: nobody there knows you yet
   } else if (st) Object.assign(G, JSON.parse(JSON.stringify(st)));
@@ -102,6 +102,11 @@ function fx(f) {
   if (f.flag) G.flags[f.flag] = true;
   if (f.origin) Object.assign(G.origin, f.origin);
   if (f.boon && !hasBoon(f.boon)) { G.boons.push(f.boon); toast(`${BOONS[f.boon].name}: ${BOONS[f.boon].fx}`, 'gold'); AUDIO.sting('level'); }
+  if (f.wear) { // the wardrobe: { slot: {k, c, fit} | null }. What you wear is drawn on your plate (Kapitel 3)
+    G.wear = G.wear || {};
+    for (const [slot, it] of Object.entries(f.wear)) { if (it) { G.wear[slot] = Object.assign({}, it); if (typeof wearToast === 'function') toast(wearToast(it), 'gold'); } else delete G.wear[slot]; }
+    AUDIO.sting('hanger');
+  }
   if (f.quest) { const nu = [].concat(f.quest).filter(q => !G.quests.includes(q)); nu.forEach(q => G.quests.push(q)); if (nu.length) toast(`${nu.length > 1 ? 'Nye kontrakter' : 'Ny kontrakt'}: ${nu.map(q => S().quests[q].title).join(' · ')}`, 'gold'); }
   hud();
 }
@@ -481,7 +486,8 @@ function modsFor(o) {
   // Kapitel 2 gifts: a stat each (MOD_CAP keeps the roll risky however many you carry)
   [['kode', 'INDSIGT', 'Koden'], ['bakke', 'HANDEL', 'Bakken'], ['hue', 'SPROG', 'Studenterhuen'], ['stillads', 'SNIGE', 'Stilladset'], ['froe', 'INDSIGT', 'Frøet'], ['kartotek', 'SPROG', 'Kartotekskortet'],
     ['skuffe', 'HANDEL', 'Skuffen'], ['kompas', 'INDSIGT', 'Kompasnålen'], ['skema', 'SPROG', 'Skemaet'], ['knap', 'HANDEL', 'Knappen'], ['hat', 'LOEGN', 'Hans hat'], ['soed', 'SPROG', 'Sødmen'],
-    ['tavshed', 'SNIGE', 'Tavsheden'], ['kalenderblad', 'HANDEL', 'Kalenderbladet'], ['telefonroer', 'INDSIGT', 'Telefonrøret']].forEach(([b, st, t]) => { if (o.stat === st && hasBoon(b)) mods.push({ t, v: 1 }); });
+    ['tavshed', 'SNIGE', 'Tavsheden'], ['kalenderblad', 'HANDEL', 'Kalenderbladet'], ['telefonroer', 'INDSIGT', 'Telefonrøret'],
+    ...(typeof K3_BOON_STATS !== 'undefined' ? K3_BOON_STATS : [])].forEach(([b, st, t]) => { if (o.stat === st && hasBoon(b)) mods.push({ t, v: 1 }); });
   if (o.bonus) { const b = o.bonus(G); if (b) mods.push({ t: o.bonusWhy || 'Bonus', v: b }); }
   if ((o.kind === 'say' || o.kind === 'lie') && G.resp >= 5) mods.push({ t: 'Vægt', v: 1 });
   return mods;
@@ -503,21 +509,23 @@ async function runOption(node, o, idx) {
     await steps(o.ok); return o.next;
   }
   if (o.kind === 'reply') {
-    youSaid(o.da); TTS.say(o.da, false, true);
+    const da = typeof o.da === 'function' ? o.da(G) : o.da;
+    youSaid(da); TTS.say(da, false, true);
     statGain(o.stat, 1); await TTS.waitYou();
     await steps(o.ok); return o.next;
   }
   if (o.special) { statGain(o.stat, 1); const [k, a] = o.special.split(':'); await special(k)(a); return o.next; }
   if (o.pre) await special(o.pre)();
   let mode = null; const mods = modsFor(o); let built = false;
-  if ((o.kind === 'say' || o.kind === 'lie') && o.build) {
-    const r = await builder(o.build);
+  const B = typeof o.build === 'function' ? o.build(G) : o.build;
+  if ((o.kind === 'say' || o.kind === 'lie') && B) {
+    const r = await builder(B);
     built = true; G.log.built++;
     youSaid(r.sentence);
     if (r.how === 'perfect') { mode = 'adv'; G.log.perfect++; }
     else if (r.how === 'shown' || r.mistakes >= 2) mode = 'dis';
     if (r.best) mods.push({ t: 'Inversion', v: 1 });
-    if (o.build.origin) { G.origin[o.build.origin] = r.sentence; if (o.build.origin === 'job') { const m = r.sentence.match(/som ([^\s.]+)/); if (m) G.origin.jobWord = m[1]; } }
+    if (B.origin) { G.origin[B.origin] = r.sentence; if (B.origin === 'job') { const m = r.sentence.match(/som ([^\s.]+)/); if (m) G.origin.jobWord = m[1]; } }
   }
   statGain(o.stat, 1);
   let ok;
@@ -552,7 +560,7 @@ async function goNode(id) {
     const avail = node.opts.map((o, i) => [o, i]).filter(([o, i]) => !(o.once && G.used[id + ':' + i]) && !(o.group && G.used[id + '#' + o.group]) && !(o.after && (G.usedCount || 0) - startCount < o.after) && !(o.req && !o.req(G)));
     const list = avail.map(([o]) => {
       const tag = o.stat ? `<span class="tag t-${o.kind}">[${STATS[o.stat].name.toUpperCase()}${o.dc ? ' ' + (G.glyph > 0 ? glyph(o.dc) : o.dc) : ''}]</span> ` : o.kind === 'eng' ? '<span class="tag t-eng">[ENGELSK]</span> ' : '';
-      const text = o.kind === 'reply' ? `“${daHTML(o.da)}”` : esc(o.label);
+      const text = o.kind === 'reply' ? `“${daHTML(typeof o.da === 'function' ? o.da(G) : o.da)}”` : esc(typeof o.label === 'function' ? o.label(G) : o.label);
       return { html: tag + text, cls: 'k-' + o.kind };
     });
     const i = await choices(list);
@@ -681,7 +689,7 @@ async function runInline(ev) {
   stage(ev.bg, ev.npc, 'Undervejs'); G.npc = ev.npc;
   await steps(ev.steps);
   const avail = ev.opts.filter(o => !(o.req && !o.req(G)));
-  const i = await choices(avail.map(o => ({ html: (o.stat ? `<span class="tag t-${o.kind}">[${STATS[o.stat].name.toUpperCase()}${o.dc ? ' ' + (G.glyph > 0 ? glyph(o.dc) : o.dc) : ''}]</span> ` : o.kind === 'eng' ? '<span class="tag t-eng">[ENGELSK]</span> ' : '') + (o.kind === 'reply' ? `“${daHTML(o.da)}”` : esc(o.label)), cls: 'k-' + o.kind })));
+  const i = await choices(avail.map(o => ({ html: (o.stat ? `<span class="tag t-${o.kind}">[${STATS[o.stat].name.toUpperCase()}${o.dc ? ' ' + (G.glyph > 0 ? glyph(o.dc) : o.dc) : ''}]</span> ` : o.kind === 'eng' ? '<span class="tag t-eng">[ENGELSK]</span> ' : '') + (o.kind === 'reply' ? `“${daHTML(typeof o.da === 'function' ? o.da(G) : o.da)}”` : esc(typeof o.label === 'function' ? o.label(G) : o.label)), cls: 'k-' + o.kind })));
   await runOption(ev, avail[i], i);
   save();
 }
@@ -697,7 +705,7 @@ async function goSleep() {
   await tapOn();
   if (G.today.length >= 3) await review();
   G.day++; G.phase = 0; G.today = []; G.loc = S().home; G.flags.ikketDay = false;
-  G.insp = Math.max(G.insp, hasBoon('doer') || hasBoon('dyne') ? 2 : 1) + (hasBoon('rytter') ? 1 : 0) + (hasBoon('tag') ? 1 : 0);
+  G.insp = Math.max(G.insp, hasBoon('doer') || hasBoon('dyne') || hasBoon('gammel') ? 2 : 1) + (hasBoon('rytter') ? 1 : 0) + (hasBoon('tag') ? 1 : 0);
   save();
   await passTime(late ? 'dawn' : 'night', `Dag ${G.day}`, PH(0));
   showMap();
@@ -1111,6 +1119,48 @@ const SPECIAL = {
       round();
     });
   },
+  /* Hvor ligger den? A house in cross-section, room by room. Someone says where a thing lies, or where somebody
+     is going to fetch it; tap the room. Location (inde, oppe, nede) or direction (ind, op, ned): both point at a room. */
+  rooms(id) {
+    return new Promise(resolve => {
+      const R = S().rooms[id], H = R.house || HOUSE_ROOMS; let i = 0, right = 0;
+      const ov = vocabSheet('');
+      const round = () => {
+        if (i >= R.rounds.length) {
+          G.flags[R.flag || id + 'Done'] = true; G.flags[id + 'Score'] = right;
+          ov.querySelector('.voc').innerHTML = `<div class="v-h"><small>${esc(R.title)}</small><h2>${right} / ${R.rounds.length}</h2><p>${esc(right >= R.rounds.length - 1 ? R.good : R.meh)}</p></div><button class="btn gold big" id="vDone">Færdig</button>`;
+          ov.querySelector('#vDone').onclick = () => { ov.remove(); resolve(right); }; return;
+        }
+        const r = R.rounds[i];
+        const face = r.npc ? `<span class="wi-face">${ART.creature(NPCS[r.npc].art, 0, true)}</span>` : ART.icon(VOCAB[r.k].icon);
+        ov.querySelector('.voc').innerHTML = `<div class="v-h"><small>${esc(R.title)} · ${i + 1}/${R.rounds.length}</small><h2>${esc(r.q || R.q || 'Hvor er den?')}</h2>
+          <div class="fp-clue">${face}<div>${daHTML(r.clue)} <button class="tb" id="rmSay">♪</button></div></div></div>
+          <div class="house">${H.map(([k, name]) => `<button class="rv-o rm-room rm-${k}" data-r="${k}">${esc(name)}</button>`).join('')}</div>`;
+        wireWords(ov); TTS.say(r.clue);
+        ov.querySelector('#rmSay').onclick = () => TTS.say(r.clue, true);
+        if (r.k) addWord(r.k);
+        ov.querySelectorAll('.rm-room').forEach(b => b.onclick = async () => {
+          const ok = b.dataset.r === r.room;
+          ov.querySelectorAll('.rm-room').forEach(x => x.disabled = true);
+          b.classList.add(ok ? 'ok' : 'no'); if (!ok) ov.querySelector(`.rm-room[data-r="${r.room}"]`).classList.add('ok');
+          if (ok) { right++; AUDIO.sting('win'); statGain('INDSIGT', 1); } else AUDIO.sting('lose');
+          const cap = document.createElement('div'); cap.className = 'rv-cap'; cap.innerHTML = `<i>${esc(r.why)}</i>`; ov.querySelector('.voc').appendChild(cap);
+          await sleep(ok ? 1400 : 2700); i++; round();
+        });
+        __dev.rm = () => r.room;
+      };
+      round();
+    });
+  },
+  /* look at what you are wearing: the plate, and the clothes said out loud */
+  async wardrobe() {
+    const lines = typeof wearLines === 'function' ? wearLines(G) : [];
+    const ov = document.createElement('div'); ov.className = 'prep-ov'; document.body.appendChild(ov);
+    ov.innerHTML = `<div class="prep plate-v"><div class="p-head"><small>Spejlet i gangen</small><h2>Hvad har du på?</h2></div>${ART.self(G, marksCount())}
+      <div class="paper-s">${lines.map(l => `<p>${daHTML(l)}</p>`).join('') || '<p>(nothing yet)</p>'}</div><button class="btn gold big" id="close">Luk</button></div>`;
+    wireWords(ov); if (lines[0]) TTS.say(lines.join(' '));
+    await new Promise(r => ov.querySelector('#close').onclick = () => { ov.remove(); r(); });
+  },
   async buyInsp() { if (G.sk >= 6) { G.sk -= 6; fx({ insp: 1 }); AUDIO.sting('coin'); } else toast('You cannot afford it. The moth is busy counting its own sparks.', 'bad'); },
   /* look at yourself: a plate in the atlas of Hertil, drawn from what you have said and caught */
   async selfPlate() {
@@ -1122,7 +1172,7 @@ const SPECIAL = {
     await new Promise(r => ov.querySelector('#close').onclick = () => { ov.remove(); r(); });
   },
 };
-const selfLines = () => [G.origin.reason, G.origin.job, G.origin.place, G.origin.fritid, G.origin.came, G.origin.stay, G.origin.happy, G.origin.addr, G.origin.hood, G.origin.work, G.origin.busy, G.origin.wish, G.origin.going, G.origin.colleague, G.origin.opinion, G.origin.appt, G.origin.promise].filter(Boolean);
+const selfLines = () => [G.origin.reason, G.origin.job, G.origin.place, G.origin.fritid, G.origin.came, G.origin.stay, G.origin.happy, G.origin.addr, G.origin.hood, G.origin.work, G.origin.busy, G.origin.wish, G.origin.going, G.origin.colleague, G.origin.opinion, G.origin.appt, G.origin.promise, G.origin.wear3, G.origin.egne, G.origin.promise3, G.origin.outfit, G.origin.bought, G.origin.shop, G.origin.like, G.origin.coat].filter(Boolean);
 
 /* ---------------- end of lesson ---------------- */
 function endScreen() {

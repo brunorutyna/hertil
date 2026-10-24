@@ -40,13 +40,27 @@ A new place: Derhenne, a building that never finished being built, reached by pn
 
 **Lektion 3 · Kan vi flytte vores aftale?** About 1½ hours, and the end of Kapitel 2. Every appointment in Derhenne has come loose, somebody important is missing, and you have a cold. Three contracts and a finale with three endings; new mini-games: find one meeting time for creatures with hidden calendars, and find who is where in the tower (on the way, or already there). Grammar: calling in sick, cancelling and moving appointments, short answers with modal verbs, på mandag / om mandagen, dates, clock times, ned / nede, op / oppe, hjem / hjemme, tror or synes.
 
+### Kapitel 3 · Nyt og gammelt — Deroppe
+
+A new place: Deroppe, a house that sits on top of a shop street like a hat. You arrive wearing a coat from a parcel, and it does not fit. Your character comes along (body, gifts, imprints, traces), and your weight starts over. New look and sound, **Udsalg**: the same zine in sale inks (magenta, lime, tangerine, ultramarine), disco-pop with a cheap organ, hangers clacking and a cash register. Times of day: Åbningstid, Udsalg, Lukketid, Natlager.
+
+New: **a wardrobe.** What you find, borrow or buy is drawn on your plate, creatures comment on it in correct Danish, and later you are asked to describe it yourself (the sentence is built from what you are actually wearing). Look in the hall mirror any time.
+
+**Lektion 1 · Har du set min jakke?** About 1½ hours. Everything in the house is lost. Three contracts and a finale; side games: a house you search room by room, de or dem, packing a bag. Grammar: min / mit / mine, egen / eget / egne, de / dem, inde / ind, oppe / op, nede / ned, i / på with rooms, Skal du bruge …? – Så bare tag min, Vil du ikke …? – Jo, det skal jeg nok.
+
+**Lektion 2 · Hvor har du købt den henne?** About 1½ hours. A street on permanent sale, where the colours are running away. Three contracts and a finale; side games: prices said in Danish, guess the dummy from what it wears, a street of shops to pin down with place words, haggling with compliments. Grammar: en rød hue, et rødt tørklæde, nogle røde sokker, blå / grå / orange, stribet / stribede, Sikke …!, et par, Hvad kostede den?, Er den ny? – Nej, den har jeg haft længe.
+
+**Lektion 3 · Kan du ikke lide den hvide lampe?** About 1½ hours, and the end of Kapitel 3. The house is too full and something has to go. Three contracts and a finale with three endings; side games: the attic's things, reacting to opinions, guessing who likes what, too big or too small. Grammar: den hvide lampe, mit gamle skab, blå / gamle / lækre / små, Kan du det?! Er du ikke?!, også / heller ikke, lidt for stor, kan godt lide / er vild med / er træt af.
+
 ## Files
 
 - `js/data.js`: skills, attention tiers, gifts, creatures, vocabulary, glossary.
 - `js/data2.js`: the same for Kapitel 2 (Derhenne), plus its grammar notes.
-- `js/k1l1.js` … `js/k2l3.js`: one file per lesson (`k2l1.js` also holds what the whole of Kapitel 2 shares: shifts, the tower map, the bunk) (locations, quests, nodes, travel encounters, mini-game data, lesson-only actions). Copy it for the next lesson and add its `<script>` to `index.html`.
-- `js/engine.js`: everything else, including reusable mini-games (`hunt`, `jobs`, `corr`, `boxes`, `fixEntry`, `clock`, `weather`, `guess`, `findPlace`, `lineup`, `calendar`, `whereis`); chapters (`chap`) with their own map style, shifts, bed and colours and the self-plate.
+- `js/data3.js`: the same for Kapitel 3 (Deroppe), plus the wardrobe: clothes, colours and the helpers that say them in correct Danish.
+- `js/k1l1.js` … `js/k3l3.js`: one file per lesson (`k2l1.js` also holds what the whole of Kapitel 2 shares: shifts, the tower map, the bunk) (locations, quests, nodes, travel encounters, mini-game data, lesson-only actions). Copy it for the next lesson and add its `<script>` to `index.html`.
+- `js/engine.js`: everything else, including reusable mini-games (`hunt`, `jobs`, `corr`, `boxes`, `fixEntry`, `clock`, `weather`, `guess`, `findPlace`, `lineup`, `calendar`, `whereis`, `rooms`, `wardrobe`); chapters (`chap`) with their own map style, shifts, bed and colours and the self-plate.
 - `js/art2.js`: Derhenne's creatures, scenes, icons and shift light (Natskift inks).
+- `js/art3.js`: Deroppe's creatures, scenes, icons and light (Udsalg inks), and the clothes drawn on your plate.
 - `js/art.js`: creatures (`ART.creature(name, gaze)`), the player's plate (`ART.self`), scenes, icons.
 - `js/audio.js`: ambience and music per place, effects.
 - Built on the engine of *Det var ikke noget*.
